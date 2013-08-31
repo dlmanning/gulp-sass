@@ -1,0 +1,21 @@
+{
+  "name": "gulp-sass",
+  "version": "0.1.0",
+  "description": "Gulp plugin for sass",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/dlmanning/gulp-sass"
+  },
+  "keywords": [
+    "gulpplugin"
+  ],
+  "author": "David Manning",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dlmanning/gulp-sass/issues"
+  }
+}
