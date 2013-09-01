@@ -3,5 +3,5 @@ var gulp = require('gulp')
   ;
 
 gulp.src('./scss/*.scss')
-  .pipe(sass())
+  .pipe(sass({outputStyle: 'compressed'}))
   .pipe(gulp.dest('./css/'));

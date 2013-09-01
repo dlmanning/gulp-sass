@@ -10,16 +10,16 @@ module.exports = function (options) {
   function nodeSass (file, cb) {
     var newFile = clone(file);
 
-    sass.render({
-      data: newFile.contents.toString(),
-      success: function (css) {
-        newFile.path = ext(newFile.path, '.css')
-        newFile.shortened = newFile.shortened && ext(newFile.shortened, '.css');
-        newFile.contents = new Buffer(css);
+    opts.data = newFile.contents.toString()
+    opts.success = function (css) {
+      newFile.path = ext(newFile.path, '.css')
+      newFile.shortened = newFile.shortened && ext(newFile.shortened, '.css');
+      newFile.contents = new Buffer(css);
 
-        cb(null, newFile);
-      }
-    });
+      cb(null, newFile);
+    }
+    
+    sass.render(opts);
   }
 
   return es.map(nodeSass);
