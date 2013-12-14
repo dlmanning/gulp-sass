@@ -10,17 +10,15 @@ module.exports = function (options) {
   function nodeSass (file, cb) {
     // file is on object passed in by gulp
     // file.contents is always a Buffer
-    
-    var newFile = clone(file);
 
-    opts.data = newFile.contents.toString();
+    opts.data = file.contents.toString();
 
     opts.success = function (css) {
-      newFile.path      = ext(newFile.path, '.css');
-      newFile.shortened = newFile.shortened && ext(newFile.shortened, '.css');
-      newFile.contents  = new Buffer(css);
+      file.path      = ext(file.path, '.css');
+      file.shortened = file.shortened && ext(file.shortened, '.css');
+      file.contents  = new Buffer(css);
 
-      cb(null, newFile);
+      cb(null, file);
     }
 
     opts.error = function (err) {
