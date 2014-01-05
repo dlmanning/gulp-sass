@@ -11,6 +11,11 @@ module.exports = function (options) {
     // file is on object passed in by gulp
     // file.contents is always a Buffer
 
+
+    if (file.isNull()) {
+      return cb(null, file);
+    }
+
     opts.data = file.contents.toString();
 
     opts.success = function (css) {
