@@ -8,9 +8,6 @@ module.exports = function (options) {
   var opts = options ? clone(options) : {};
 
   function nodeSass (file, cb) {
-    // file is on object passed in by gulp
-    // file.contents is always a Buffer
-
 
     if (file.isNull()) {
       return cb(null, file);
