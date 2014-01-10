@@ -1,17 +1,21 @@
 {
   "name": "gulp-sass",
-  "version": "0.2.1",
-  "description": "Gulp plugin for sass",
+  "version": "0.2.3",
+  "description": "gulp plugin for sass",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
+  },
+  "engines": {
+    "node": ">= 0.9.0"
   },
   "repository": {
     "type": "git",
     "url": "git://github.com/dlmanning/gulp-sass"
   },
   "keywords": [
-    "gulpplugin"
+    "gulpplugin",
+    "sass"
   ],
   "author": "David Manning",
   "license": "MIT",
@@ -19,12 +23,12 @@
     "url": "https://github.com/dlmanning/gulp-sass/issues"
   },
   "dependencies": {
-    "node-sass": "~0.6.4",
-    "event-stream": "~3.0.16",
-    "clone": "~0.1.10",
-    "gulp-util": "0.0.1"
+    "map-stream": "~0.0.4",
+    "node-sass": "~0.7.0",
+    "gulp-util": "~2.2.6"
   },
   "devDependencies": {
-    "gulp": "~0.2.0"
+    "mocha": "*",
+    "should": "*"
   }
 }

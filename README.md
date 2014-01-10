@@ -1,15 +1,35 @@
 gulp-sass
 =========
 
-SASS plugin for [gulp](https://github.com/wearefractal/gulp).
+> Compile [sass](https://github.com/andrew/node-sass) files with [gulp](http://github.com/gulpjs/gulp)
 
-#Install
+<table>
+<tr> 
+<td>Package</td><td>gulp-sass</td>
+</tr>
+<tr>
+<td>Description</td>
+<td>SASS plugin for gulp</td>
+</tr>
+<tr>
+<td>Node Version</td>
+<td>>= 0.8</td>
+</tr>
+<tr>
+<td>Gulp Version</td>
+<td>3.x</td>
+</tr>
+</table>
+
+# Usage
+
+##Install
 
 ```
-npm install gulp-sass
+npm install gulp-sass --save
 ```
 
-#Usage
+#Example
 
 Something like this:
 
@@ -24,5 +44,5 @@ gulp.task('sass', function () {
 });
 ```
 
-Options passed as a hash into ```sass()``` will be passed along to [```node-sass```](https://github.com/andrew/node-sass)
+Options passed as a Buffer into ```sass()``` will be passed along to [```node-sass```](https://github.com/andrew/node-sass)
 

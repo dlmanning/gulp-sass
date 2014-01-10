@@ -1,34 +1,33 @@
-var es    = require('event-stream')
-  , clone = require('clone')
+var map    = require('map-stream')
   , sass  = require('node-sass')
-  , ext   = require('gulp-util').replaceExtension
+  , gutil   = require('gulp-util')
   ;
 
 module.exports = function (options) {
-  var opts = options ? clone(options) : {};
+  var opts = options ? options : {};
 
   function nodeSass (file, cb) {
     // file is on object passed in by gulp
     // file.contents is always a Buffer
-    
-    var newFile = clone(file);
 
-    opts.data = newFile.contents.toString();
+    if (file.isNull()) {
+      return cb(null, file);
+    }
+
+    opts.data = file.contents.toString();
 
     opts.success = function (css) {
-      newFile.path      = ext(newFile.path, '.css');
-      newFile.shortened = newFile.shortened && ext(newFile.shortened, '.css');
-      newFile.contents  = new Buffer(css);
-
-      cb(null, newFile);
-    }
+      file.contents  = new Buffer(css);
+      file.path = gutil.replaceExtension(file.path, '.css');
+      cb(null, file);
+    };
 
     opts.error = function (err) {
       cb(err);
-    }
+    };
 
     sass.render(opts);
   }
 
-  return es.map(nodeSass);
-}
+  return map(nodeSass);
+};
