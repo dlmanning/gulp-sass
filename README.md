@@ -32,14 +32,14 @@ If you want to use imports or partials templates, you'll need to pass the ```inc
 
 scss/includes/_settings.scss:
 
-```sass
+```scss
 $blue: #3bbfce;
 $margin: 16px;
 ```
 
 scss/style.scss:
 
-```sass
+```scss
 @import "settings";
 
 .content-navigation {
