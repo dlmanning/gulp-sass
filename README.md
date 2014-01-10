@@ -1,7 +1,7 @@
 gulp-sass
 =========
 [![Build Status](https://travis-ci.org/dlmanning/gulp-sass.png?branch=master)](https://travis-ci.org/dlmanning/gulp-sass)
-[![NPM version](https://badge.fury.io/js/gulp-stylus.png)](http://badge.fury.io/js/gulp-stylus)
+[![NPM version](https://badge.fury.io/js/gulp-sass.png)](http://badge.fury.io/js/gulp-sass)
 
 > Compile [sass](https://github.com/andrew/node-sass) files with [gulp](http://github.com/gulpjs/gulp)
 
