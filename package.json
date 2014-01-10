@@ -3,9 +3,6 @@
   "version": "0.2.3",
   "description": "Gulp plugin for sass",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "repository": {
     "type": "git",
     "url": "git://github.com/dlmanning/gulp-sass"
@@ -23,9 +20,10 @@
     "clone": "~0.1.10",
     "node-sass": "~0.7.0",
     "gulp-util": "~2.2.5"
-
   },
   "devDependencies": {
-    "gulp": "~3.2.3"
+    "gulp": "~3.2.3",
+    "tape": "~2.3.2",
+    "concat-stream": "~1.4.1"
   }
 }
