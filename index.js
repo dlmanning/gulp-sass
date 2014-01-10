@@ -10,16 +10,11 @@ module.exports = function (options) {
   var opts = options ? clone(options) : {};
 
   function nodeSass (file, cb) {
-    // file is on object passed in by gulp
-    // file.contents is always a Buffer
-
     if (path.basename(file.path).indexOf('_') === 0) {
-      //gutil.log('[gulp-sass] Partial: ' + path.basename(file.path) + ' ignored');
       return cb();
     }
 
     if (file.isNull()) {
-      gutil.log('[gulp-sass] Empty file: ' + path.basename(file.path) + ' ignored');
       return cb();
     }
 
@@ -33,9 +28,7 @@ module.exports = function (options) {
     }
 
     opts.error = function (err) {
-      //return cb(new gutil.PluginError('gulp-imagemin', err));
-      gutil.log('[gulp-sass] Error: ' + err);
-      return cb();
+      return cb(new gutil.PluginError('gulp-sass', err));
     }
 
     sass.render(opts);
