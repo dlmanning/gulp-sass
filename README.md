@@ -24,11 +24,17 @@ gulp.task('sass', function () {
 });
 ```
 
-Options passed as a hash into ```sass()``` will be passed along to [```node-sass```](https://github.com/andrew/node-sass)
+Options passed as a hash into `sass()` will be passed along to [`node-sass`](https://github.com/andrew/node-sass)
+
+## gulp-sass specific options
+
+#### `errLogToConsole`
+
+If you pass `errLogToConsole: true` into the options hash, sass errors will be logged to the console instead of generating a `gutil.PluginError` object. Use this option with `gulp.watch` to keep gulp from stopping every time you mess up your sass.
 
 #Imports and Partials
 
-If you want to use imports or partials templates, you'll need to pass the ```includePaths``` option along to node-sass. So if you have files like this:
+If you want to use imports or partials, you'll need to pass the `includePaths` option along to node-sass. So if you have files like this:
 
 scss/includes/_settings.scss:
 
@@ -64,4 +70,3 @@ gulp.task('sass', function () {
     .pipe(gulp.dest('./css'));
 });
 ```
-
