@@ -29,7 +29,7 @@ module.exports = function (options) {
 
     opts.error = function (err) {
       if (opts.errLogToConsole) {
-        console.log(err);
+        gutil.log('[gulp-sass] ' + err)
         return cb();
       }
       return cb(new gutil.PluginError('gulp-sass', err));
