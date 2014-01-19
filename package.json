@@ -1,14 +1,19 @@
 {
   "name": "gulp-sass",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Gulp plugin for sass",
   "main": "index.js",
+  "scripts": {
+    "test": "node test/test.js"
+  },
   "repository": {
     "type": "git",
     "url": "git://github.com/dlmanning/gulp-sass"
   },
   "keywords": [
-    "gulpplugin"
+    "gulpplugin",
+    "sass",
+    "gulp"
   ],
   "author": "David Manning",
   "license": "MIT",
@@ -22,8 +27,10 @@
     "gulp-util": "~2.2.5"
   },
   "devDependencies": {
-    "gulp": "~3.2.3",
     "tape": "~2.3.2",
     "concat-stream": "~1.4.1"
+  },
+  "jshintConfig": {
+    "laxcomma": true
   }
 }
