@@ -15,7 +15,7 @@ module.exports = function (options) {
     }
 
     if (file.isNull()) {
-      return cb();
+      return cb(null, file);
     }
 
     opts.data = file.contents.toString();
@@ -25,18 +25,18 @@ module.exports = function (options) {
       file.shortened = file.shortened && ext(file.shortened, '.css');
       file.contents  = new Buffer(css);
       cb(null, file);
-    }
+    };
 
     opts.error = function (err) {
       if (opts.errLogToConsole) {
-        gutil.log('[gulp-sass] ' + err)
+        gutil.log('[gulp-sass] ' + err);
         return cb();
       }
       return cb(new gutil.PluginError('gulp-sass', err));
-    }
+    };
 
     sass.render(opts);
   }
 
   return es.map(nodeSass);
-}
+};
