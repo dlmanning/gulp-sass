@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/dlmanning/gulp-sass.png?branch=master)](https://travis-ci.org/dlmanning/gulp-sass)
+
 gulp-sass
 =========
 
