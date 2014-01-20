@@ -14,6 +14,9 @@ module.exports = function (options) {
     if (file.isNull()) {
       return cb(null, file);
     }
+    if (path.basename(file.path).indexOf('_') === 0) {
+      return cb();
+    }
 
     opts.data = file.contents.toString();
 
