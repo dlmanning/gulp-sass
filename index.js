@@ -18,7 +18,7 @@ module.exports = function (options) {
       return cb(null, file);
     }
 
-    opts.data = file.contents.toString();
+    opts.file = path.relative(file.cwd, file.path).replace(/\\/g, '/');
 
     opts.success = function (css) {
       file.path      = ext(file.path, '.css');
