@@ -1,4 +1,4 @@
-var es    = require('event-stream')
+var map    = require('map-stream')
   , clone = require('clone')
   , sass  = require('node-sass')
   , path  = require('path')
@@ -7,12 +7,9 @@ var es    = require('event-stream')
   ;
 
 module.exports = function (options) {
-  var opts = options ? clone(options) : {};
+  var opts = options ? options : {};
 
   function nodeSass (file, cb) {
-    if (path.basename(file.path).indexOf('_') === 0) {
-      return cb();
-    }
 
     if (file.isNull()) {
       return cb(null, file);
@@ -22,7 +19,6 @@ module.exports = function (options) {
 
     opts.success = function (css) {
       file.path      = ext(file.path, '.css');
-      file.shortened = file.shortened && ext(file.shortened, '.css');
       file.contents  = new Buffer(css);
       cb(null, file);
     };
@@ -38,5 +34,5 @@ module.exports = function (options) {
     sass.render(opts);
   }
 
-  return es.map(nodeSass);
+  return map(nodeSass);
 };
