@@ -1,5 +1,4 @@
 var map    = require('map-stream')
-  , clone = require('clone')
   , sass  = require('node-sass')
   , path  = require('path')
   , gutil = require('gulp-util')
