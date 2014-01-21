@@ -21,10 +21,9 @@
     "url": "https://github.com/dlmanning/gulp-sass/issues"
   },
   "dependencies": {
-    "event-stream": "~3.0.16",
-    "clone": "~0.1.10",
     "node-sass": "~0.7.0",
-    "gulp-util": "~2.2.5"
+    "gulp-util": "~2.2.5",
+    "map-stream": "~0.1.0"
   },
   "devDependencies": {
     "tape": "~2.3.2",
