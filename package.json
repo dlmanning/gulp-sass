@@ -1,6 +1,6 @@
 {
   "name": "gulp-sass",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Gulp plugin for sass",
   "main": "index.js",
   "scripts": {
@@ -21,7 +21,7 @@
     "url": "https://github.com/dlmanning/gulp-sass/issues"
   },
   "dependencies": {
-    "node-sass": "~0.7.0",
+    "node-sass": "~0.8.1",
     "gulp-util": "~2.2.5",
     "map-stream": "~0.1.0"
   },
