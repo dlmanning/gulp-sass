@@ -19,6 +19,16 @@ module.exports = function (options) {
 
     opts.data = file.contents.toString();
 
+    var fileDir = path.dirname(file.path);
+
+    if (opts.includePaths && Array.isArray(opts.includePaths)) {
+      if (opts.includePaths.indexOf(fileDir) === -1) {
+        opts.includePaths.push(fileDir)
+      }
+    } else {
+      opts.includePaths = [fileDir];
+    }
+
     opts.success = function (css) {
       file.path      = ext(file.path, '.css');
       file.contents  = new Buffer(css);

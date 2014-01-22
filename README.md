@@ -36,7 +36,7 @@ If you pass `errLogToConsole: true` into the options hash, sass errors will be l
 
 #Imports and Partials
 
-If you want to use imports or partials, you'll need to pass the `includePaths` option along to node-sass. So if you have files like this:
+gulp-sass now automatically passes along the directory of every scss file it parses as an include path for node-sass. This means that as long as you specify your includes relative to path of your scss file, everything will just work.
 
 scss/includes/_settings.scss:
 
@@ -48,7 +48,7 @@ $margin: 16px;
 scss/style.scss:
 
 ```scss
-@import "settings";
+@import "includes/settings";
 
 .content-navigation {
   border-color: $blue;
@@ -63,12 +63,3 @@ scss/style.scss:
 }
 ```
 
-Your code should look something like this:
-
-```javascript
-gulp.task('sass', function () {
-  gulp.src('./scss/*.scss')
-    .pipe(sass({includePaths: ['scss/includes']}))
-    .pipe(gulp.dest('./css'));
-});
-```

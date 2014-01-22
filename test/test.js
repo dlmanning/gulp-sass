@@ -67,10 +67,7 @@ test('compile multiple sass files', function (t) {
   ];
 
   t.plan(files.length * 4);
-  var stream = gsass({ 
-    includePaths: [path.join(__dirname, 'scss'), 
-                   path.join(__dirname, 'scss/includes')]
-  });
+  var stream = gsass();
 
   stream.on('data', function (cssFile) {
     t.ok(cssFile, 'cssFile exists');
