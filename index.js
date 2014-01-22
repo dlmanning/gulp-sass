@@ -9,6 +9,8 @@ module.exports = function (options) {
   var opts = options ? options : {};
 
   function nodeSass (file, cb) {
+    var fileDir = path.dirname(file.path);
+    var addedLocalDirPath = false;
 
     if (file.isNull()) {
       return cb(null, file);
@@ -19,11 +21,10 @@ module.exports = function (options) {
 
     opts.data = file.contents.toString();
 
-    var fileDir = path.dirname(file.path);
-
     if (opts.includePaths && Array.isArray(opts.includePaths)) {
       if (opts.includePaths.indexOf(fileDir) === -1) {
-        opts.includePaths.push(fileDir)
+        opts.includePaths.push(fileDir);
+        addedLocalDirPath = true;
       }
     } else {
       opts.includePaths = [fileDir];
@@ -44,6 +45,9 @@ module.exports = function (options) {
     };
 
     sass.render(opts);
+
+    if (addedLocalDirPath) opts.includePaths.pop();
+
   }
 
   return map(nodeSass);
