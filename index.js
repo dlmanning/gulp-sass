@@ -17,7 +17,7 @@ module.exports = function (options) {
       return cb();
     }
 
-    opts.data = file.contents.toString();
+    opts.file = path.relative(file.cwd, file.path).replace(/\\/g, '/');
 
     var fileDir = path.dirname(file.path);
 
