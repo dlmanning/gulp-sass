@@ -93,3 +93,17 @@ test('emit error on sass errors', function (t) {
   });
   stream.write(errorFile);
 });
+
+test('call custom error callback when opts.onError is given', function (t) {
+  var stream = gsass({ onError: function (err) {
+    t.equal(err,
+            'source string:1: error: property "font" must be followed by a \':\'\n'
+    );
+    t.end();
+  }});
+
+  var errorFile = createVinyl('somefile.sass',
+    new Buffer('body { font \'Comic Sans\'; }'));
+
+  stream.write(errorFile);
+});

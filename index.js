@@ -31,6 +31,8 @@ module.exports = function (options) {
     }
 
     opts.success = function (css) {
+      if (typeof opts.onSuccess === 'function') opts.onSuccess(css);
+
       file.path      = ext(file.path, '.css');
       file.contents  = new Buffer(css);
       cb(null, file);
@@ -41,6 +43,12 @@ module.exports = function (options) {
         gutil.log('[gulp-sass] ' + err);
         return cb();
       }
+
+      if (typeof opts.onError === 'function') { 
+        opts.onError(err);
+        return cb();
+      }
+
       return cb(new gutil.PluginError('gulp-sass', err));
     };
 
