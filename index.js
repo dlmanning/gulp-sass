@@ -1,4 +1,5 @@
-var map    = require('map-stream')
+var fs    = require('fs')
+  , map   = require('map-stream')
   , sass  = require('node-sass')
   , path  = require('path')
   , gutil = require('gulp-util')
@@ -19,7 +20,11 @@ module.exports = function (options) {
       return cb();
     }
 
-    opts.data = file.contents.toString();
+    if (opts.sourceComments === 'map') {
+      opts.file = file.path;
+    } else {
+      opts.data = file.contents.toString();
+    }
 
     if (opts.includePaths && Array.isArray(opts.includePaths)) {
       if (opts.includePaths.indexOf(fileDir) === -1) {
@@ -30,8 +35,18 @@ module.exports = function (options) {
       opts.includePaths = [fileDir];
     }
 
-    opts.success = function (css) {
-      if (typeof opts.onSuccess === 'function') opts.onSuccess(css);
+    opts.success = function (css, map) {
+      var sourceMap;
+      if (typeof opts.onSuccess === 'function') opts.onSuccess(css, map);
+
+      if (map) {
+        map = JSON.parse(map);
+        map.sourcesContent = getSourcesContent(map.sources);
+        sourceMap = new Buffer(JSON.stringify(map)).toString('base64');
+        css = css.replace(/\/\*# sourceMappingURL=.*\*\//,
+                          "/*# sourceMappingURL=data:application/json;base64," +
+                          sourceMap + "*/");
+      }
 
       file.path      = ext(file.path, '.css');
       file.contents  = new Buffer(css);
@@ -60,3 +75,13 @@ module.exports = function (options) {
 
   return map(nodeSass);
 };
+
+function getSourcesContent (sources) {
+  sourcesContent = [];
+
+  for (var i = 0; i < sources.length; i++) {
+    sourcesContent[i] = fs.readFileSync(sources[i], { encoding: 'utf8' });
+  }
+
+  return sourcesContent;
+}
