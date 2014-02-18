@@ -20,7 +20,7 @@ module.exports = function (options) {
       return cb();
     }
 
-    if (opts.sourceComments === 'map') {
+    if (opts.sourceComments === 'map' || opts.sourceComments === 'normal') {
       opts.file = file.path;
     } else {
       opts.data = file.contents.toString();
