@@ -44,7 +44,7 @@ Pass in your own callback to be called upon a sass error from node-sass. The cal
 
 ## Source Maps
 
-gulp-sass now generates *inline* source maps if you pass `sourceComments: 'map'` as an option. It can also accept `sourceComments: 'normal'` as option, to generate the per-rule comment to point to the file where it came from. Note that gulp-sass won't actually do anything when passing `sourceMap: filepath`. Enjoy your source maps!
+gulp-sass now generates *inline* source maps if you pass `sourceComments: 'map'` as an option. Note that gulp-sass won't actually do anything when passing `sourceMap: filepath`. Enjoy your source maps!
 
 NB: For those wondering, inline source maps are stuck onto the end of the css file instead of being in a separate map file. In this case, the original source contents are included as well, so you don't have to make sure your scss files are servable.
 
