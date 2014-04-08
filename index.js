@@ -3,6 +3,7 @@ var fs    = require('fs')
   , sass  = require('node-sass')
   , path  = require('path')
   , gutil = require('gulp-util')
+  , slash = require('slash')
   , ext   = gutil.replaceExtension
   ;
 
@@ -21,7 +22,8 @@ module.exports = function (options) {
     }
 
     if (opts.sourceComments === 'map' || opts.sourceComments === 'normal') {
-      opts.file = file.path;
+      opts.file = getCorrectRelativePath(file);
+      fileDir = path.dirname(getCorrectRelativePath(file));
     } else {
       opts.data = file.contents.toString();
     }
@@ -84,4 +86,14 @@ function getSourcesContent (sources) {
   }
 
   return sourcesContent;
+}
+
+function getCorrectRelativePath (file) {
+  var relativeFile = path.relative(file.cwd, file.path);
+
+  if (process.platform === 'win32') {
+    relativeFile = slash(relativeFile);
+  }
+
+  return relativeFile;
 }
