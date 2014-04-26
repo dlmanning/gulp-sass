@@ -64,6 +64,8 @@ module.exports = function (options) {
         return cb();
       }
 
+      err = parseError(err);
+
       return cb(new gutil.PluginError('gulp-sass', err));
     };
 
@@ -84,4 +86,21 @@ function getSourcesContent (sources) {
   }
 
   return sourcesContent;
+}
+
+/**
+ * Parse error output from node-sass and extract file
+ * line number and error message
+ * @param  {string} err Error output form node sass
+ * @return {object}     Gulp error object
+ */
+function parseError (err) {
+  var regex = /^.+(?:\/|\\)(.+):(\d+): error: (.+)\n/;
+  var result = err.match(regex);
+  return {
+    fileName: result[1],
+    showStack: false,
+    lineNumber: parseInt(result[2], 10),
+    message: result[3]
+  }
 }
