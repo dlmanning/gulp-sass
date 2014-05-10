@@ -44,9 +44,33 @@ Pass in your own callback to be called upon a sass error from node-sass. The cal
 
 ## Source Maps
 
-gulp-sass now generates *inline* source maps if you pass `sourceComments: 'map'` as an option. Note that gulp-sass won't actually do anything when passing `sourceMap: filepath`. Enjoy your source maps!
+gulp-sass can be used in tandem with [gulp-sourcemaps](https://github.com/floridoo/gulp-sourcemaps) to generate source maps for the SASS to CSS compilation. You will need to initialize [gulp-sourcemaps](https://github.com/floridoo/gulp-sourcemaps) prior to running the gulp-sass compiler and write the source maps after.
 
-NB: For those wondering, inline source maps are stuck onto the end of the css file instead of being in a separate map file. In this case, the original source contents are included as well, so you don't have to make sure your scss files are servable.
+```javascript
+var sourcemaps = require('gulp-sourcemaps');
+
+gulp.src('./scss/*.scss')
+  .pipe(sourcemaps.init());
+    .pipe(sass())
+  .pipe(sourcemaps.write())
+  .pipe('./css');
+
+// will write the source maps inline in the compiled CSS files
+```
+
+By default, [gulp-sourcemaps](https://github.com/floridoo/gulp-sourcemaps) writes the source maps inline in the compiled CSS files. To write them to a separate file, specify a relative file path in the `sourcemaps.write()` function.
+
+```javascript
+var sourcemaps = require('gulp-sourcemaps');
+
+gulp.src('./scss/*.scss')
+  .pipe(sourcemaps.init());
+    .pipe(sass)
+  .pipe(sourcemaps.write('./maps'))
+  .pipe('./css');
+
+// will write the source maps to ./dest/css/maps
+```
 
 #Imports and Partials
 
