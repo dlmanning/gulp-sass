@@ -39,14 +39,8 @@ module.exports = function (options) {
       var sourceMap;
       if (typeof opts.onSuccess === 'function') opts.onSuccess(css, map);
 
-      if (map) {
-        map = JSON.parse(map);
-        map.sourcesContent = getSourcesContent(map.sources);
-        sourceMap = new Buffer(JSON.stringify(map)).toString('base64');
-        css = css.replace(/\/\*# sourceMappingURL=.*\*\//,
-                          "/*# sourceMappingURL=data:application/json;base64," +
-                          sourceMap + "*/");
-      }
+      if (file.sourceMap) opts.makeSourceMaps = true;
+      if (map) file.applySourceMap(map);
 
       file.path      = ext(file.path, '.css');
       file.contents  = new Buffer(css);
