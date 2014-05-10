@@ -20,6 +20,11 @@ module.exports = function (options) {
       return cb();
     }
 
+    if (file.sourceMap) {
+      opts.sourceComments = 'map';
+      opts.sourceMap = false;
+    }
+
     if (opts.sourceComments === 'map' || opts.sourceComments === 'normal') {
       opts.file = file.path;
     } else {
@@ -39,8 +44,12 @@ module.exports = function (options) {
       var sourceMap;
       if (typeof opts.onSuccess === 'function') opts.onSuccess(css, map);
 
-      if (file.sourceMap) opts.makeSourceMaps = true;
-      if (map) file.applySourceMap(map);
+      if (map && file.applySourceMap) {
+        // hack to remove the already added sourceMappingURL from libsass
+        css = css.replace(/\n\/\*#\s*sourceMappingURL\=.*\*\//, '');
+
+        file.applySourceMap(map);
+      }
 
       file.path      = ext(file.path, '.css');
       file.contents  = new Buffer(css);
