@@ -16,8 +16,16 @@ module.exports = function (options) {
     if (file.isNull()) {
       return cb(null, file);
     }
-    if (path.basename(file.path).indexOf('_') === 0) {
+
+    // discard scss files from this stream if they begin with _ because they're
+    // library files -- node-sass will discover these on its own
+    if (/^_.*\.scss$/.test(path.basename(file.path))) {
       return cb();
+    }
+    // pass any other files that begin with _ through untouched, because they
+    // are not sass code and should not be discarded
+    if (/^_.*$/.test(path.basename(file.path))) {
+      return cb(null, file);
     }
 
     if (opts.sourceComments === 'map' || opts.sourceComments === 'normal') {
