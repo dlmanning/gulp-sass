@@ -62,7 +62,7 @@ module.exports = function (options) {
         return cb();
       }
 
-      if (typeof opts.onError === 'function') { 
+      if (typeof opts.onError === 'function') {
         opts.onError(err);
         return cb();
       }

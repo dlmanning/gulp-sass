@@ -65,7 +65,7 @@ var sourcemaps = require('gulp-sourcemaps');
 
 gulp.src('./scss/*.scss')
   .pipe(sourcemaps.init());
-    .pipe(sass)
+    .pipe(sass())
   .pipe(sourcemaps.write('./maps'))
   .pipe('./css');
 
