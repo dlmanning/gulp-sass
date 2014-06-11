@@ -21,9 +21,9 @@
     "url": "https://github.com/dlmanning/gulp-sass/issues"
   },
   "dependencies": {
-    "node-sass": "^0.9",
     "gulp-util": "^3.0",
-    "map-stream": "~0.1",
+    "node-sass": "^0.9",
+    "through2": "^0.5.1",
     "vinyl-sourcemaps-apply": "~0.1.1"
   },
   "devDependencies": {

@@ -1,24 +1,23 @@
 var fs    = require('fs')
-  , map   = require('map-stream')
+  , through2 = require('through2')
   , sass  = require('node-sass')
   , path  = require('path')
   , gutil = require('gulp-util')
-  , ext   = gutil.replaceExtension
   , applySourceMap = require('vinyl-sourcemaps-apply')
   ;
 
 module.exports = function (options) {
   var opts = options || {};
 
-  function nodeSass (file, cb) {
+  function nodeSass (file, enc, done) {
     var fileDir = path.dirname(file.path);
     var addedLocalDirPath = false;
 
     if (file.isNull()) {
-      return cb(null, file);
+      return done(null, file);
     }
     if (path.basename(file.path).indexOf('_') === 0) {
-      return cb();
+      return done();
     }
 
     if (file.sourceMap) {
@@ -53,32 +52,35 @@ module.exports = function (options) {
         applySourceMap(file, map);
       }
 
-      file.path      = ext(file.path, '.css');
+      file.path      = gutil.replaceExtension(file.path, '.css');
       file.contents  = new Buffer(css);
-      cb(null, file);
+      done(null, file);
     };
 
     opts.error = function (err) {
+      /*
+       * We should deprecate these opts and just follow
+       * the stream API conventions, which emits error event.
+       */
       if (opts.errLogToConsole) {
         gutil.log('[gulp-sass] ' + err);
-        return cb();
+        return done();
       }
 
       if (typeof opts.onError === 'function') {
         opts.onError(err);
-        return cb();
+        return done();
       }
 
-      return cb(new gutil.PluginError('gulp-sass', err));
+      done(new gutil.PluginError('gulp-sass', err));
     };
 
     sass.render(opts);
 
     if (addedLocalDirPath) opts.includePaths.pop();
-
   }
 
-  return map(nodeSass);
+  return through2.obj(nodeSass);
 };
 
 function getSourcesContent (sources) {
