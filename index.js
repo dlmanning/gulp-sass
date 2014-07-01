@@ -20,11 +20,7 @@ module.exports = function (options) {
       return cb();
     }
 
-    if (opts.sourceComments === 'map' || opts.sourceComments === 'normal') {
-      opts.file = file.path;
-    } else {
-      opts.data = file.contents.toString();
-    }
+    opts.file = file.path;
 
     if (opts.includePaths && Array.isArray(opts.includePaths)) {
       if (opts.includePaths.indexOf(fileDir) === -1) {

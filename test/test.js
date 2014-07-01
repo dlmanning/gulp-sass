@@ -17,6 +17,10 @@ function createVinyl(sassFileName, contents) {
   });
 }
 
+function contains(str, search) {
+  return str.indexOf(search) > -1;
+}
+
 test('pass file when isNull()', function (t) {
   var stream = gsass();
   var emptyFile = {
@@ -83,12 +87,11 @@ test('compile multiple sass files', function (t) {
 
 test('emit error on sass errors', function (t) {
   var stream = gsass();
-  var errorFile = createVinyl('somefile.sass',
-    new Buffer('body { font \'Comic Sans\'; }'));
+  var errorFile = createVinyl('error.scss');
   stream.on('error', function (err) {
-    t.equal(err.message,
-            'source string:1: error: property "font" must be followed by a \':\'\n'
-    );
+    t.ok(contains(err.message,
+            'error: property "font" must be followed by a \':\'\n'
+    ), 'correct error message is thrown.');
     t.end();
   });
   stream.write(errorFile);
@@ -96,14 +99,13 @@ test('emit error on sass errors', function (t) {
 
 test('call custom error callback when opts.onError is given', function (t) {
   var stream = gsass({ onError: function (err) {
-    t.equal(err,
-            'source string:1: error: property "font" must be followed by a \':\'\n'
-    );
+    t.ok(contains(err,
+            'error: property "font" must be followed by a \':\'\n'
+    ), 'correct error message is thrown.');
     t.end();
   }});
 
-  var errorFile = createVinyl('somefile.sass',
-    new Buffer('body { font \'Comic Sans\'; }'));
+  var errorFile = createVinyl('error.scss');
 
   stream.write(errorFile);
 });
