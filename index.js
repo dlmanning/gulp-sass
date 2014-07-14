@@ -65,15 +65,15 @@ module.exports = function (options) {
     };
 
 	if ( opts.sync ) {
-		try {
-			var output = sass.renderSync(opts);
-			opts.success(output, null);
-			handleOutput(output, file, cb);
-		} catch(err) {
-			opts.error(err);
-		}
+	  try {
+		var output = sass.renderSync(opts);
+		opts.success(output, null);
+		handleOutput(output, file, cb);
+	  } catch(err) {
+		opts.error(err);
+	  }
 	} else {
-		sass.render(opts);
+	  sass.render(opts);
 	}
 
     if (addedLocalDirPath) opts.includePaths.pop();
@@ -84,9 +84,9 @@ module.exports = function (options) {
 };
 
 function handleOutput(output, file, cb) {
-	file.path = ext(file.path, '.css');
-	file.contents = new Buffer(output);
-	cb(null, file);
+  file.path = ext(file.path, '.css');
+  file.contents = new Buffer(output);
+  cb(null, file);
 }
 
 function getSourcesContent (sources) {
