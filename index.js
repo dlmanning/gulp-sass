@@ -66,11 +66,11 @@ module.exports = function (options) {
 
 	if ( opts.sync ) {
 	  try {
-		var output = sass.renderSync(opts);
-		opts.success(output, null);
-		handleOutput(output, file, cb);
+	    var output = sass.renderSync(opts);
+	    opts.success(output, null);
+	    handleOutput(output, file, cb);
 	  } catch(err) {
-		opts.error(err);
+	    opts.error(err);
 	  }
 	} else {
 	  sass.render(opts);
