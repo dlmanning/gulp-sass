@@ -1,9 +1,9 @@
-[![Build Status](https://travis-ci.org/dlmanning/gulp-sass.png?branch=master)](https://travis-ci.org/dlmanning/gulp-sass)
+[![Build Status](https://travis-ci.org/dlmanning/gulp-sass.svg?branch=master)](https://travis-ci.org/dlmanning/gulp-sass)
 
 gulp-sass
 =========
 
-SASS plugin for [gulp](https://github.com/wearefractal/gulp).
+SASS plugin for [gulp](https://github.com/gulpjs/gulp).
 
 #Install
 
@@ -26,7 +26,7 @@ gulp.task('sass', function () {
 });
 ```
 
-Options passed as a hash into `sass()` will be passed along to [`node-sass`](https://github.com/andrew/node-sass)
+Options passed as a hash into `sass()` will be passed along to [`node-sass`](https://github.com/sass/node-sass)
 
 ## gulp-sass specific options
 
