@@ -17,7 +17,7 @@ Something like this:
 
 ```javascript
 var gulp = require('gulp');
-var sass = require('gulp-sass')
+var sass = require('gulp-sass');
 
 gulp.task('sass', function () {
 	gulp.src('./scss/*.scss')
@@ -36,7 +36,7 @@ If you pass `errLogToConsole: true` into the options hash, sass errors will be l
 
 #### `onSuccess: callback`
 
-Pass in your own callback to be called upon successful compilaton by node-sass. The callback has the form `callback(css)`, and is passed the compiled css as a string. Note: This *does not* prevent gulp-sass's default behavior of writing the output css file.
+Pass in your own callback to be called upon successful compilation by node-sass. The callback has the form `callback(css)`, and is passed the compiled css as a string. Note: This *does not* prevent gulp-sass's default behavior of writing the output css file.
 
 #### `onError: callback`
 
