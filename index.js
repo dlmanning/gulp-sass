@@ -1,9 +1,10 @@
-var fs    = require('fs')
-  , map   = require('map-stream')
-  , sass  = require('node-sass')
-  , path  = require('path')
-  , gutil = require('gulp-util')
-  , ext   = gutil.replaceExtension
+var fs     = require('fs')
+  , map    = require('map-stream')
+  , sass   = require('node-sass')
+  , path   = require('path')
+  , gutil  = require('gulp-util')
+  , mkdirp = require('mkdirp')
+  , ext    = gutil.replaceExtension
   ;
 
 module.exports = function (options) {
@@ -36,16 +37,31 @@ module.exports = function (options) {
     }
 
     opts.success = function (css, map) {
-      var sourceMap;
+
       if (typeof opts.onSuccess === 'function') opts.onSuccess(css, map);
 
       if (map) {
-        map = JSON.parse(map);
-        map.sourcesContent = getSourcesContent(map.sources);
-        sourceMap = new Buffer(JSON.stringify(map)).toString('base64');
-        css = css.replace(/\/\*# sourceMappingURL=.*\*\//,
-                          "/*# sourceMappingURL=data:application/json;base64," +
-                          sourceMap + "*/");
+
+        if (opts.sourceMapDest) {
+          // write out soucemaps synchronously to target destination
+          var mapFile = ext(path.basename(file.path), '.css') + '.map';
+          var sourceMapPath = opts.sourceMapDest + '/' + mapFile;
+          gutil.log('writing sourcemaps:', gutil.colors.magenta(sourceMapPath));
+          mkdirp.sync(opts.sourceMapDest);
+          fs.writeFileSync(sourceMapPath, map);
+          css = css.replace(/\/\*# sourceMappingURL=.*\*\//,
+                            '/*# sourceMappingURL=' + mapFile + '*/');
+        } else {
+          // ... otherwise use inline sourcemaps
+          gutil.log('writing sourcemaps:', gutil.colors.magenta('inline'));
+          map = JSON.parse(map);
+          map.sourcesContent = getSourcesContent(map.sources);
+          var sourceMap = new Buffer(JSON.stringify(map)).toString('base64');
+          css = css.replace(/\/\*# sourceMappingURL=.*\*\//,
+                            '/*# sourceMappingURL=data:application/json;base64,' +
+                            sourceMap + '*/');
+        }
+
       }
 
       file.path      = ext(file.path, '.css');
