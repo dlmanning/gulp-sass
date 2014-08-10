@@ -23,7 +23,8 @@
   "dependencies": {
     "node-sass": "^0.9",
     "gulp-util": "~2.2",
-    "map-stream": "~0.1"
+    "map-stream": "~0.1",
+    "mkdirp": "~0.5.0"
   },
   "devDependencies": {
     "tape": "~2.3",
