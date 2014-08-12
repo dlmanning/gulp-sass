@@ -7,7 +7,7 @@ var fs    = require('fs')
   ;
 
 module.exports = function (options) {
-  var opts = options ? options : {};
+  var opts = options || {};
 
   function nodeSass (file, cb) {
     var fileDir = path.dirname(file.path);
@@ -21,6 +21,7 @@ module.exports = function (options) {
     }
 
     if (opts.sourceComments === 'map' || opts.sourceComments === 'normal') {
+      opts.sourceMap = opts.sourceMap || '';
       opts.file = file.path;
     } else {
       opts.data = file.contents.toString();
@@ -59,7 +60,7 @@ module.exports = function (options) {
         return cb();
       }
 
-      if (typeof opts.onError === 'function') { 
+      if (typeof opts.onError === 'function') {
         opts.onError(err);
         return cb();
       }

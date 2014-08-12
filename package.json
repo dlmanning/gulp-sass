@@ -1,6 +1,6 @@
 {
   "name": "gulp-sass",
-  "version": "0.7.2",
+  "version": "0.7.3",
   "description": "Gulp plugin for sass",
   "main": "index.js",
   "scripts": {
@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "node-sass": "^0.9",
-    "gulp-util": "~2.2",
+    "gulp-util": "^3.0",
     "map-stream": "~0.1"
   },
   "devDependencies": {
