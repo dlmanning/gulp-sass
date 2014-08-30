@@ -49,7 +49,8 @@ module.exports = function (options) {
                           sourceMap + "*/");
       }
 
-      file.path      = ext(file.path, '.css');
+      var extension  = (opts.extension || '.css')
+      file.path      = ext(file.path, extension);
       file.contents  = new Buffer(css);
       cb(null, file);
     };
