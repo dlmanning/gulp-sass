@@ -44,7 +44,7 @@ Pass in your own callback to be called upon a sass error from node-sass. The cal
 
 #### `extension: string`
 
-Specify custom file extensions for the rendered file (defaults to '.css'). This would allow you further post-processing(e.g.: Rails asset pipeline for asset file names).
+Specify custom file extensions for the rendered file (defaults to '.css'). This would allow you further post-processing (e.g.: Rails asset pipeline for asset file names).
 
 
 ## Source Maps
