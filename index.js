@@ -4,6 +4,7 @@ var fs    = require('fs')
   , path  = require('path')
   , gutil = require('gulp-util')
   , ext   = gutil.replaceExtension
+  , applySourceMap = require('vinyl-sourcemaps-apply')
   ;
 
 module.exports = function (options) {
@@ -44,11 +45,11 @@ module.exports = function (options) {
       var sourceMap;
       if (typeof opts.onSuccess === 'function') opts.onSuccess(css, map);
 
-      if (map && file.applySourceMap) {
+      if (map) {
         // hack to remove the already added sourceMappingURL from libsass
         css = css.replace(/\n\/\*#\s*sourceMappingURL\=.*\*\//, '');
 
-        file.applySourceMap(map);
+        applySourceMap(file, map);
       }
 
       file.path      = ext(file.path, '.css');
