@@ -4,6 +4,7 @@ var fs    = require('fs')
   , path  = require('path')
   , gutil = require('gulp-util')
   , ext   = gutil.replaceExtension
+  , applySourceMap = require('vinyl-sourcemaps-apply')
   ;
 
 module.exports = function (options) {
@@ -18,6 +19,11 @@ module.exports = function (options) {
     }
     if (path.basename(file.path).indexOf('_') === 0) {
       return cb();
+    }
+
+    if (file.sourceMap) {
+      opts.sourceComments = 'map';
+      opts.sourceMap = false;
     }
 
     if (opts.sourceComments === 'map' || opts.sourceComments === 'normal') {
@@ -41,12 +47,10 @@ module.exports = function (options) {
       if (typeof opts.onSuccess === 'function') opts.onSuccess(css, map);
 
       if (map) {
-        map = JSON.parse(map);
-        map.sourcesContent = getSourcesContent(map.sources);
-        sourceMap = new Buffer(JSON.stringify(map)).toString('base64');
-        css = css.replace(/\/\*# sourceMappingURL=.*\*\//,
-                          "/*# sourceMappingURL=data:application/json;base64," +
-                          sourceMap + "*/");
+        // hack to remove the already added sourceMappingURL from libsass
+        css = css.replace(/\n\/\*#\s*sourceMappingURL\=.*\*\//, '');
+
+        applySourceMap(file, map);
       }
 
       file.path      = ext(file.path, '.css');
