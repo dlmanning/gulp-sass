@@ -23,7 +23,7 @@ module.exports = function (options) {
 
     if (file.sourceMap) {
       opts.sourceComments = 'map';
-      opts.sourceMap = false;
+      opts.sourceMap = file.path;
     }
 
     if (opts.sourceComments === 'map' || opts.sourceComments === 'normal') {
