@@ -50,7 +50,7 @@ gulp-sass can be used in tandem with [gulp-sourcemaps](https://github.com/florid
 var sourcemaps = require('gulp-sourcemaps');
 
 gulp.src('./scss/*.scss')
-  .pipe(sourcemaps.init());
+  .pipe(sourcemaps.init())
     .pipe(sass())
   .pipe(sourcemaps.write())
   .pipe('./css');
@@ -64,7 +64,7 @@ By default, [gulp-sourcemaps](https://github.com/floridoo/gulp-sourcemaps) write
 var sourcemaps = require('gulp-sourcemaps');
 
 gulp.src('./scss/*.scss')
-  .pipe(sourcemaps.init());
+  .pipe(sourcemaps.init())
     .pipe(sass())
   .pipe(sourcemaps.write('./maps'))
   .pipe('./css');
