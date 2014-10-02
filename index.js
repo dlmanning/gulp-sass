@@ -48,7 +48,7 @@ module.exports = function (options) {
 
       if (map) {
         // hack to remove the already added sourceMappingURL from libsass
-        css = css.replace(/\n\/\*#\s*sourceMappingURL\=.*\*\//, '');
+        css = css.replace(/\/\*#\s*sourceMappingURL\=.*\*\//, '');
 
         applySourceMap(file, map);
       }
