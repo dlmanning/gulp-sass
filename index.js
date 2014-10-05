@@ -42,15 +42,24 @@ module.exports = function (options) {
       opts.includePaths = [fileDir];
     }
 
-    opts.success = function (css, map) {
-      var sourceMap;
-      if (typeof opts.onSuccess === 'function') opts.onSuccess(css, map);
+    opts.success = function (css, sourceMap) {
+      if (typeof opts.onSuccess === 'function') opts.onSuccess(css, sourceMap);
 
-      if (map) {
+      if (sourceMap) {
         // hack to remove the already added sourceMappingURL from libsass
         css = css.replace(/\/\*#\s*sourceMappingURL\=.*\*\//, '');
 
-        applySourceMap(file, map);
+        // libsass gives us sources' paths relative to file;
+        // gulp-sourcemaps needs sources' paths relative to file.base;
+        // so alter the sources' paths to please gulp-sourcemaps.
+        sourceMap = JSON.parse(sourceMap);
+        sourceMap.sources = sourceMap.sources.map(function(source) {
+          var abs = path.resolve(path.dirname(file.path), source);
+          return path.relative(file.base, abs);
+        });
+        sourceMap = JSON.stringify(sourceMap);
+
+        applySourceMap(file, sourceMap);
       }
 
       file.path      = ext(file.path, '.css');

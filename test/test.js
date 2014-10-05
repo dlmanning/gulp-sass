@@ -4,6 +4,7 @@ var gutil = require('gulp-util');
 var fs = require('fs');
 var path = require('path');
 var test = require('tape');
+var sourcemap = require('source-map');
 
 function createVinyl(sassFileName, contents) {
   var base = path.join(__dirname, 'scss');
@@ -106,4 +107,37 @@ test('call custom error callback when opts.onError is given', function (t) {
     new Buffer('body { font \'Comic Sans\'; }'));
 
   stream.write(errorFile);
+});
+
+test('sourcemaps', function (t) {
+  var sassFile = createVinyl('subdir/multilevelimport.scss');
+
+  // Pretend sourcemap.init() happened by mimicking
+  // the object it would create.
+  sassFile.sourceMap = {
+    version: 3,
+    file: 'scss/subdir/multilevelimport.scss',
+    names: [],
+    mappings: '',
+    sources: [ 'scss/subdir/multilevelimport.scss' ],
+    sourcesContent: [ '@import "../inheritance";\n' ]
+  };
+
+  // Expected sources are relative to file.base
+  var expectedSources = [
+    'includes/_cats.scss',
+    'inheritance.scss'
+  ];
+
+  var stream = gsass();
+
+  stream.on('data', function (cssFile) {
+    t.deepEqual(
+      cssFile.sourceMap.sources,
+      expectedSources,
+      'sourcemap paths are relative to file.base'
+    );
+    t.end();
+  });
+  stream.write(sassFile);
 });
