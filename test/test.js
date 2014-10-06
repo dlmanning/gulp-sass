@@ -4,7 +4,6 @@ var gutil = require('gulp-util');
 var fs = require('fs');
 var path = require('path');
 var test = require('tape');
-var sourcemap = require('source-map');
 
 function createVinyl(sassFileName, contents) {
   var base = path.join(__dirname, 'scss');
