@@ -52,10 +52,7 @@ module.exports = function (options) {
 
         applySourceMap(file, map);
       }
-
-      file.path      = ext(file.path, '.css');
-      file.contents  = new Buffer(css);
-      cb(null, file);
+      handleOutput(css, file, cb);
     };
 
     opts.error = function (err) {
@@ -72,7 +69,17 @@ module.exports = function (options) {
       return cb(new gutil.PluginError('gulp-sass', err));
     };
 
-    sass.render(opts);
+	if ( opts.sync ) {
+	  try {
+	    var output = sass.renderSync(opts);
+	    opts.success(output, null);
+	    handleOutput(output, file, cb);
+	  } catch(err) {
+	    opts.error(err);
+	  }
+	} else {
+	  sass.render(opts);
+	}
 
     if (addedLocalDirPath) opts.includePaths.pop();
 
@@ -80,6 +87,12 @@ module.exports = function (options) {
 
   return map(nodeSass);
 };
+
+function handleOutput(output, file, cb) {
+  file.path = ext(file.path, '.css');
+  file.contents = new Buffer(output);
+  cb(null, file);
+}
 
 function getSourcesContent (sources) {
   sourcesContent = [];

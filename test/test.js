@@ -58,6 +58,26 @@ test('compile a single sass file', function (t) {
   stream.write(sassFile);
 });
 
+test('compile a single sass file synchronously', function (t) {
+  var sassFile = createVinyl('mixins.scss');
+
+  var stream = gsass({sync: true});
+  stream.on('data', function (cssFile) {
+    t.ok(cssFile, 'cssFile should exist');
+    t.ok(cssFile.path, 'cssFile.path should exist');
+    t.ok(cssFile.relative, 'cssFile.relative should exist');
+    t.ok(cssFile.contents, 'cssFile.contents should exist');
+    t.equal(cssFile.path, path.join(__dirname, 'scss', 'mixins.css'));
+    t.equal(
+      fs.readFileSync(path.join(__dirname, 'ref/mixins.css'), 'utf8'),
+      cssFile.contents.toString(),
+      'file compiles correctly to css'
+    );
+    t.end();
+  })
+  stream.write(sassFile);
+});
+
 test('compile multiple sass files', function (t) {
   var files = [
     createVinyl('inheritance.scss'),
@@ -83,6 +103,19 @@ test('compile multiple sass files', function (t) {
 
 test('emit error on sass errors', function (t) {
   var stream = gsass();
+  var errorFile = createVinyl('somefile.sass',
+    new Buffer('body { font \'Comic Sans\'; }'));
+  stream.on('error', function (err) {
+    t.equal(err.message,
+            'source string:1: error: property "font" must be followed by a \':\'\n'
+    );
+    t.end();
+  });
+  stream.write(errorFile);
+});
+
+test('emit error on sass errors when using sync true', function (t) {
+  var stream = gsass({sync: true});
   var errorFile = createVinyl('somefile.sass',
     new Buffer('body { font \'Comic Sans\'; }'));
   stream.on('error', function (err) {
