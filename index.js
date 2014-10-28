@@ -42,6 +42,9 @@ module.exports = function (options) {
       opts.includePaths = [fileDir];
     }
 
+		// temporary hack to target a change (mistake?) in nodeSass.
+		opts.includePath = opts.includePaths;
+
     opts.success = function (css, map) {
       var sourceMap;
       if (typeof opts.onSuccess === 'function') opts.onSuccess(css, map);
