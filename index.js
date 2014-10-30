@@ -33,16 +33,14 @@ module.exports = function (options) {
       opts.data = file.contents.toString();
     }
 
-    if (opts.includePaths && Array.isArray(opts.includePaths)) {
-      if (opts.includePaths.indexOf(fileDir) === -1) {
-        opts.includePaths.push(fileDir);
+    if (opts.includePath && Array.isArray(opts.includePath)) {
+      if (opts.includePath.indexOf(fileDir) === -1) {
+        opts.includePath.push(fileDir);
         addedLocalDirPath = true;
       }
     } else {
-      opts.includePaths = [fileDir];
+      opts.includePath = [fileDir];
     }
-
-		opts.includePath = opts.includePaths;
 
     opts.success = function (css, sourceMap) {
       if (typeof opts.onSuccess === 'function') opts.onSuccess(css, sourceMap);
@@ -92,7 +90,7 @@ module.exports = function (options) {
 	  sass.render(opts);
 	}
 
-    if (addedLocalDirPath) opts.includePaths.pop();
+    if (addedLocalDirPath) opts.includePath.pop();
 
   }
 
