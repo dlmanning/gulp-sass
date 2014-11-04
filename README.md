@@ -57,7 +57,7 @@ gulp.src('./scss/*.scss')
   .pipe(sourcemaps.init())
     .pipe(sass())
   .pipe(sourcemaps.write())
-  .pipe('./css');
+  .pipe(gulp.dest('./css'));
 
 // will write the source maps inline in the compiled CSS files
 ```
@@ -71,7 +71,7 @@ gulp.src('./scss/*.scss')
   .pipe(sourcemaps.init())
     .pipe(sass())
   .pipe(sourcemaps.write('./maps'))
-  .pipe('./css');
+  .pipe(gulp.dest('./css'));
 
 // will write the source maps to ./dest/css/maps
 ```
