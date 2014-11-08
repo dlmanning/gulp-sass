@@ -105,3 +105,6 @@ scss/style.scss:
 }
 ```
 
+#Issues
+
+Before submitting an issue, please understand that gulp-sass is only a wrapper for [node-sass](https://github.com/sass/node-sass), which in turn is a node front end for [libsass](https://github.com/sass/libsass). Missing sass features and errors should not be reported here.
