@@ -3,16 +3,16 @@ var fs    = require('fs')
   , sass  = require('node-sass')
   , path  = require('path')
   , gutil = require('gulp-util')
+  , clone = require('clone')
   , ext   = gutil.replaceExtension
   , applySourceMap = require('vinyl-sourcemaps-apply')
   ;
 
 module.exports = function (options) {
-  var opts = options || {};
+  var opts = options ? clone(options) : {};
 
   function nodeSass (file, cb) {
     var fileDir = path.dirname(file.path);
-    var addedLocalDirPath = false;
 
     if (file.isNull()) {
       return cb(null, file);
@@ -36,7 +36,6 @@ module.exports = function (options) {
     if (opts.includePaths && Array.isArray(opts.includePaths)) {
       if (opts.includePaths.indexOf(fileDir) === -1) {
         opts.includePaths.push(fileDir);
-        addedLocalDirPath = true;
       }
     } else {
       opts.includePaths = [fileDir];
@@ -91,8 +90,6 @@ module.exports = function (options) {
 	} else {
 	  sass.render(opts);
 	}
-
-    if (addedLocalDirPath) opts.includePaths.pop();
 
   }
 
