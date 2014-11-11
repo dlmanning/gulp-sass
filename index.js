@@ -8,7 +8,8 @@ var fs    = require('fs')
   ;
 
 module.exports = function (options) {
-  var opts = options || {};
+  var opts = options || {},
+      collectedIncludePaths = [];
 
   function nodeSass (file, cb) {
     var fileDir = path.dirname(file.path);
@@ -38,6 +39,14 @@ module.exports = function (options) {
         opts.includePaths.push(fileDir);
         addedLocalDirPath = true;
       }
+
+      // collect all includes paths for future reference
+      opts.includePaths.forEach(function(path) {
+        if (collectedIncludePaths.indexOf(path) === -1) {
+          collectedIncludePaths.push(path);
+        }
+      });
+
     } else {
       opts.includePaths = [fileDir];
     }
@@ -89,6 +98,7 @@ module.exports = function (options) {
 	    opts.error(err);
 	  }
 	} else {
+    opts.includePaths = collectedIncludePaths;
 	  sass.render(opts);
 	}
 
