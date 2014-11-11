@@ -1,14 +1,15 @@
 var fs    = require('fs')
-  , map   = require('map-stream')
-  , sass  = require('node-sass')
-  , path  = require('path')
-  , gutil = require('gulp-util')
-  , ext   = gutil.replaceExtension
-  , applySourceMap = require('vinyl-sourcemaps-apply')
-  ;
+, map   = require('map-stream')
+, sass  = require('node-sass')
+, path  = require('path')
+, gutil = require('gulp-util')
+, ext   = gutil.replaceExtension
+, applySourceMap = require('vinyl-sourcemaps-apply')
+;
 
 module.exports = function (options) {
-  var opts = options || {};
+  var opts = options || {},
+      collectedIncludePaths = [];
 
   function nodeSass (file, cb) {
     var fileDir = path.dirname(file.path);
@@ -38,11 +39,19 @@ module.exports = function (options) {
         opts.includePaths.push(fileDir);
         addedLocalDirPath = true;
       }
+
+      // collect all includes paths for future reference
+      opts.includePaths.forEach(function(path) {
+        if (collectedIncludePaths.indexOf(path) === -1) {
+          collectedIncludePaths.push(path);
+        }
+      });
+
     } else {
       opts.includePaths = [fileDir];
     }
 
-		opts.includePath = opts.includePaths;
+    opts.includePath = opts.includePaths;
 
     opts.success = function (css, sourceMap) {
       if (typeof opts.onSuccess === 'function') opts.onSuccess(css, sourceMap);
@@ -80,19 +89,20 @@ module.exports = function (options) {
       return cb(new gutil.PluginError('gulp-sass', err));
     };
 
-	if ( opts.sync ) {
-	  try {
-	    var output = sass.renderSync(opts);
-	    opts.success(output, null);
-	    handleOutput(output, file, cb);
-	  } catch(err) {
-	    opts.error(err);
-	  }
-	} else {
-	  sass.render(opts);
-	}
+    if ( opts.sync ) {
+      try {
+        var output = sass.renderSync(opts);
+        opts.success(output, null);
+        handleOutput(output, file, cb);
+      } catch(err) {
+        opts.error(err);
+      }
+    } else {
+      opts.includePaths = collectedIncludePaths;
+      sass.render(opts);
+    }
 
-    if (addedLocalDirPath) opts.includePaths.pop();
+    if (addedLocalDirPath && opts.includePaths) opts.includePaths.pop();
 
   }
 
