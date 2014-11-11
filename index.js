@@ -1,11 +1,11 @@
 var fs    = require('fs')
-  , map   = require('map-stream')
-  , sass  = require('node-sass')
-  , path  = require('path')
-  , gutil = require('gulp-util')
-  , ext   = gutil.replaceExtension
-  , applySourceMap = require('vinyl-sourcemaps-apply')
-  ;
+, map   = require('map-stream')
+, sass  = require('node-sass')
+, path  = require('path')
+, gutil = require('gulp-util')
+, ext   = gutil.replaceExtension
+, applySourceMap = require('vinyl-sourcemaps-apply')
+;
 
 module.exports = function (options) {
   var opts = options || {},
