@@ -102,7 +102,7 @@ module.exports = function (options) {
 	  sass.render(opts);
 	}
 
-    if (addedLocalDirPath) opts.includePaths.pop();
+    if (addedLocalDirPath && opts.includePaths) opts.includePaths.pop();
 
   }
 
