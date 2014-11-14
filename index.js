@@ -1,6 +1,6 @@
 var fs    = require('fs')
   , map   = require('map-stream')
-  , sass  = require('node-sass')
+  , nodeSass  = require('node-sass')
   , path  = require('path')
   , gutil = require('gulp-util')
   , clone = require('clone')
@@ -11,7 +11,7 @@ var fs    = require('fs')
 module.exports = function (options) {
   var opts = options ? clone(options) : {};
 
-  function nodeSass (file, cb) {
+  function sass (file, cb) {
     var fileDir = path.dirname(file.path);
 
     if (file.isNull()) {
@@ -40,8 +40,6 @@ module.exports = function (options) {
     } else {
       opts.includePaths = [fileDir];
     }
-
-		opts.includePath = opts.includePaths;
 
     opts.success = function (css, sourceMap) {
       if (typeof opts.onSuccess === 'function') opts.onSuccess(css, sourceMap);
@@ -79,21 +77,21 @@ module.exports = function (options) {
       return cb(new gutil.PluginError('gulp-sass', err));
     };
 
-	if ( opts.sync ) {
-	  try {
-	    var output = sass.renderSync(opts);
-	    opts.success(output, null);
-	    handleOutput(output, file, cb);
-	  } catch(err) {
-	    opts.error(err);
-	  }
-	} else {
-	  sass.render(opts);
-	}
+  	if ( opts.sync ) {
+  	  try {
+  	    var output = nodeSass.renderSync(opts);
+  	    opts.success(output, null);
+  	    handleOutput(output, file, cb);
+  	  } catch(err) {
+  	    opts.error(err);
+  	  }
+  	} else {
+  	  nodeSass.render(opts);
+  	}
 
   }
 
-  return map(nodeSass);
+  return map(sass);
 };
 
 function handleOutput(output, file, cb) {
