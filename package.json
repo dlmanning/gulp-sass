@@ -24,7 +24,8 @@
     "node-sass": "^1.0",
     "gulp-util": "^3.0",
     "map-stream": "~0.1",
-    "vinyl-sourcemaps-apply": "~0.1.1"
+    "vinyl-sourcemaps-apply": "~0.1.1",
+    "clone": "~0.1.18"
   },
   "devDependencies": {
     "tape": "~2.3",
