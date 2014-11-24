@@ -9,9 +9,9 @@ var fs    = require('fs')
   ;
 
 module.exports = function (options) {
-  var opts = options ? clone(options) : {};
 
   function sass (file, cb) {
+    var opts = options ? clone(options) : {};
     var fileDir = path.dirname(file.path);
 
     if (file.isNull()) {
