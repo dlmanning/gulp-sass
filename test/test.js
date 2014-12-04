@@ -5,8 +5,8 @@ var fs = require('fs');
 var path = require('path');
 var test = require('tape');
 
-function createVinyl(sassFileName, contents) {
-  var base = path.join(__dirname, 'scss');
+function createVinyl(sassFileName, contents, base) {
+  base = base || path.join(__dirname, 'scss');
   var filePath = path.join(base, sassFileName);
 
   return new gutil.File({
@@ -88,6 +88,30 @@ test('compile multiple sass files', function (t) {
 
   t.plan(files.length * 4);
   var stream = gsass();
+
+  stream.on('data', function (cssFile) {
+    t.ok(cssFile, 'cssFile exists');
+    t.ok(cssFile.path, 'cssFile.path exists');
+    t.ok(cssFile.relative, 'cssFile.relative exists');
+    t.ok(cssFile.contents, 'cssFile.contents exists');
+  });
+
+  files.forEach(function (file) {
+    stream.write(file);
+  });
+});
+
+test('compile multiple sass files with includePaths', function (t) {
+  var files = [
+    createVinyl('file1.scss', null, path.join(__dirname, 'scss', 'include-path-tests')),
+    createVinyl('file2.scss', null, path.join(__dirname, 'scss', 'include-path-tests'))
+  ];
+  var options = {
+    includePaths: [path.resolve(__dirname, 'scss', 'includes')]
+  };
+
+  t.plan(files.length * 4);
+  var stream = gsass(options);
 
   stream.on('data', function (cssFile) {
     t.ok(cssFile, 'cssFile exists');
