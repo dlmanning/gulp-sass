@@ -22,11 +22,10 @@ module.exports = function (options) {
     }
 
     if (file.sourceMap) {
-      opts.sourceComments = 'map';
       opts.sourceMap = file.path;
     }
 
-    if (opts.sourceComments === 'map' || opts.sourceComments === 'normal') {
+    if (file.sourceMap || opts.sourceComments === 'map' || opts.sourceComments === 'normal') {
       opts.sourceMap = opts.sourceMap || '';
       opts.file = file.path;
     } else {
