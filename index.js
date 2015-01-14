@@ -46,7 +46,7 @@ module.exports = function (options) {
         // libsass gives us sources' paths relative to file;
         // gulp-sourcemaps needs sources' paths relative to file.base;
         // so alter the sources' paths to please gulp-sourcemaps.
-        obj.map = obj.map.version ? obj.map : JSON.parse(sourceMap);
+        obj.map = obj.map.version ? obj.map : JSON.parse(obj.map);
         obj.map.sources = obj.map.sources.map(function(source) {
           var abs = path.resolve(path.dirname(file.path), source);
           return path.relative(file.base, abs);
