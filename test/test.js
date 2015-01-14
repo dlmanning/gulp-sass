@@ -131,7 +131,7 @@ test('emit error on sass errors', function (t) {
     new Buffer('body { font \'Comic Sans\'; }'));
   stream.on('error', function (err) {
     t.equal(err.message,
-            'stdin:1: property "font" must be followed by a \':\'\n'
+            'property "font" must be followed by a \':\''
     );
     t.end();
   });
@@ -144,7 +144,7 @@ test('emit error on sass errors when using sync true', function (t) {
     new Buffer('body { font \'Comic Sans\'; }'));
   stream.on('error', function (err) {
     t.equal(err.message,
-            'stdin:1: property "font" must be followed by a \':\'\n'
+            'property "font" must be followed by a \':\''
     );
     t.end();
   });
@@ -153,8 +153,8 @@ test('emit error on sass errors when using sync true', function (t) {
 
 test('call custom error callback when opts.onError is given', function (t) {
   var stream = gsass({ onError: function (err) {
-    t.equal(err,
-            'stdin:1: property "font" must be followed by a \':\'\n'
+    t.equal(err.message,
+            'property "font" must be followed by a \':\''
     );
     t.end();
   }});

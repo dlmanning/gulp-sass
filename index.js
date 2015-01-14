@@ -22,16 +22,11 @@ module.exports = function (options) {
     }
 
     if (file.sourceMap) {
-      opts.sourceComments = 'map';
       opts.sourceMap = file.path;
     }
 
-    if (opts.sourceComments === 'map' || opts.sourceComments === 'normal') {
-      opts.sourceMap = opts.sourceMap || '';
-      opts.file = file.path;
-    } else {
-      opts.data = file.contents.toString();
-    }
+    opts.data = file.contents.toString();
+    opts.file = file.path;
 
     if (opts.includePaths && Array.isArray(opts.includePaths)) {
       if (opts.includePaths.indexOf(fileDir) === -1) {
@@ -41,26 +36,27 @@ module.exports = function (options) {
       opts.includePaths = [fileDir];
     }
 
-    opts.success = function (css, sourceMap) {
-      if (typeof opts.onSuccess === 'function') opts.onSuccess(css, sourceMap);
+    opts.success = function (obj) {
+      if (typeof opts.onSuccess === 'function') opts.onSuccess(obj);
 
-      if (sourceMap) {
+      if (obj.map && obj.map.length || obj.map.version) {
         // hack to remove the already added sourceMappingURL from libsass
-        css = css.replace(/\/\*#\s*sourceMappingURL\=.*\*\//, '');
+        obj.css = obj.css.replace(/\/\*#\s*sourceMappingURL\=.*\*\//, '');
 
         // libsass gives us sources' paths relative to file;
         // gulp-sourcemaps needs sources' paths relative to file.base;
         // so alter the sources' paths to please gulp-sourcemaps.
-        sourceMap = JSON.parse(sourceMap);
-        sourceMap.sources = sourceMap.sources.map(function(source) {
+        obj.map = obj.map.version ? obj.map : JSON.parse(sourceMap);
+        obj.map.sources = obj.map.sources.map(function(source) {
           var abs = path.resolve(path.dirname(file.path), source);
           return path.relative(file.base, abs);
         });
-        sourceMap = JSON.stringify(sourceMap);
+        obj.map = JSON.stringify(obj.map);
 
-        applySourceMap(file, sourceMap);
+        applySourceMap(file, obj.map);
       }
-      handleOutput(css, file, cb);
+
+      handleOutput(obj, file, cb);
     };
 
     opts.error = function (err) {
@@ -80,7 +76,7 @@ module.exports = function (options) {
   	if ( opts.sync ) {
   	  try {
   	    var output = nodeSass.renderSync(opts);
-  	    opts.success(output, null);
+  	    opts.success(output);
   	    handleOutput(output, file, cb);
   	  } catch(err) {
   	    opts.error(err);
@@ -96,7 +92,7 @@ module.exports = function (options) {
 
 function handleOutput(output, file, cb) {
   file.path = ext(file.path, '.css');
-  file.contents = new Buffer(output);
+  file.contents = new Buffer(output.css);
   cb(null, file);
 }
 
