@@ -47,13 +47,15 @@ module.exports = function (options) {
         // gulp-sourcemaps needs sources' paths relative to file.base;
         // so alter the sources' paths to please gulp-sourcemaps.
         obj.map = obj.map.version ? obj.map : JSON.parse(obj.map);
-        obj.map.sources = obj.map.sources.map(function(source) {
-          var abs = path.resolve(path.dirname(file.path), source);
-          return path.relative(file.base, abs);
-        });
-        obj.map = JSON.stringify(obj.map);
+        if (obj.map && obj.map.length) {
+          obj.map.sources = obj.map.sources.map(function(source) {
+            var abs = path.resolve(path.dirname(file.path), source);
+            return path.relative(file.base, abs);
+          });
+          obj.map = JSON.stringify(obj.map);
 
-        applySourceMap(file, obj.map);
+          applySourceMap(file, obj.map);
+        }
       }
 
       handleOutput(obj, file, cb);
