@@ -3,7 +3,7 @@
 gulp-sass
 =========
 
-SASS plugin for [gulp](https://github.com/gulpjs/gulp).
+Sass plugin for [gulp](https://github.com/gulpjs/gulp).
 
 #Install
 
