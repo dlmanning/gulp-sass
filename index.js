@@ -73,17 +73,17 @@ module.exports = function (options) {
       return cb(new gutil.PluginError('gulp-sass', err));
     };
 
-  	if ( opts.sync ) {
-  	  try {
-  	    var output = nodeSass.renderSync(opts);
-  	    opts.success(output);
-  	    handleOutput(output, file, cb);
-  	  } catch(err) {
-  	    opts.error(err);
-  	  }
-  	} else {
-  	  nodeSass.render(opts);
-  	}
+    if ( opts.sync ) {
+      try {
+        var output = nodeSass.renderSync(opts);
+        opts.success(output);
+        handleOutput(output, file, cb);
+      } catch(err) {
+        opts.error(err);
+      }
+    } else {
+      nodeSass.render(opts);
+    }
 
   }
 
@@ -94,14 +94,4 @@ function handleOutput(output, file, cb) {
   file.path = ext(file.path, '.css');
   file.contents = new Buffer(output.css);
   cb(null, file);
-}
-
-function getSourcesContent (sources) {
-  sourcesContent = [];
-
-  for (var i = 0; i < sources.length; i++) {
-    sourcesContent[i] = fs.readFileSync(sources[i], { encoding: 'utf8' });
-  }
-
-  return sourcesContent;
 }
