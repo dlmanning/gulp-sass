@@ -1,3 +1,7 @@
+### 1.3.2
+
+* fixed errLogToConsole
+
 ### 1.3.1
 
 * bug fix
