@@ -28,7 +28,7 @@ module.exports = function (options) {
     opts.data = file.contents.toString();
     opts.file = file.path;
 
-    if(path.extname(opts.file) == ".sass"){
+    if(path.extname(opts.file) === ".sass"){
        opts.indentedSyntax = true;
     }
 
