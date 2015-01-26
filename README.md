@@ -26,7 +26,9 @@ gulp.task('sass', function () {
 });
 ```
 
-Options passed as a hash into `sass()` will be passed along to [`node-sass`](https://github.com/sass/node-sass)
+Options passed as a hash into `sass()` will be passed along to [`node-sass`](https://github.com/sass/node-sass).
+
+If you want to use the indented syntax (`.sass`) as the top level file, use `sass({indentedSyntax: true})`.
 
 ## gulp-sass specific options
 
