@@ -28,6 +28,10 @@ module.exports = function (options) {
     opts.data = file.contents.toString();
     opts.file = file.path;
 
+    if(path.extname(opts.file) == ".sass"){
+       opts.indentedSyntax = true;
+    }
+
     if (opts.includePaths && Array.isArray(opts.includePaths)) {
       if (opts.includePaths.indexOf(fileDir) === -1) {
         opts.includePaths.push(fileDir);
