@@ -24,12 +24,14 @@
     "clone": "~0.1.18",
     "gulp-util": "^3.0",
     "map-stream": "~0.1",
-    "node-sass": "2.0.0-beta",
     "vinyl-sourcemaps-apply": "~0.1.1"
   },
   "devDependencies": {
     "tape": "~2.3",
     "concat-stream": "~1.4"
+  },
+  "peerDependencies": {
+    "node-sass": "*"
   },
   "jshintConfig": {
     "laxcomma": true
