@@ -5,13 +5,13 @@ gulp-sass
 
 Sass plugin for [gulp](https://github.com/gulpjs/gulp).
 
-#Install
+# Install
 
 ```
 npm install gulp-sass
 ```
 
-#Basic Usage
+# Basic Usage
 
 Something like this:
 
@@ -78,7 +78,7 @@ gulp.src('./scss/*.scss')
 // will write the source maps to ./dest/css/maps
 ```
 
-#Imports and Partials
+# Imports and Partials
 
 gulp-sass now automatically passes along the directory of every scss file it parses as an include path for node-sass. This means that as long as you specify your includes relative to path of your scss file, everything will just work.
 
@@ -107,6 +107,6 @@ scss/style.scss:
 }
 ```
 
-#Issues
+# Issues
 
 Before submitting an issue, please understand that gulp-sass is only a wrapper for [node-sass](https://github.com/sass/node-sass), which in turn is a node front end for [libsass](https://github.com/sass/libsass). Missing sass features and errors should not be reported here.
