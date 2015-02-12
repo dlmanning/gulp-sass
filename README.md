@@ -1,12 +1,5 @@
 [![Build Status](https://travis-ci.org/dlmanning/gulp-sass.svg?branch=master)](https://travis-ci.org/dlmanning/gulp-sass)
 
-
-#Attention: Read this before posting an issue
-
-At the moment gulp-sass will not work with node 0.12 or io.js. gulp-sass is just a wrapper around node-sass, which implements node bindings to libsass. The maintainers of node-sass are doing their best to finish version 2.0, which will include support for node 0.12 and io.js. In the meantime, there is nothing I can do to make gulp-sass work on on anything other that node 0.10.xx. If you need to run gulp-sass, don't upgrade node until node-sass 2.0 is finalized.
-
-Thanks
-
 gulp-sass
 =========
 

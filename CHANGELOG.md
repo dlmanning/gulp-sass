@@ -1,3 +1,8 @@
+### 1.3.3
+
+* updated to node-sass 2.0 (final)
+* should now work with node 0.12 and io.js
+
 ### 1.3.2
 
 * fixed errLogToConsole

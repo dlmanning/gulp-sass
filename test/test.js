@@ -170,14 +170,15 @@ test('sourcemaps', function (t) {
 
   // Pretend sourcemap.init() happened by mimicking
   // the object it would create.
-  sassFile.sourceMap = {
-    version: 3,
-    file: 'scss/subdir/multilevelimport.scss',
-    names: [],
-    mappings: '',
-    sources: [ 'scss/subdir/multilevelimport.scss' ],
-    sourcesContent: [ '@import "../inheritance";\n' ]
-  };
+
+  sassFile.sourceMap = '{' +
+    '"version": 3,' +
+    '"file": "scss/subdir/multilevelimport.scss",' +
+    '"names": [],' +
+    '"mappings": "",' +
+    '"sources": [ "scss/subdir/multilevelimport.scss" ],' +
+    '"sourcesContent": [ "@import ../inheritance;" ]' +
+  '}';
 
   // Expected sources are relative to file.base
   var expectedSources = [

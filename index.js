@@ -39,21 +39,25 @@ module.exports = function (options) {
     opts.success = function (obj) {
       if (typeof opts.onSuccess === 'function') opts.onSuccess(obj);
 
-      if (obj.map && obj.map.length || obj.map.version) {
+      if (obj.map && typeof obj.map === 'string') {
         // hack to remove the already added sourceMappingURL from libsass
         obj.css = obj.css.replace(/\/\*#\s*sourceMappingURL\=.*\*\//, '');
 
         // libsass gives us sources' paths relative to file;
         // gulp-sourcemaps needs sources' paths relative to file.base;
         // so alter the sources' paths to please gulp-sourcemaps.
-        obj.map = obj.map.version ? obj.map : JSON.parse(obj.map);
-        obj.map.sources = obj.map.sources.map(function(source) {
-          var abs = path.resolve(path.dirname(file.path), source);
-          return path.relative(file.base, abs);
-        });
-        obj.map = JSON.stringify(obj.map);
+        obj.map = JSON.parse(obj.map);
 
-        applySourceMap(file, obj.map);
+        if (obj.map.sources) {
+          obj.map.sources = obj.map.sources.map(function(source) {
+            var abs = path.resolve(path.dirname(file.path), source);
+            return path.relative(file.base, abs);
+          });
+
+          obj.map = JSON.stringify(obj.map);
+          applySourceMap(file, obj.map);
+        }
+
       }
 
       handleOutput(obj, file, cb);
