@@ -198,3 +198,25 @@ test('sourcemaps', function (t) {
   });
   stream.write(sassFile);
 });
+
+// These are files that had specific gulp-sass bugs
+test('former bugs', function (t) {
+  var sassFile = createVinyl('bug-187.sass');
+
+  var stream = gsass();
+  stream.on('data', function (cssFile) {
+    t.ok(cssFile, 'cssFile should exist');
+    t.ok(cssFile.path, 'cssFile.path should exist');
+    t.ok(cssFile.relative, 'cssFile.relative should exist');
+    t.ok(cssFile.contents, 'cssFile.contents should exist');
+    t.equal(cssFile.path, path.join(__dirname, 'scss', 'bug-187.css'));
+    t.equal(
+      fs.readFileSync(path.join(__dirname, 'ref/bug-187.css'), 'utf8'),
+      cssFile.contents.toString(),
+      'file compiles correctly to css'
+    );
+    t.end();
+  });
+  stream.write(sassFile);
+});
+
