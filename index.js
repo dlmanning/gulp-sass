@@ -36,60 +36,60 @@ module.exports = function (options) {
       opts.includePaths = [fileDir];
     }
 
-    opts.success = function (obj) {
-      if (typeof opts.onSuccess === 'function') opts.onSuccess(obj);
-
-      if (obj.map && typeof obj.map === 'string') {
-        // hack to remove the already added sourceMappingURL from libsass
-        obj.css = obj.css.replace(/\/\*#\s*sourceMappingURL\=.*\*\//, '');
-
-        // libsass gives us sources' paths relative to file;
-        // gulp-sourcemaps needs sources' paths relative to file.base;
-        // so alter the sources' paths to please gulp-sourcemaps.
-        obj.map = JSON.parse(obj.map);
-
-        if (obj.map.sources) {
-          obj.map.sources = obj.map.sources.map(function(source) {
-            var abs = path.resolve(path.dirname(file.path), source);
-            return path.relative(file.base, abs);
-          });
-
-          obj.map = JSON.stringify(obj.map);
-          applySourceMap(file, obj.map);
+    var callback = function(err, obj) {
+      if (err) {
+        if (opts.errLogToConsole) {
+          gutil.log('[gulp-sass] ' + err.message + ' on line ' + err.line + ' in ' + err.file);
+          return cb();
         }
 
+        if (typeof opts.onError === 'function') {
+          opts.onError(err);
+          return cb();
+        }
+
+        err.lineNumber = err.line;
+        err.fileName = err.file;
+
+        return cb(new gutil.PluginError('gulp-sass', err));
+      } else {
+        if (typeof opts.onSuccess === 'function') opts.onSuccess(obj);
+
+        if (obj.map && obj.map instanceof Buffer) {
+          // hack to remove the already added sourceMappingURL from libsass
+          // TODO: this is now a buffer, what to do here?
+          obj.css = obj.css.toString().replace(/\/\*#\s*sourceMappingURL\=.*\*\//, '');
+
+          // libsass gives us sources' paths relative to file;
+          // gulp-sourcemaps needs sources' paths relative to file.base;
+          // so alter the sources' paths to please gulp-sourcemaps.
+          obj.map = JSON.parse(obj.map);
+          if (obj.map.sources) {
+            obj.map.sources = obj.map.sources.map(function(source) {
+              var abs = path.resolve(path.dirname(file.path), source);
+              return path.relative(file.base, abs);
+            });
+
+            obj.map = JSON.stringify(obj.map);
+            applySourceMap(file, obj.map);
+          }
+
+        }
+
+        handleOutput(obj, file, cb);
       }
-
-      handleOutput(obj, file, cb);
-    };
-
-    opts.error = function (err) {
-      if (opts.errLogToConsole) {
-        gutil.log('[gulp-sass] ' + err.message + ' on line ' + err.line + ' in ' + err.file);
-        return cb();
-      }
-
-      if (typeof opts.onError === 'function') {
-        opts.onError(err);
-        return cb();
-      }
-      
-      err.lineNumber = err.line;
-      err.fileName = err.file;
-
-      return cb(new gutil.PluginError('gulp-sass', err));
     };
 
     if ( opts.sync ) {
       try {
-        var output = nodeSass.renderSync(opts);
-        opts.success(output);
+        var output = nodeSass.renderSync(opts, callback);
+        callback(null, output);
         handleOutput(output, file, cb);
       } catch(err) {
-        opts.error(err);
+        callback(err);
       }
     } else {
-      nodeSass.render(opts);
+      nodeSass.render(opts, callback);
     }
 
   }
