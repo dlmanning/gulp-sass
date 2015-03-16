@@ -25,7 +25,8 @@ module.exports = function (options) {
       opts.sourceMap = file.path;
     }
 
-    opts.data = file.contents.toString();
+	opts.data = opts.data || '';
+    opts.data += file.contents.toString();
     opts.file = file.path;
 
     if (opts.includePaths && Array.isArray(opts.includePaths)) {
