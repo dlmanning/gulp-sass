@@ -65,7 +65,7 @@ module.exports = function (options) {
 
     opts.error = function (err) {
       if (opts.errLogToConsole) {
-        gutil.log('[gulp-sass] ' + err.message + ' on line ' + err.line + ' in ' + err.file);
+        gutil.log(gutil.colors.red('[gulp-sass]', err.message, 'on line', err.line + 'in', err.file));
         return cb();
       }
 
