@@ -1,8 +1,11 @@
+body {
+  background: pink; }
+
 .error, .badError {
   border: #f00;
   background: #fdd; }
 
-.error.intrusion {
+.error.intrusion, .intrusion.badError {
   font-size: 1.3em;
   font-weight: bold; }
 
