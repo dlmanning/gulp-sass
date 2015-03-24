@@ -6,6 +6,7 @@
 * **New** Added support for `gulp-sourcemaps` including tests
 * **New** Added `.editorconfig` for development consistency
 * **New** Added linting and test for said linting
+* **Change** Updated the README
 
 ### 1.3.3
 
