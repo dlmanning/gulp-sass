@@ -7,7 +7,10 @@ var applySourceMap = require('vinyl-sourcemaps-apply');
 
 var PLUGIN_NAME = 'gulp-sass';
 
-module.exports = function(options) {
+//////////////////////////////
+// Main Gulp Sass function
+//////////////////////////////
+var gulpSass = function gulpSass(options) {
   'use strict';
 
   return through.obj(function(file, enc, cb) {
@@ -36,10 +39,9 @@ module.exports = function(options) {
     callback = function(error, obj) {
       if (error) {
         return cb(new gutil.PluginError(
-          PLUGIN_NAME, error.message + ' on line ' + error.line + ' in ' + error.file
+          PLUGIN_NAME, error.message + '\nLine ' + gutil.colors.cyan(error.line) + ' in ' + gutil.colors.magenta(error.file)
         ));
       }
-
       // Build Source Maps!
       if (obj.map) {
         // libsass gives us sources' paths relative to file;
@@ -67,3 +69,14 @@ module.exports = function(options) {
     sass.render(opts, callback);
   });
 };
+
+//////////////////////////////
+// Log errors nicely
+//////////////////////////////
+gulpSass.logError = function logError(error) {
+  'use strict';
+
+  gutil.log(gutil.colors.red('Error: ') + error.message);
+};
+
+module.exports = gulpSass;
