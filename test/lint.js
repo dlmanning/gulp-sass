@@ -10,6 +10,11 @@ var report;
 
 describe('style-guide', function() {
   it('index.js should follow our lint style guide', function(done) {
+    cli = new eslint.CLIEngine({
+      'rules': {
+        'strict': [ 2, 'function' ]
+      }
+    });
     report = cli.executeOnFiles(['index.js']);
     if (report.errorCount > 0 || report.warningCount > 0) {
       console.log(formatter(report.results));
