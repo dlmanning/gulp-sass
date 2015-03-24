@@ -33,7 +33,17 @@ module.exports = function (options) {
         opts.includePaths.push(fileDir);
       }
     } else {
-      opts.includePaths = [fileDir];
+      // Double check for opts.includePaths passed as single string element.
+      // Reason: to respect the normal behaviour of Gulp passing as parameter 
+      // for paths:
+      // - Single path as string
+      // - Multiple paths as array
+      if (typeof opts.includePaths === 'string') {
+        opts.includePaths = [opts.includePaths];
+        opts.includePaths.push(fileDir);
+      } else {
+        opts.includePaths = [fileDir];
+      }
     }
 
     opts.success = function (obj) {
