@@ -58,6 +58,26 @@ test('compile a single sass file', function (t) {
   stream.write(sassFile);
 });
 
+test('compile a single .sass extension sass file', function (t) {
+  var sassFile = createVinyl('sassfile.sass');
+
+  var stream = gsass();
+  stream.on('data', function (cssFile) {
+    t.ok(cssFile, 'cssFile should exist');
+    t.ok(cssFile.path, 'cssFile.path should exist');
+    t.ok(cssFile.relative, 'cssFile.relative should exist');
+    t.ok(cssFile.contents, 'cssFile.contents should exist');
+    t.equal(cssFile.path, path.join(__dirname, 'scss', 'sassfile.css'));
+    t.equal(
+        fs.readFileSync(path.join(__dirname, 'ref/sassfile.css'), 'utf8'),
+        cssFile.contents.toString(),
+        'file compiles correctly to css'
+    );
+    t.end();
+  })
+  stream.write(sassFile);
+});
+
 test('compile a single sass file synchronously', function (t) {
   var sassFile = createVinyl('mixins.scss');
 
