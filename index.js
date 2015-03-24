@@ -25,6 +25,7 @@ module.exports = function(options) {
     // Generate Source Maps if plugin source-map present
     if (file.sourceMap) {
       opts.sourceMap = file.path;
+      opts.omitSourceMapUrl = true;
     }
 
     var callback = function(error, obj) {
@@ -36,9 +37,6 @@ module.exports = function(options) {
 
       // Build Source Maps!
       if (obj.map) {
-        // hack to remove the already added sourceMappingURL from libsass
-        obj.css = obj.css.toString().replace(/\/\*#\s*sourceMappingURL\=.*\*\//, '');
-
         // libsass gives us sources' paths relative to file;
         // gulp-sourcemaps needs sources' paths relative to file.base;
         // so alter the sources' paths to please gulp-sourcemaps.
@@ -55,7 +53,7 @@ module.exports = function(options) {
         }
       }
 
-      file.contents = new Buffer(obj.css);
+      file.contents = obj.css;
       file.path = gutil.replaceExtension(file.path, '.css');
 
       cb(null, file);
