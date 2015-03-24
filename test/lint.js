@@ -8,7 +8,7 @@ var formatter = cli.getFormatter();
 
 var report;
 
-describe('style-guide', function() {
+describe('code style guide', function() {
   it('index.js should follow our lint style guide', function(done) {
     cli = new eslint.CLIEngine({
       'rules': {
@@ -26,6 +26,11 @@ describe('style-guide', function() {
   });
 
   it('test/main.js should follow our lint style guide', function(done) {
+    cli = new eslint.CLIEngine({
+      'rules': {
+        'strict': [ 2, 'global' ]
+      }
+    });
     report = cli.executeOnFiles(['test/main.js']);
     if (report.errorCount > 0 || report.warningCount > 0) {
       console.log(formatter(report.results));
@@ -39,7 +44,8 @@ describe('style-guide', function() {
   it('test/lint.js should follow our lint style guide', function(done) {
     cli = new eslint.CLIEngine({
       'rules': {
-        'no-console': 0
+        'no-console': 0,
+        'strict': [ 2, 'global' ]
       }
     });
     report = cli.executeOnFiles(['test/lint.js']);
