@@ -19,12 +19,14 @@ var sass = require('gulp-sass');
 
 gulp.task('sass', function () {
 	gulp.src('./scss/*.scss')
-		.pipe(sass().on('error', gutil.log))
+		.pipe(sass().on('error', sass.logError))
 		.pipe(gulp.dest('./css'));
 });
 ```
 
-Options passed as a hash into `sass()` will be passed along to [`node-sass`](https://github.com/sass/node-sass).
+## Options
+
+Pass in options just like you would for [`node-sass`](https://github.com/sass/node-sass#options); they will be passed along just as if you were using `node-sass`.
 
 ## Source Maps
 
