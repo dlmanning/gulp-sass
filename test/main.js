@@ -196,6 +196,53 @@ describe('gulp-sass -- async compile', function() {
     });
     stream.write(sassFile);
   });
+
+  it('should compile a single indented sass file', function(done) {
+    var sassFile = createVinyl('indent.sass');
+    var stream = sass();
+    stream.on('data', function(cssFile) {
+      should.exist(cssFile);
+      should.exist(cssFile.path);
+      should.exist(cssFile.relative);
+      should.exist(cssFile.contents);
+      String(cssFile.contents).should.equal(
+	fs.readFileSync(path.join(__dirname, 'expected/indent.css'), 'utf8')
+      );
+      done();
+    });
+    stream.write(sassFile);
+  });
+
+  it('should parse files in sass and scss', function(done) {
+    var files = [
+      createVinyl('mixins.scss'),
+      createVinyl('indent.sass')
+    ];
+    var stream = sass();
+    var mustSee = files.length;
+    var expectedPath = 'expected/mixins.css';
+
+    stream.on('data', function(cssFile) {
+      should.exist(cssFile);
+      should.exist(cssFile.path);
+      should.exist(cssFile.relative);
+      should.exist(cssFile.contents);
+      if (cssFile.path.indexOf('indent') !== -1) {
+	expectedPath = 'expected/indent.css';
+      }
+      String(cssFile.contents).should.equal(
+	fs.readFileSync(path.join(__dirname, expectedPath), 'utf8')
+      );
+      mustSee--;
+      if (mustSee <= 0) {
+	done();
+      }
+    });
+
+    files.forEach(function (file) {
+      stream.write(file);
+    });
+  });
 });
 
 describe('gulp-sass -- sync compile', function() {
