@@ -39,7 +39,7 @@ var gulpSass = function gulpSass(options) {
     callback = function(error, obj) {
       if (error) {
         return cb(new gutil.PluginError(
-          PLUGIN_NAME, error.message + '\nLine ' + gutil.colors.cyan(error.line) + ' in ' + gutil.colors.magenta(error.file)
+          PLUGIN_NAME, error.message + ' ' + gutil.colors.cyan('line ' + error.line) + ' in ' + gutil.colors.magenta(error.file)
         ));
       }
       // Build Source Maps!
@@ -76,7 +76,7 @@ var gulpSass = function gulpSass(options) {
 gulpSass.logError = function logError(error) {
   'use strict';
 
-  gutil.log(gutil.colors.red('Error: ') + error.message);
+  gutil.log(gutil.colors.red('[gulp-sass] ') + error.message);
 };
 
 module.exports = gulpSass;
