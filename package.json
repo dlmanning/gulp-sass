@@ -28,6 +28,7 @@
     "vinyl-sourcemaps-apply": "~0.1.1"
   },
   "devDependencies": {
+    "eslint": "^0.17.1",
     "gulp-sourcemaps": "^1.5.1",
     "jshint": "^2.6.3",
     "mocha": "^2.2.1",
