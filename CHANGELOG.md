@@ -1,3 +1,12 @@
+# Gulp Sass Changelog
+
+## v2.0.0
+### March 24, 2015
+* **Change** Updated to `node-sass` 3.0.0-alpha.1
+* **New** Added support for `gulp-sourcemaps` including tests
+* **New** Added `.editorconfig` for development consistency
+* **New** Added linting and test for said linting
+
 ### 1.3.3
 
 * updated to node-sass 2.0 (final)
