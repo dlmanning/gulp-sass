@@ -2,8 +2,8 @@ var should = require("should");
 var gutil = require("gulp-util");
 var path = require("path");
 var fs = require("fs");
-var sourcemaps = require('gulp-sourcemaps');
 var sass = require("../index");
+var assert = require('assert');
 
 function createVinyl(filename, contents) {
   var base = path.join(__dirname, "scss");
@@ -118,7 +118,30 @@ describe("gulp-sass", function() {
   });
 
   it("should work with gulp-sourcemaps", function(done) {
-    // TODO
-    done();
+    var sassFile = createVinyl("inheritance.scss");
+
+    // Expected sources are relative to file.base
+    var expectedSources = [
+      'includes/_cats.scss',
+      'inheritance.scss'
+    ];
+
+    sassFile.sourceMap = '{' +
+      '"version": 3,' +
+      '"file": "scss/inheritance.scss",' +
+      '"names": [],' +
+      '"mappings": "",' +
+      '"sources": [ "scss/inheritance.scss" ],' +
+      '"sourcesContent": [ "@import includes/cats;" ]' +
+    '}';
+
+    var stream = sass();
+    stream.on("data", function(cssFile) {
+      should.exist(cssFile.sourceMap);
+      assert.deepEqual(cssFile.sourceMap.sources, expectedSources);
+      done();
+    });
+    stream.write(sassFile);
+
   });
 });
