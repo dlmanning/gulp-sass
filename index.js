@@ -63,7 +63,7 @@ var gulpSass = function gulpSass(options) {
 gulpSass.logError = function logError(error) {
   'use strict';
 
-  gutil.log(gutil.colors.red('[gulp-sass] ') + error.message);
+  gutil.log(gutil.colors.red('[' + PLUGIN_NAME + '] ') + error.message);
 };
 
 module.exports = gulpSass;
