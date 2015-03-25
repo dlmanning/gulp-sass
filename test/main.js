@@ -5,7 +5,6 @@ var gutil = require('gulp-util');
 var path = require('path');
 var fs = require('fs');
 var sass = require('../index');
-var assert = require('assert');
 
 var createVinyl = function createVinyl(filename, contents) {
   var base = path.join(__dirname, 'scss');
@@ -131,6 +130,7 @@ describe('gulp-sass -- async compile', function() {
     // Expected sources are relative to file.base
     var expectedSources = [
       'includes/_cats.scss',
+      'includes/_dogs.sass',
       'inheritance.scss'
     ];
 
@@ -148,7 +148,7 @@ describe('gulp-sass -- async compile', function() {
     stream = sass();
     stream.on('data', function(cssFile) {
       should.exist(cssFile.sourceMap);
-      assert.deepEqual(cssFile.sourceMap.sources, expectedSources);
+      cssFile.sourceMap.sources.should.eql(expectedSources);
       done();
     });
     stream.write(sassFile);
