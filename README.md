@@ -38,6 +38,10 @@ If you want to use the indented syntax (`.sass`) as the top level file, use `sas
 
 If you pass `errLogToConsole: true` into the options hash, sass errors will be logged to the console instead of generating a `gutil.PluginError` object. Use this option with `gulp.watch` to keep gulp from stopping every time you mess up your sass.
 
+#### `errLogToOutputFile: true`
+
+If you pass `errLogToOutputFile: true` into the options hash, sass errors will be written into the output css file. It keeps gulp from stopping.
+
 #### `onSuccess: callback`
 
 Pass in your own callback to be called upon successful compilation by node-sass. The callback has the form `callback(css)`, and is passed the compiled css as a string. Note: This *does not* prevent gulp-sass's default behavior of writing the output css file.

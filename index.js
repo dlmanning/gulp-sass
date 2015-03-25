@@ -64,6 +64,14 @@ module.exports = function (options) {
     };
 
     opts.error = function (err) {
+
+      if (opts.errLogToOutputFile) {
+        var errFilePath = file.path;
+        file.path      = ext(file.path, '.css');
+        file.contents  = new Buffer('ERR: ' + errFilePath + '\n' + err.toString());
+        return cb(null, file);
+      }
+
       if (opts.errLogToConsole) {
         gutil.log(gutil.colors.red('[gulp-sass]', err.message, 'on line', err.line + 'in', err.file));
         return cb();
