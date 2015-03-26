@@ -91,7 +91,7 @@ gulpSass.sync = function sync(options) {
 // Log errors nicely
 //////////////////////////////
 gulpSass.logError = function logError(error) {
-  gutil.log(gutil.colors.red('[gulp-sass] ') + error.message);
+  gutil.log(gutil.colors.red('[' + PLUGIN_NAME + '] ') + error.message);
 };
 
 module.exports = gulpSass;
