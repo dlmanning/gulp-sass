@@ -10,11 +10,6 @@ var report;
 
 describe('code style guide', function() {
   it('index.js should follow our lint style guide', function(done) {
-    cli = new eslint.CLIEngine({
-      'rules': {
-        'strict': [ 2, 'function' ]
-      }
-    });
     report = cli.executeOnFiles(['index.js']);
     if (report.errorCount > 0 || report.warningCount > 0) {
       console.log(formatter(report.results));
@@ -26,11 +21,6 @@ describe('code style guide', function() {
   });
 
   it('test/main.js should follow our lint style guide', function(done) {
-    cli = new eslint.CLIEngine({
-      'rules': {
-        'strict': [ 2, 'global' ]
-      }
-    });
     report = cli.executeOnFiles(['test/main.js']);
     if (report.errorCount > 0 || report.warningCount > 0) {
       console.log(formatter(report.results));
@@ -44,8 +34,7 @@ describe('code style guide', function() {
   it('test/lint.js should follow our lint style guide', function(done) {
     cli = new eslint.CLIEngine({
       'rules': {
-        'no-console': 0,
-        'strict': [ 2, 'global' ]
+        'no-console': 0
       }
     });
     report = cli.executeOnFiles(['test/lint.js']);

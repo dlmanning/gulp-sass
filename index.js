@@ -1,3 +1,5 @@
+'use strict';
+
 var gutil = require('gulp-util');
 var through = require('through2');
 var assign = require('object-assign');
@@ -11,8 +13,6 @@ var PLUGIN_NAME = 'gulp-sass';
 // Main Gulp Sass function
 //////////////////////////////
 var gulpSass = function gulpSass(options) {
-  'use strict';
-
   return through.obj(function(file, enc, cb) {
     var opts,
         callback;
@@ -61,8 +61,6 @@ var gulpSass = function gulpSass(options) {
 // Log errors nicely
 //////////////////////////////
 gulpSass.logError = function logError(error) {
-  'use strict';
-
   gutil.log(gutil.colors.red('[gulp-sass] ') + error.message);
 };
 
