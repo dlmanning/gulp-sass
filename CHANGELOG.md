@@ -1,6 +1,9 @@
 # Gulp Sass Changelog
 
 ## v2.0.0-alpha.1
+### March 26, 2015
+* **New** Added `renderSync` option that can be used through `sass.sync()`
+
 ### March 24, 2015
 * **Change** Updated to `node-sass` 3.0.0-alpha.1
 * **New** Added support for `gulp-sourcemaps` including tests
