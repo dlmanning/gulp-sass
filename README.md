@@ -10,7 +10,7 @@ npm install gulp-sass --save-dev
 
 # Basic Usage
 
-Something like this:
+Something like this will compile your Sass files:
 
 ```javascript
 var gulp = require('gulp');
@@ -21,6 +21,20 @@ gulp.task('sass', function () {
 	gulp.src('./scss/*.scss')
 		.pipe(sass().on('error', sass.logError))
 		.pipe(gulp.dest('./css'));
+});
+```
+
+You can also compile synchronously, doing something like this:
+
+```javascript
+var gulp = require('gulp');
+var gutil = require('gulp-util');
+var sass = require('gulp-sass');
+
+gulp.task('sass', function () {
+  gulp.src('./scss/*.scss')
+    .pipe(sass.sync().on('error', sass.logError))
+    .pipe(gulp.dest('./css'));
 });
 ```
 
