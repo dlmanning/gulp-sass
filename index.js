@@ -12,10 +12,11 @@ var PLUGIN_NAME = 'gulp-sass';
 //////////////////////////////
 // Main Gulp Sass function
 //////////////////////////////
-var gulpSass = function gulpSass(options) {
+var gulpSass = function gulpSass(options, sync) {
   return through.obj(function(file, enc, cb) {
     var opts,
-        callback;
+        callback,
+        result;
 
     if (file.isNull()) {
       return cb(null, file);
@@ -36,25 +37,54 @@ var gulpSass = function gulpSass(options) {
       opts.omitSourceMapUrl = true;
     }
 
-    callback = function(error, obj) {
-      if (error) {
+    if (sync !== true) {
+      callback = function(error, obj) {
+        if (error) {
+          return cb(new gutil.PluginError(
+            PLUGIN_NAME, error.message + ' ' + gutil.colors.cyan('line ' + error.line) + ' in ' + gutil.colors.magenta(error.file)
+          ));
+        }
+        // Build Source Maps!
+        if (obj.map) {
+          applySourceMap(file, JSON.parse(obj.map.toString()));
+        }
+
+        file.contents = obj.css;
+        file.path = gutil.replaceExtension(file.path, '.css');
+
+        cb(null, file);
+      };
+
+      sass.render(opts, callback);
+    }
+    else {
+      try {
+        result = sass.renderSync(opts);
+
+        // Build Source Maps!
+        if (result.map) {
+          applySourceMap(file, JSON.parse(result.map.toString()));
+        }
+
+        file.contents = result.css;
+        file.path = gutil.replaceExtension(file.path, '.css');
+
+        cb(null, file);
+      }
+      catch(error) {
         return cb(new gutil.PluginError(
           PLUGIN_NAME, error.message + ' ' + gutil.colors.cyan('line ' + error.line) + ' in ' + gutil.colors.magenta(error.file)
         ));
       }
-      // Build Source Maps!
-      if (obj.map) {
-        applySourceMap(file, JSON.parse(obj.map.toString()));
-      }
-
-      file.contents = obj.css;
-      file.path = gutil.replaceExtension(file.path, '.css');
-
-      cb(null, file);
-    };
-
-    sass.render(opts, callback);
+    }
   });
+};
+
+//////////////////////////////
+// Sync Sass render
+//////////////////////////////
+gulpSass.sync = function sync(options) {
+  return gulpSass(options, true);
 };
 
 //////////////////////////////
