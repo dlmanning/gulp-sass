@@ -56,7 +56,7 @@ gulp.src('./scss/*.scss')
   .pipe(gulp.dest('./css'));
 ```
 
-By default, [gulp-sourcemaps](https://github.com/floridoo/gulp-sourcemaps) writes the source maps inline in the compiled CSS files. To write them to a separate file, specify a relative file path in the `sourcemaps.write()` function.
+By default, [gulp-sourcemaps](https://github.com/floridoo/gulp-sourcemaps) writes the source maps inline in the compiled CSS files. To write them to a separate file, specify a path relative to the `gulp.dest()` destination in the `sourcemaps.write()` function.
 
 ```javascript
 var sourcemaps = require('gulp-sourcemaps');
