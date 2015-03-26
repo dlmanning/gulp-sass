@@ -1,104 +1,97 @@
-var fs    = require('fs')
-  , map   = require('map-stream')
-  , nodeSass  = require('node-sass')
-  , path  = require('path')
-  , gutil = require('gulp-util')
-  , clone = require('clone')
-  , ext   = gutil.replaceExtension
-  , applySourceMap = require('vinyl-sourcemaps-apply')
-  ;
+'use strict';
 
-module.exports = function (options) {
+var gutil = require('gulp-util');
+var through = require('through2');
+var assign = require('object-assign');
+var path = require('path');
+var sass = require('node-sass');
+var applySourceMap = require('vinyl-sourcemaps-apply');
 
-  function sass (file, cb) {
-    var opts = options ? clone(options) : {};
-    var fileDir = path.dirname(file.path);
+var PLUGIN_NAME = 'gulp-sass';
+
+//////////////////////////////
+// Main Gulp Sass function
+//////////////////////////////
+var gulpSass = function gulpSass(options, sync) {
+  return through.obj(function(file, enc, cb) {
+    var opts,
+        callback,
+        result;
 
     if (file.isNull()) {
       return cb(null, file);
+    }
+    if (file.isStream()) {
+      return cb(new gutil.PluginError(PLUGIN_NAME, 'Streaming not supported'));
     }
     if (path.basename(file.path).indexOf('_') === 0) {
       return cb();
     }
 
-    if (file.sourceMap) {
-      opts.sourceMap = file.path;
-    }
-
-    opts.data = file.contents.toString();
+    opts = assign({}, options);
     opts.file = file.path;
 
-    if (opts.includePaths && Array.isArray(opts.includePaths)) {
-      if (opts.includePaths.indexOf(fileDir) === -1) {
-        opts.includePaths.push(fileDir);
-      }
-    } else {
-      opts.includePaths = [fileDir];
+    // Generate Source Maps if plugin source-map present
+    if (file.sourceMap) {
+      opts.sourceMap = file.path;
+      opts.omitSourceMapUrl = true;
     }
 
-    opts.success = function (obj) {
-      if (typeof opts.onSuccess === 'function') opts.onSuccess(obj);
-
-      if (obj.map && typeof obj.map === 'string') {
-        // hack to remove the already added sourceMappingURL from libsass
-        obj.css = obj.css.replace(/\/\*#\s*sourceMappingURL\=.*\*\//, '');
-
-        // libsass gives us sources' paths relative to file;
-        // gulp-sourcemaps needs sources' paths relative to file.base;
-        // so alter the sources' paths to please gulp-sourcemaps.
-        obj.map = JSON.parse(obj.map);
-
-        if (obj.map.sources) {
-          obj.map.sources = obj.map.sources.map(function(source) {
-            var abs = path.resolve(path.dirname(file.path), source);
-            return path.relative(file.base, abs);
-          });
-
-          obj.map = JSON.stringify(obj.map);
-          applySourceMap(file, obj.map);
+    if (sync !== true) {
+      callback = function(error, obj) {
+        if (error) {
+          return cb(new gutil.PluginError(
+            PLUGIN_NAME, error.message + ' ' + gutil.colors.cyan('line ' + error.line) + ' in ' + gutil.colors.magenta(error.file)
+          ));
+        }
+        // Build Source Maps!
+        if (obj.map) {
+          applySourceMap(file, JSON.parse(obj.map.toString()));
         }
 
-      }
+        file.contents = obj.css;
+        file.path = gutil.replaceExtension(file.path, '.css');
 
-      handleOutput(obj, file, cb);
-    };
+        cb(null, file);
+      };
 
-    opts.error = function (err) {
-      if (opts.errLogToConsole) {
-        gutil.log(gutil.colors.red('[gulp-sass]', err.message, 'on line', err.line + 'in', err.file));
-        return cb();
-      }
-
-      if (typeof opts.onError === 'function') {
-        opts.onError(err);
-        return cb();
-      }
-      
-      err.lineNumber = err.line;
-      err.fileName = err.file;
-
-      return cb(new gutil.PluginError('gulp-sass', err));
-    };
-
-    if ( opts.sync ) {
-      try {
-        var output = nodeSass.renderSync(opts);
-        opts.success(output);
-        handleOutput(output, file, cb);
-      } catch(err) {
-        opts.error(err);
-      }
-    } else {
-      nodeSass.render(opts);
+      sass.render(opts, callback);
     }
+    else {
+      try {
+        result = sass.renderSync(opts);
 
-  }
+        // Build Source Maps!
+        if (result.map) {
+          applySourceMap(file, JSON.parse(result.map.toString()));
+        }
 
-  return map(sass);
+        file.contents = result.css;
+        file.path = gutil.replaceExtension(file.path, '.css');
+
+        cb(null, file);
+      }
+      catch(error) {
+        return cb(new gutil.PluginError(
+          PLUGIN_NAME, error.message + ' ' + gutil.colors.cyan('line ' + error.line) + ' in ' + gutil.colors.magenta(error.file)
+        ));
+      }
+    }
+  });
 };
 
-function handleOutput(output, file, cb) {
-  file.path = ext(file.path, '.css');
-  file.contents = new Buffer(output.css);
-  cb(null, file);
-}
+//////////////////////////////
+// Sync Sass render
+//////////////////////////////
+gulpSass.sync = function sync(options) {
+  return gulpSass(options, true);
+};
+
+//////////////////////////////
+// Log errors nicely
+//////////////////////////////
+gulpSass.logError = function logError(error) {
+  gutil.log(gutil.colors.red('[gulp-sass] ') + error.message);
+};
+
+module.exports = gulpSass;
