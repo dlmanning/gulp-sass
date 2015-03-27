@@ -15,6 +15,7 @@ var PLUGIN_NAME = 'gulp-sass';
 var gulpSass = function gulpSass(options, sync) {
   return through.obj(function(file, enc, cb) {
     var opts,
+        filePush,
         callback,
         result;
 
@@ -37,39 +38,44 @@ var gulpSass = function gulpSass(options, sync) {
       opts.omitSourceMapUrl = true;
     }
 
+    //////////////////////////////
+    // Handles returning the file to the stream
+    //////////////////////////////
+    filePush = function filePush(sassObj) {
+      // Build Source Maps!
+      if (sassObj.map) {
+        applySourceMap(file, JSON.parse(sassObj.map.toString()));
+      }
+
+      file.contents = sassObj.css;
+      file.path = gutil.replaceExtension(file.path, '.css');
+
+      cb(null, file);
+    };
+
     if (sync !== true) {
+      //////////////////////////////
+      // Async Sass render
+      //////////////////////////////
       callback = function(error, obj) {
         if (error) {
           return cb(new gutil.PluginError(
             PLUGIN_NAME, error.message + ' ' + gutil.colors.cyan('line ' + error.line) + ' in ' + gutil.colors.magenta(error.file)
           ));
         }
-        // Build Source Maps!
-        if (obj.map) {
-          applySourceMap(file, JSON.parse(obj.map.toString()));
-        }
-
-        file.contents = obj.css;
-        file.path = gutil.replaceExtension(file.path, '.css');
-
-        cb(null, file);
+        filePush(obj);
       };
 
       sass.render(opts, callback);
     }
     else {
+      //////////////////////////////
+      // Sync Sass render
+      //////////////////////////////
       try {
         result = sass.renderSync(opts);
 
-        // Build Source Maps!
-        if (result.map) {
-          applySourceMap(file, JSON.parse(result.map.toString()));
-        }
-
-        file.contents = result.css;
-        file.path = gutil.replaceExtension(file.path, '.css');
-
-        cb(null, file);
+        filePush(result);
       }
       catch(error) {
         return cb(new gutil.PluginError(
