@@ -119,7 +119,7 @@ describe('gulp-sass -- async compile', function() {
     var stream = sass();
 
     stream.on('error', function(err) {
-      err.message.indexOf('property "font" must be followed by a \':\'').should.equal(0);
+      err.message.indexOf('property "font" must be followed by a \':\'').should.not.equal(-1);
       done();
     });
     stream.write(errorFile);
@@ -255,7 +255,7 @@ describe('gulp-sass -- sync compile', function() {
     var stream = sass.sync();
 
     stream.on('error', function(err) {
-      err.message.indexOf('property "font" must be followed by a \':\'').should.equal(0);
+      err.message.indexOf('property "font" must be followed by a \':\'').should.not.equal(-1);
       done();
     });
     stream.write(errorFile);
