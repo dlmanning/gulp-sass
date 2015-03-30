@@ -16,6 +16,7 @@ var gulpSass = function gulpSass(options, sync) {
   return through.obj(function(file, enc, cb) {
     var opts,
         filePush,
+        errorM,
         callback,
         result;
 
@@ -53,15 +54,29 @@ var gulpSass = function gulpSass(options, sync) {
       cb(null, file);
     };
 
+    //////////////////////////////
+    // Handles error message
+    //////////////////////////////
+    errorM = function errorM(error) {
+      var relativePath = path.relative(process.cwd(), error.file),
+          message = '';
+
+      message += gutil.colors.underline(relativePath) + '\n';
+      message += gutil.colors.gray('  ' + error.line + ':' + error.column) + '  ';
+      message += error.message;
+
+      return cb(new gutil.PluginError(
+          PLUGIN_NAME, message
+        ));
+    };
+
     if (sync !== true) {
       //////////////////////////////
       // Async Sass render
       //////////////////////////////
       callback = function(error, obj) {
         if (error) {
-          return cb(new gutil.PluginError(
-            PLUGIN_NAME, error.message + ' ' + gutil.colors.cyan('line ' + error.line) + ' in ' + gutil.colors.magenta(error.file)
-          ));
+          return errorM(error);
         }
         filePush(obj);
       };
@@ -78,9 +93,7 @@ var gulpSass = function gulpSass(options, sync) {
         filePush(result);
       }
       catch(error) {
-        return cb(new gutil.PluginError(
-          PLUGIN_NAME, error.message + ' ' + gutil.colors.cyan('line ' + error.line) + ' in ' + gutil.colors.magenta(error.file)
-        ));
+        return errorM(error);
       }
     }
   });
