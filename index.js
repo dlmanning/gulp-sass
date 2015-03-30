@@ -1,3 +1,5 @@
+'use strict';
+
 var gutil = require('gulp-util');
 var through = require('through2');
 var assign = require('object-assign');
@@ -10,12 +12,13 @@ var PLUGIN_NAME = 'gulp-sass';
 //////////////////////////////
 // Main Gulp Sass function
 //////////////////////////////
-var gulpSass = function gulpSass(options) {
-  'use strict';
-
+var gulpSass = function gulpSass(options, sync) {
   return through.obj(function(file, enc, cb) {
     var opts,
-        callback;
+        filePush,
+        errorM,
+        callback,
+        result;
 
     if (file.isNull()) {
       return cb(null, file);
@@ -36,33 +39,77 @@ var gulpSass = function gulpSass(options) {
       opts.omitSourceMapUrl = true;
     }
 
-    callback = function(error, obj) {
-      if (error) {
-        return cb(new gutil.PluginError(
-          PLUGIN_NAME, error.message + ' ' + gutil.colors.cyan('line ' + error.line) + ' in ' + gutil.colors.magenta(error.file)
-        ));
-      }
+    //////////////////////////////
+    // Handles returning the file to the stream
+    //////////////////////////////
+    filePush = function filePush(sassObj) {
       // Build Source Maps!
-      if (obj.map) {
-        applySourceMap(file, JSON.parse(obj.map.toString()));
+      if (sassObj.map) {
+        applySourceMap(file, JSON.parse(sassObj.map.toString()));
       }
 
-      file.contents = obj.css;
+      file.contents = sassObj.css;
       file.path = gutil.replaceExtension(file.path, '.css');
 
       cb(null, file);
     };
 
-    sass.render(opts, callback);
+    //////////////////////////////
+    // Handles error message
+    //////////////////////////////
+    errorM = function errorM(error) {
+      var relativePath = path.relative(process.cwd(), error.file),
+          message = '';
+
+      message += gutil.colors.underline(relativePath) + '\n';
+      message += gutil.colors.gray('  ' + error.line + ':' + error.column) + '  ';
+      message += error.message;
+
+      return cb(new gutil.PluginError(
+          PLUGIN_NAME, message
+        ));
+    };
+
+    if (sync !== true) {
+      //////////////////////////////
+      // Async Sass render
+      //////////////////////////////
+      callback = function(error, obj) {
+        if (error) {
+          return errorM(error);
+        }
+        filePush(obj);
+      };
+
+      sass.render(opts, callback);
+    }
+    else {
+      //////////////////////////////
+      // Sync Sass render
+      //////////////////////////////
+      try {
+        result = sass.renderSync(opts);
+
+        filePush(result);
+      }
+      catch(error) {
+        return errorM(error);
+      }
+    }
   });
+};
+
+//////////////////////////////
+// Sync Sass render
+//////////////////////////////
+gulpSass.sync = function sync(options) {
+  return gulpSass(options, true);
 };
 
 //////////////////////////////
 // Log errors nicely
 //////////////////////////////
 gulpSass.logError = function logError(error) {
-  'use strict';
-
   gutil.log(gutil.colors.red('[' + PLUGIN_NAME + '] ') + error.message);
 };
 

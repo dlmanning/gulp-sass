@@ -10,17 +10,29 @@ npm install gulp-sass --save-dev
 
 # Basic Usage
 
-Something like this:
+Something like this will compile your Sass files:
 
 ```javascript
 var gulp = require('gulp');
-var gutil = require('gulp-util');
 var sass = require('gulp-sass');
 
 gulp.task('sass', function () {
 	gulp.src('./scss/*.scss')
 		.pipe(sass().on('error', sass.logError))
 		.pipe(gulp.dest('./css'));
+});
+```
+
+You can also compile synchronously, doing something like this:
+
+```javascript
+var gulp = require('gulp');
+var sass = require('gulp-sass');
+
+gulp.task('sass', function () {
+  gulp.src('./scss/*.scss')
+    .pipe(sass.sync().on('error', sass.logError))
+    .pipe(gulp.dest('./css'));
 });
 ```
 
@@ -42,7 +54,7 @@ gulp.src('./scss/*.scss')
   .pipe(gulp.dest('./css'));
 ```
 
-By default, [gulp-sourcemaps](https://github.com/floridoo/gulp-sourcemaps) writes the source maps inline in the compiled CSS files. To write them to a separate file, specify a relative file path in the `sourcemaps.write()` function.
+By default, [gulp-sourcemaps](https://github.com/floridoo/gulp-sourcemaps) writes the source maps inline in the compiled CSS files. To write them to a separate file, specify a path relative to the `gulp.dest()` destination in the `sourcemaps.write()` function.
 
 ```javascript
 var sourcemaps = require('gulp-sourcemaps');
