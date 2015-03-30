@@ -14,7 +14,6 @@ Something like this will compile your Sass files:
 
 ```javascript
 var gulp = require('gulp');
-var gutil = require('gulp-util');
 var sass = require('gulp-sass');
 
 gulp.task('sass', function () {
@@ -28,7 +27,6 @@ You can also compile synchronously, doing something like this:
 
 ```javascript
 var gulp = require('gulp');
-var gutil = require('gulp-util');
 var sass = require('gulp-sass');
 
 gulp.task('sass', function () {
