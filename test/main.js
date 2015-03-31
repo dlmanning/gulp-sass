@@ -131,7 +131,7 @@ describe('gulp-sass -- async compile', function() {
     // Expected sources are relative to file.base
     var expectedSources = [
       'includes/_cats.scss',
-      '../../stdin'
+      'inheritance.scss'
     ];
 
     var stream;
