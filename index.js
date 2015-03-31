@@ -17,6 +17,9 @@ var gulpSass = function gulpSass(options, sync) {
     var opts,
         ip,
         filePush,
+        sassMap,
+        sassMapFile,
+        sassFileSrc,
         errorM,
         callback,
         result;
@@ -59,7 +62,18 @@ var gulpSass = function gulpSass(options, sync) {
     filePush = function filePush(sassObj) {
       // Build Source Maps!
       if (sassObj.map) {
-        applySourceMap(file, JSON.parse(sassObj.map.toString()));
+        // Transform map into JSON
+        sassMap = JSON.parse(sassObj.map.toString());
+        // Grab the stdout and transform it into stdin
+        sassMapFile = sassMap.file.replace('stdout', 'stdin');
+        // Grab the base file name that's being worked on
+        sassFileSrc = file.path.split('/').pop();
+        // Replace the stdin with the original file name
+        sassMap.sources[sassMap.sources.indexOf(sassMapFile)] = sassFileSrc;
+        // Replace the map file with the original file name
+        sassMap.file = sassFileSrc;
+        // Apply the map
+        applySourceMap(file, sassMap);
       }
 
       file.contents = sassObj.css;
