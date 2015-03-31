@@ -15,6 +15,7 @@ var PLUGIN_NAME = 'gulp-sass';
 var gulpSass = function gulpSass(options, sync) {
   return through.obj(function(file, enc, cb) {
     var opts,
+        ip,
         filePush,
         errorM,
         callback,
@@ -31,7 +32,20 @@ var gulpSass = function gulpSass(options, sync) {
     }
 
     opts = assign({}, options);
-    opts.file = file.path;
+    opts.data = file.contents.toString();
+
+    if (opts.includePaths) {
+      if (typeof opts.includePaths === 'string') {
+        ip = opts.includePaths;
+        opts.includePaths = [];
+        opts.includePaths.push(ip);
+      }
+    }
+    else {
+      opts.includePaths = [];
+    }
+
+    opts.includePaths.push(path.dirname(file.path));
 
     // Generate Source Maps if plugin source-map present
     if (file.sourceMap) {
@@ -58,8 +72,12 @@ var gulpSass = function gulpSass(options, sync) {
     // Handles error message
     //////////////////////////////
     errorM = function errorM(error) {
-      var relativePath = path.relative(process.cwd(), error.file),
+      var relativePath = '',
+          filePath = error.file === 'stdin' ? file.path : error.file,
           message = '';
+
+      filePath = filePath ? filePath : file.path;
+      relativePath = path.relative(process.cwd(), filePath);
 
       message += gutil.colors.underline(relativePath) + '\n';
       message += gutil.colors.gray('  ' + error.line + ':' + error.column) + '  ';
