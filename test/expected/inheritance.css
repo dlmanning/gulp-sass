@@ -1,6 +1,9 @@
 body {
   background: pink; }
 
+footer {
+  background: red; }
+
 .error, .badError {
   border: #f00;
   background: #fdd; }
