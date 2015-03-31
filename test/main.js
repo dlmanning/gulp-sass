@@ -357,6 +357,7 @@ describe('gulp-sass -- sync compile', function() {
     // Expected sources are relative to file.base
     var expectedSources = [
       'includes/_cats.scss',
+      'includes/_dogs.sass',
       'inheritance.scss'
     ];
 
@@ -374,7 +375,7 @@ describe('gulp-sass -- sync compile', function() {
     stream = sass.sync();
     stream.on('data', function(cssFile) {
       should.exist(cssFile.sourceMap);
-      assert.deepEqual(cssFile.sourceMap.sources, expectedSources);
+      cssFile.sourceMap.sources.should.eql(expectedSources);
       done();
     });
     stream.write(sassFile);
