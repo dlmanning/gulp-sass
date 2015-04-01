@@ -15,11 +15,7 @@ var PLUGIN_NAME = 'gulp-sass';
 var gulpSass = function gulpSass(options, sync) {
   return through.obj(function(file, enc, cb) {
     var opts,
-        ip,
         filePush,
-        sassMap,
-        sassMapFile,
-        sassFileSrc,
         errorM,
         callback,
         result;
@@ -39,9 +35,7 @@ var gulpSass = function gulpSass(options, sync) {
 
     if (opts.includePaths) {
       if (typeof opts.includePaths === 'string') {
-        ip = opts.includePaths;
-        opts.includePaths = [];
-        opts.includePaths.push(ip);
+        opts.includePaths = [opts.includePaths];
       }
     }
     else {
@@ -60,6 +54,10 @@ var gulpSass = function gulpSass(options, sync) {
     // Handles returning the file to the stream
     //////////////////////////////
     filePush = function filePush(sassObj) {
+      var sassMap,
+          sassMapFile,
+          sassFileSrc;
+
       // Build Source Maps!
       if (sassObj.map) {
         // Transform map into JSON
