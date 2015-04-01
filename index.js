@@ -31,7 +31,24 @@ var gulpSass = function gulpSass(options, sync) {
     }
 
     opts = assign({}, options);
-    opts.file = file.path;
+    opts.data = file.contents.toString();
+
+    // Ensure `indentedSyntax` is true if a `.sass` file
+    if (path.extname(file.path) === '.sass') {
+      opts.indentedSyntax = true;
+    }
+
+    // Ensure file's parent directory in the include path
+    if (opts.includePaths) {
+      if (typeof opts.includePaths === 'string') {
+        opts.includePaths = [opts.includePaths];
+      }
+    }
+    else {
+      opts.includePaths = [];
+    }
+
+    opts.includePaths.push(path.dirname(file.path));
 
     // Generate Source Maps if plugin source-map present
     if (file.sourceMap) {
@@ -43,9 +60,24 @@ var gulpSass = function gulpSass(options, sync) {
     // Handles returning the file to the stream
     //////////////////////////////
     filePush = function filePush(sassObj) {
+      var sassMap,
+          sassMapFile,
+          sassFileSrc;
+
       // Build Source Maps!
       if (sassObj.map) {
-        applySourceMap(file, JSON.parse(sassObj.map.toString()));
+        // Transform map into JSON
+        sassMap = JSON.parse(sassObj.map.toString());
+        // Grab the stdout and transform it into stdin
+        sassMapFile = sassMap.file.replace('stdout', 'stdin');
+        // Grab the base file name that's being worked on
+        sassFileSrc = file.path.split('/').pop();
+        // Replace the stdin with the original file name
+        sassMap.sources[sassMap.sources.indexOf(sassMapFile)] = sassFileSrc;
+        // Replace the map file with the original file name
+        sassMap.file = sassFileSrc;
+        // Apply the map
+        applySourceMap(file, sassMap);
       }
 
       file.contents = sassObj.css;
@@ -58,8 +90,12 @@ var gulpSass = function gulpSass(options, sync) {
     // Handles error message
     //////////////////////////////
     errorM = function errorM(error) {
-      var relativePath = path.relative(process.cwd(), error.file),
+      var relativePath = '',
+          filePath = error.file === 'stdin' ? file.path : error.file,
           message = '';
+
+      filePath = filePath ? filePath : file.path;
+      relativePath = path.relative(process.cwd(), filePath);
 
       message += gutil.colors.underline(relativePath) + '\n';
       message += gutil.colors.gray('  ' + error.line + ':' + error.column) + '  ';
