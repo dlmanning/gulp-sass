@@ -125,6 +125,49 @@ describe('gulp-sass -- async compile', function() {
     stream.write(errorFile);
   });
 
+   it('should compile a single sass file if the file name has been changed in the stream', function(done) {
+    var sassFile = createVinyl('mixins.scss');
+    var stream;
+
+    // Transform file name
+    sassFile.path = path.join(path.join(__dirname, 'scss'), 'mixin--changed.scss');
+
+    stream = sass();
+    stream.on('data', function(cssFile) {
+      should.exist(cssFile);
+      should.exist(cssFile.path);
+      cssFile.path.split('/').pop().should.equal('mixin--changed.css');
+      should.exist(cssFile.relative);
+      should.exist(cssFile.contents);
+      String(cssFile.contents).should.equal(
+        fs.readFileSync(path.join(__dirname, 'expected/mixins.css'), 'utf8')
+      );
+      done();
+    });
+    stream.write(sassFile);
+  });
+
+  it('should preserve changes made in-stream to a Sass file', function(done) {
+    var sassFile = createVinyl('mixins.scss');
+    var stream;
+
+    // Transform file name
+    sassFile.contents = new Buffer('/* Added Dynamically */' + sassFile.contents.toString());
+
+    stream = sass();
+    stream.on('data', function(cssFile) {
+      should.exist(cssFile);
+      should.exist(cssFile.path);
+      should.exist(cssFile.relative);
+      should.exist(cssFile.contents);
+      String(cssFile.contents).should.equal('/* Added Dynamically */\n' +
+        fs.readFileSync(path.join(__dirname, 'expected/mixins.css'), 'utf8')
+      );
+      done();
+    });
+    stream.write(sassFile);
+  });
+
   it('should work with gulp-sourcemaps', function(done) {
     var sassFile = createVinyl('inheritance.scss');
 
