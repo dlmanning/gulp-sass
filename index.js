@@ -4,7 +4,6 @@ var gutil = require('gulp-util');
 var through = require('through2');
 var assign = require('object-assign');
 var path = require('path');
-var sass = require('node-sass');
 var applySourceMap = require('vinyl-sourcemaps-apply');
 
 var PLUGIN_NAME = 'gulp-sass';
@@ -117,14 +116,14 @@ var gulpSass = function gulpSass(options, sync) {
         filePush(obj);
       };
 
-      sass.render(opts, callback);
+      gulpSass.compiler.render(opts, callback);
     }
     else {
       //////////////////////////////
       // Sync Sass render
       //////////////////////////////
       try {
-        result = sass.renderSync(opts);
+        result = gulpSass.compiler.renderSync(opts);
 
         filePush(result);
       }
@@ -148,5 +147,10 @@ gulpSass.sync = function sync(options) {
 gulpSass.logError = function logError(error) {
   gutil.log(gutil.colors.red('[' + PLUGIN_NAME + '] ') + error.message);
 };
+
+//////////////////////////////
+// Store compiler in a prop
+//////////////////////////////
+gulpSass.compiler = require('node-sass');
 
 module.exports = gulpSass;
