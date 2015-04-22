@@ -36,10 +36,14 @@ module.exports = function (options) {
       opts.includePaths = [fileDir];
     }
 
-    opts.success = function (obj) {
+    var success = function (obj) {
       if (typeof opts.onSuccess === 'function') opts.onSuccess(obj);
 
-      if (obj.map && typeof obj.map === 'string') {
+      // sometimes we have buffers, but we want strings
+      obj.css = (obj.css || '').toString();
+      obj.map = (obj.map || '').toString();
+
+      if (obj.map) {
         // hack to remove the already added sourceMappingURL from libsass
         obj.css = obj.css.replace(/\/\*#\s*sourceMappingURL\=.*\*\//, '');
 
@@ -63,7 +67,7 @@ module.exports = function (options) {
       handleOutput(obj, file, cb);
     };
 
-    opts.error = function (err) {
+    var error = function (err) {
       if (opts.errLogToConsole) {
         gutil.log(gutil.colors.red('[gulp-sass]', err.message, 'on line', err.line + 'in', err.file));
         return cb();
@@ -83,13 +87,19 @@ module.exports = function (options) {
     if ( opts.sync ) {
       try {
         var output = nodeSass.renderSync(opts);
-        opts.success(output);
+        success(output);
         handleOutput(output, file, cb);
       } catch(err) {
-        opts.error(err);
+        error(err);
       }
     } else {
-      nodeSass.render(opts);
+      nodeSass.render(opts, function(err, res) {
+        if (err) {
+          return error(err);
+        }
+
+        return success(res);
+      });
     }
 
   }
