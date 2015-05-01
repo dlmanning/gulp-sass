@@ -23,23 +23,15 @@ Gulp Sass is a very light-weight [Gulp](https://github.com/gulpjs/gulp) wrapper 
 * Ensure that you have [EditorConfig](http://editorconfig.org/) installed in your editor of choice and that it is functioning properly.
 * Do not squash or rebase your commits when submitting a Pull Request. It makes it much harder to follow your work and make incremental changes.
 * Update the [CHANGELOG](#maintaining-thechangelog) with your changes.
-* Ensure no Emoji tags are used in the title of your Pull Request
+* Branches should be made off of the most current `master` branch from `git@github.com:dlmanning/gulp-sass.git`
+* Pull requests should be made into our [master](https://github.com/dlmanning/gulp-sass/tree/master) branch.
 
 ### Git Commit Messages
 
 * Use the present tense (`"Add feature"` not `"Added Feature"`)
 * Use the imperative mood (`"Move cursor to…"` not `"Moves cursor to…"`)
 * Limit the first line to 72 characters or less
-* Include relevant Emoji from our [Emoji cheatsheet](#emoji-cheatsheet)
-
-### Branching Model
-
-* Branches must be made off of the most current `master` branch from `git@github.com:dlmanning/gulp-sass.git`
-* Pull requests must be made into our [master](https://github.com/dlmanning/gulp-sass/tree/master) branch.
-* The following branch prefixes should be used when creating a new branch:
-  * `hotfix/` - fixes a bug that got through to a live version and need to be squashed
-  * `feature/` - update to or new code for `gulp-sass`
-  * `release/` - a release of `gulp-sass`
+* Consider including relevant Emoji from our [Emoji cheatsheet](#emoji-cheatsheet)
 
 ## Creating a New Version
 
