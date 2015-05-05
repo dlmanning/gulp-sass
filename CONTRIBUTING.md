@@ -37,7 +37,7 @@ Gulp Sass is a very light-weight [Gulp](https://github.com/gulpjs/gulp) wrapper 
 
 Versioning is done through [SEMVER](http://semver.org/). When creating a new version, create new release branch off of `master` with the version's name, and create a new tag with `v` prefixed with the version's name from that branch. 
 
-For instance, if you are creating version `1.1.0`, you would start by merging `develop` into `master`, create a branch `release/1.1.0` from `master`, and create a tag `v1.1.0` from branch `release/1.1.0`.
+For instance, if you are creating version `1.1.0`, you would create a branch `release/1.1.0` from `master` and create a tag `v1.1.0` from branch `release/1.1.0`.
 
 ### Maintaining the Changelog
 
