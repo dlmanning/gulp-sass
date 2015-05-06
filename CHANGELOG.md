@@ -1,7 +1,8 @@
 # Gulp Sass Changelog
 
 ## v2.0.0-alpha.1
-### March 26, 2015
+**March 26, 2015**
+
 * **New** Added `renderSync` option that can be used through `sass.sync()`
 
 ### March 24, 2015
