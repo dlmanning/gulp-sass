@@ -1,3 +1,18 @@
+# Gulp Sass Changelog
+
+## v2.0.0-alpha.1
+**March 26, 2015**
+
+* **New** Added `renderSync` option that can be used through `sass.sync()`
+
+### March 24, 2015
+* **Change** Updated to `node-sass` 3.0.0-alpha.1
+* **New** Added support for `gulp-sourcemaps` including tests
+* **New** Added `.editorconfig` for development consistency
+* **New** Added linting and test for said linting
+* **Change** Updated the README
+* **New** `logError` function to make streaming errors possible instead of breaking the stream
+
 ### 1.3.3
 
 * updated to node-sass 2.0 (final)
