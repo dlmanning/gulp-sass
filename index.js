@@ -73,8 +73,8 @@ var gulpSass = function gulpSass(options, sync) {
         sassFileSrc = file.path.split('/').pop();
         // Replace the stdin with the original file name
         sassMap.sources[sassMap.sources.indexOf(sassMapFile)] = sassFileSrc;
-        // Replace the map file with the original file name
-        sassMap.file = sassFileSrc;
+        // Replace the map file with the original file name (but new extension)
+        sassMap.file = gutil.replaceExtension(sassFileSrc, '.css');
         // Apply the map
         applySourceMap(file, sassMap);
       }
