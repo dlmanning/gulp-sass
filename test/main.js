@@ -5,11 +5,6 @@ var gutil = require('gulp-util');
 var path = require('path');
 var fs = require('fs');
 var sass = require('../index');
-var gulp = require('gulp');
-var sourcemaps = require('gulp-sourcemaps');
-var postcss = require('gulp-postcss');
-var autoprefixer = require('autoprefixer-core');
-var tap = require('gulp-tap');
 
 var createVinyl = function createVinyl(filename, contents) {
   var base = path.join(__dirname, 'scss');
@@ -123,7 +118,12 @@ describe('gulp-sass -- async compile', function() {
     var stream = sass();
 
     stream.on('error', function(err) {
+      // Error must include message body
       err.message.indexOf('property "font" must be followed by a \':\'').should.not.equal(-1);
+      // Error must include file error occurs in
+      err.message.indexOf('test/scss/error.scss').should.not.equal(-1);
+      // Error must include line and column error occurs on
+      err.message.indexOf('2:7').should.not.equal(-1);
       done();
     });
     stream.write(errorFile);
@@ -384,29 +384,5 @@ describe('gulp-sass -- sync compile', function() {
       done();
     });
     stream.write(sassFile);
-  });
-
-  it('should work with gulp-sourcemaps and autoprefixer', function(done) {
-    var expectedSources = [
-      'includes/_cats.scss',
-      'includes/_dogs.sass',
-      'inheritance.scss'
-    ];
-
-    gulp.src(path.join(__dirname, '/scss/inheritance.scss'))
-      .pipe(sourcemaps.init())
-      .pipe(sass.sync())
-      .pipe(tap(function(file) {
-        should.exist(file.sourceMap);
-        file.sourceMap.sources.should.eql(expectedSources);
-      }))
-      .pipe(postcss([autoprefixer()]))
-      .pipe(sourcemaps.write())
-      .pipe(gulp.dest(path.join(__dirname, '/results/')))
-      .pipe(tap(function(file) {
-        should.exist(file.sourceMap);
-        file.sourceMap.sources.should.eql(expectedSources);
-      }))
-      .on('end', done);
   });
 });
