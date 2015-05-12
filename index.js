@@ -47,7 +47,7 @@ var gulpSass = function gulpSass(options, sync) {
       opts.includePaths = [];
     }
 
-    opts.includePaths.push(path.dirname(file.path));
+    opts.includePaths.unshift(path.dirname(file.path));
 
     // Generate Source Maps if plugin source-map present
     if (file.sourceMap) {
