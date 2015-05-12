@@ -123,7 +123,12 @@ describe('gulp-sass -- async compile', function() {
     var stream = sass();
 
     stream.on('error', function(err) {
+      // Error must include message body
       err.message.indexOf('property "font" must be followed by a \':\'').should.not.equal(-1);
+      // Error must include file error occurs in
+      err.message.indexOf('test/scss/error.scss').should.not.equal(-1);
+      // Error must include line and column error occurs on
+      err.message.indexOf('2:7').should.not.equal(-1);
       done();
     });
     stream.write(errorFile);

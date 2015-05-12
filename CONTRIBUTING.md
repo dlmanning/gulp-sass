@@ -4,11 +4,11 @@ Gulp Sass is a very light-weight [Gulp](https://github.com/gulpjs/gulp) wrapper 
 
 ## Submitting Issues
 
-* Before creating a new issue, perform a [cursory search](https://github.com/issues?utf8=%E2%9C%93&q=repo%3Adlmanning%2Fgulp-sass+repo%3Asass%2Fnode-sass+repo%3Asass%2Flibsass+repo%3Asass%2Fsass+repo%3Asass-eyeglass%2Feyeglass) in the Gulp Sass, Node Sass, Libsass, and main Sass repos to see if a similar issue has already been submitted.
+* Before creating a new issue, perform a [cursory search](https://github.com/issues?utf8=%E2%9C%93&q=repo%3Adlmanning%2Fgulp-sass+repo%3Asass%2Fnode-sass+repo%3Asass%2Flibsass+repo%3Asass%2Fsass+repo%3Asass-eyeglass%2Feyeglass) in the Gulp Sass, Node Sass, Libsass, and main Sass repos to see if a similar issue has already been submitted. Please also refer to our [Common Issues and Their Fixes](https://github.com/dlmanning/gulp-sass/wiki/Common-Issues-and-Their-Fixes) page for some basic troubleshooting.
 * You can create an issue [here](https://github.com/dlmanning/gulp-sass/issues). Please include as many details as possible in your report.
 * Issue titles should be descriptive, explaining at the high level what it is about.
-* Please include the version of `gulp-sass` you are using.
-* Do not open a [pull request](#pull-requests) to resolve an issue without first receiving feedback from a `collaborator` or `owner` and having them agree on a solution forward.
+* Please include the version of `gulp-sass`, Node, and NPM you are using, as well as what operating system you are having a problem on.
+* _Do not open a [pull request](#pull-requests) to resolve an issue without first receiving feedback from a `collaborator` or `owner` and having them agree on a solution forward_.
 * Include screenshots and animated GIFs whenever possible; they are immensely helpful.
 * Issues that have a number of sub-items that need to be complete should use [task lists](https://github.com/blog/1375%0A-task-lists-in-gfm-issues-pulls-comments) to track the sub-items in the main issue comment.
 

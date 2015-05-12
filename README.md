@@ -13,26 +13,38 @@ npm install gulp-sass --save-dev
 Something like this will compile your Sass files:
 
 ```javascript
+'use strict';
+
 var gulp = require('gulp');
 var sass = require('gulp-sass');
 
 gulp.task('sass', function () {
-	gulp.src('./scss/*.scss')
-		.pipe(sass().on('error', sass.logError))
-		.pipe(gulp.dest('./css'));
+  gulp.src('./sass/**/*.scss')
+    .pipe(sass().on('error', sass.logError))
+    .pipe(gulp.dest('./css'));
+});
+
+gulp.task('sass:watch', function () {
+  gulp.watch('./sass/**/*.scss', ['sass']);
 });
 ```
 
 You can also compile synchronously, doing something like this:
 
 ```javascript
+'use strict';
+
 var gulp = require('gulp');
 var sass = require('gulp-sass');
 
 gulp.task('sass', function () {
-  gulp.src('./scss/*.scss')
+  gulp.src('./sass/**/*.scss')
     .pipe(sass.sync().on('error', sass.logError))
     .pipe(gulp.dest('./css'));
+});
+
+gulp.task('sass:watch', function () {
+  gulp.watch('./sass/**/*.scss', ['sass']);
 });
 ```
 
