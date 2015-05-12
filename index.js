@@ -89,19 +89,12 @@ var gulpSass = function gulpSass(options, sync) {
     // Handles error message
     //////////////////////////////
     errorM = function errorM(error) {
-      var relativePath = '',
-          filePath = error.file === 'stdin' ? file.path : error.file,
-          message = '';
+      var filePath = error.file === 'stdin' ? file.path : error.file;
 
-      filePath = filePath ? filePath : file.path;
-      relativePath = path.relative(process.cwd(), filePath);
-
-      message += gutil.colors.underline(relativePath) + '\n';
-      message += gutil.colors.gray('  ' + error.line + ':' + error.column) + '  ';
-      message += error.message;
+      error.file = filePath ? filePath : file.path;
 
       return cb(new gutil.PluginError(
-          PLUGIN_NAME, message
+          PLUGIN_NAME, error
         ));
     };
 
@@ -145,7 +138,16 @@ gulpSass.sync = function sync(options) {
 // Log errors nicely
 //////////////////////////////
 gulpSass.logError = function logError(error) {
-  gutil.log(gutil.colors.red('[' + PLUGIN_NAME + '] ') + error.message);
+  var relativePath = '',
+      message = '';
+
+  relativePath = path.relative(process.cwd(), error.file);
+
+  message += gutil.colors.underline(relativePath) + '\n';
+  message += gutil.colors.gray('  ' + error.line + ':' + error.column) + '  ';
+  message += error.message;
+
+  return gutil.log(gutil.colors.red('[' + PLUGIN_NAME + '] ') + message);
 };
 
 //////////////////////////////
