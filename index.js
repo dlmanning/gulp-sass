@@ -100,8 +100,11 @@ var gulpSass = function gulpSass(options, sync) {
       message += gutil.colors.gray('  ' + error.line + ':' + error.column) + '  ';
       message += error.message;
 
+      error.messageFormatted = message;
+      error.message = gutil.colors.stripColor(message);
+
       return cb(new gutil.PluginError(
-          PLUGIN_NAME, message
+          PLUGIN_NAME, error
         ));
     };
 
@@ -145,7 +148,7 @@ gulpSass.sync = function sync(options) {
 // Log errors nicely
 //////////////////////////////
 gulpSass.logError = function logError(error) {
-  gutil.log(gutil.colors.red('[' + PLUGIN_NAME + '] ') + error.message);
+  gutil.log(gutil.colors.red('[' + PLUGIN_NAME + '] ') + error.messageFormatted);
 };
 
 //////////////////////////////
