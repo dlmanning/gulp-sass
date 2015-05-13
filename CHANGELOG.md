@@ -1,5 +1,12 @@
 # Gulp Sass Changelog
 
+## v2.0.1
+**May 13, 2015**
+
+* **Fix** Source maps now work as expected with Autoprefixer
+* **Fix** Current file directory `unshift` onto includePaths stack so it's checked first
+* **Fix** Error message returned is unformatted so as to not break other error handling (*i.e.* `gulp-notify`)
+
 ## v2.0.0
 **May 6, 2015**
 
