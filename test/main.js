@@ -10,6 +10,7 @@ var sourcemaps = require('gulp-sourcemaps');
 var postcss = require('gulp-postcss');
 var autoprefixer = require('autoprefixer-core');
 var tap = require('gulp-tap');
+var globule = require('globule');
 
 var createVinyl = function createVinyl(filename, contents) {
   var base = path.join(__dirname, 'scss');
@@ -411,6 +412,28 @@ describe('gulp-sass -- sync compile', function() {
       .pipe(tap(function(file) {
         should.exist(file.sourceMap);
         file.sourceMap.sources.should.eql(expectedSources);
+      }))
+      .on('end', done);
+  });
+
+  it('should work with gulp-sourcemaps and a globbed source', function(done) {
+    var files, filesContent, actualContent, expectedContent;
+
+    files = globule.find(path.join(__dirname, '/scss/globbed/**/*.scss'));
+    filesContent = {};
+
+    files.forEach(function(file) {
+      filesContent[path.basename(file)] = fs.readFileSync(file, 'utf8');
+    });
+
+    gulp.src(path.join(__dirname, '/scss/globbed/**/*.scss'))
+      .pipe(sourcemaps.init())
+      .pipe(sass.sync())
+      .pipe(tap(function(file) {
+        should.exist(file.sourceMap);
+        actualContent = file.sourceMap.sourcesContent[0];
+        expectedContent = filesContent[file.sourceMap.sources[0]];
+        actualContent.should.eql(expectedContent);
       }))
       .on('end', done);
   });
