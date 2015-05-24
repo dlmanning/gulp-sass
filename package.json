@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "gulp-util": "^3.0",
-    "node-sass": "^3.0.0",
+    "node-sass": "^3.1.2",
     "object-assign": "^2.0.0",
     "through2": "^0.6.3",
     "vinyl-sourcemaps-apply": "~0.1.1"
