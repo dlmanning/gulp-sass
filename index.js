@@ -34,6 +34,7 @@ var gulpSass = function gulpSass(options, sync) {
 
     opts = assign({}, options);
     opts.data = file.contents.toString();
+    opts.file = opts.file || file.path;
 
     // Ensure `indentedSyntax` is true if a `.sass` file
     if (path.extname(file.path) === '.sass') {
