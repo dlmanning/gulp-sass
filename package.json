@@ -30,6 +30,7 @@
   "devDependencies": {
     "autoprefixer-core": "^5.1.11",
     "eslint": "^0.17.1",
+    "globule": "^0.2.0",
     "gulp": "^3.8.11",
     "gulp-postcss": "^5.1.6",
     "gulp-sourcemaps": "^1.5.2",
