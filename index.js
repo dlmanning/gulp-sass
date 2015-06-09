@@ -149,6 +149,7 @@ gulpSass.sync = function sync(options) {
 //////////////////////////////
 gulpSass.logError = function logError(error) {
   gutil.log(gutil.colors.red('[' + PLUGIN_NAME + '] ') + error.messageFormatted);
+  this.emit('end');
 };
 
 //////////////////////////////
