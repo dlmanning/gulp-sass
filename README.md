@@ -52,6 +52,15 @@ gulp.task('sass:watch', function () {
 
 Pass in options just like you would for [`node-sass`](https://github.com/sass/node-sass#options); they will be passed along just as if you were using `node-sass`.
 
+For example:
+```js
+ gulp.task('sass', function () {
+ gulp.src('./sass/**/*.scss')
+   .pipe(sass({outputStyle: 'compressed'}))
+   .pipe(gulp.dest('./css'));
+});
+```
+
 ## Source Maps
 
 `gulp-sass` can be used in tandem with [gulp-sourcemaps](https://github.com/floridoo/gulp-sourcemaps) to generate source maps for the Sass to CSS compilation. You will need to initialize [gulp-sourcemaps](https://github.com/floridoo/gulp-sourcemaps) prior to running `gulp-sass` and write the source maps after.
