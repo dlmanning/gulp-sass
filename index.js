@@ -25,6 +25,9 @@ var gulpSass = function gulpSass(options, sync) {
     if (file.isStream()) {
       return cb(new gutil.PluginError(PLUGIN_NAME, 'Streaming not supported'));
     }
+    if (!file.contents.length) {
+      return cb(null, file);
+    }
     if (path.basename(file.path).indexOf('_') === 0) {
       return cb();
     }
