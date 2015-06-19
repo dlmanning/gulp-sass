@@ -414,4 +414,11 @@ describe('gulp-sass -- sync compile', function() {
       }))
       .on('end', done);
   });
+
+  it('should work with empty files', function(done) {
+    gulp.src(path.join(__dirname, '/scss/empty.scss'))
+      .pipe(sass.sync())
+      .pipe(gulp.dest(path.join(__dirname, '/results/')))
+      .on('end', done);
+  });
 });
