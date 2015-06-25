@@ -1,5 +1,10 @@
 # Gulp Sass Changelog
 
+## v2.0.2
+**June 25, 2015**
+
+* **Fix** Error in watch stream preventing watch from continuing
+
 ## v2.0.1
 **May 13, 2015**
 
