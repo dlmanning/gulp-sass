@@ -1,5 +1,10 @@
 # Gulp Sass Changelog
 
+## v2.0.3
+**June 27, 2015**
+
+* **Fix** Empty partials no longer copied to CSS folder
+
 ## v2.0.2
 **June 25, 2015**
 
