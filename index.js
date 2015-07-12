@@ -74,7 +74,7 @@ var gulpSass = function gulpSass(options, sync) {
         // Grab the stdout and transform it into stdin
         sassMapFile = sassMap.file.replace('stdout', 'stdin');
         // Grab the base file name that's being worked on
-        sassFileSrc = file.path.split('/').pop();
+        sassFileSrc = file.relative;
         // Replace the stdin with the original file name
         sassMap.sources[sassMap.sources.indexOf(sassMapFile)] = sassFileSrc;
         // Replace the map file with the original file name (but new extension)
