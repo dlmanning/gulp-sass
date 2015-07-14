@@ -415,6 +415,28 @@ describe('gulp-sass -- sync compile', function() {
       .on('end', done);
   });
 
+  it('should work with gulp-sourcemaps and autoprefixer with different file.base', function(done) {
+    var expectedSources = [
+      'includes/_cats.scss',
+      'includes/_dogs.sass',
+      'scss/inheritance.scss'
+    ];
+
+    gulp.src(path.join(__dirname, '/scss/inheritance.scss'), { 'base': 'test' })
+      .pipe(sourcemaps.init())
+      .pipe(sass.sync())
+      .pipe(tap(function(file) {
+        should.exist(file.sourceMap);
+        file.sourceMap.sources.should.eql(expectedSources);
+      }))
+      .pipe(postcss([autoprefixer()]))
+      .pipe(tap(function(file) {
+        should.exist(file.sourceMap);
+        file.sourceMap.sources.should.eql(expectedSources);
+      }))
+      .on('end', done);
+  });
+
   it('should work with empty files', function(done) {
     gulp.src(path.join(__dirname, '/scss/empty.scss'))
       .pipe(sass.sync())
