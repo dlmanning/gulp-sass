@@ -1,6 +1,6 @@
 {
   "name": "gulp-sass",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "Gulp plugin for sass",
   "main": "index.js",
   "scripts": {
