@@ -79,12 +79,14 @@ var gulpSass = function gulpSass(options, sync) {
         // Grab the base file name that's being worked on
         sassFileSrc = file.relative;
         // Grab the path portion of the file that's being worked on
-        sassFileSrcPath = sassFileSrc.substring(0, sassFileSrc.lastIndexOf('/'));
+        sassFileSrcPath = sassFileSrc.split(path.sep);
+        sassFileSrcPath.pop();
+        sassFileSrcPath = sassFileSrcPath.join(path.sep);
         if (sassFileSrcPath) {
           //Prepend the path to all files in the sources array except the file that's being worked on
           for (sourceFileIndex = 0; sourceFileIndex < sassMap.sources.length; sourceFileIndex++) {
             if (sourceFileIndex !== sassMap.sources.indexOf(sassMapFile)) {
-              sassMap.sources[sourceFileIndex] = sassFileSrcPath + '/' + sassMap.sources[sourceFileIndex];
+              sassMap.sources[sourceFileIndex] = path.join(sassFileSrcPath, sassMap.sources[sourceFileIndex]);
             }
           }
         }
