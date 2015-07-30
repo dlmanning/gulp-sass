@@ -1,5 +1,12 @@
 # Gulp Sass Changelog
 
+## v2.0.4
+**July 15, 2015**
+
+* **Fix** Relative file path now uses `file.relative` instead of arcane `split('/').pop` magic. Resolves lots of issues with source map paths.
+
+* **Fix** Empty partials no longer copied to CSS folder
+
 ## v2.0.3
 **June 27, 2015**
 
