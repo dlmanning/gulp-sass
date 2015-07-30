@@ -57,6 +57,7 @@ var gulpSass = function gulpSass(options, sync) {
     if (file.sourceMap) {
       opts.sourceMap = file.path;
       opts.omitSourceMapUrl = true;
+      opts.sourceMapContents = true;
     }
 
     //////////////////////////////
@@ -65,7 +66,9 @@ var gulpSass = function gulpSass(options, sync) {
     filePush = function filePush(sassObj) {
       var sassMap,
           sassMapFile,
-          sassFileSrc;
+          sassFileSrc,
+          sassFileSrcPath,
+          sourceFileIndex;
 
       // Build Source Maps!
       if (sassObj.map) {
@@ -75,6 +78,16 @@ var gulpSass = function gulpSass(options, sync) {
         sassMapFile = sassMap.file.replace('stdout', 'stdin');
         // Grab the base file name that's being worked on
         sassFileSrc = file.relative;
+        // Grab the path portion of the file that's being worked on
+        sassFileSrcPath = sassFileSrc.substring(0, sassFileSrc.lastIndexOf('/'));
+        if (sassFileSrcPath) {
+          //Prepend the path to all files in the sources array except the file that's being worked on
+          for (sourceFileIndex = 0; sourceFileIndex < sassMap.sources.length; sourceFileIndex++) {
+            if (sourceFileIndex !== sassMap.sources.indexOf(sassMapFile)) {
+              sassMap.sources[sourceFileIndex] = sassFileSrcPath + '/' + sassMap.sources[sourceFileIndex];
+            }
+          }
+        }
         // Replace the stdin with the original file name
         sassMap.sources[sassMap.sources.indexOf(sassMapFile)] = sassFileSrc;
         // Replace the map file with the original file name (but new extension)
