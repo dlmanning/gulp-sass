@@ -75,8 +75,14 @@ var gulpSass = function gulpSass(options, sync) {
         sassMapFile = sassMap.file.replace('stdout', 'stdin');
         // Grab the base file name that's being worked on
         sassFileSrc = file.relative;
-        // Replace the stdin with the original file name
-        sassMap.sources[sassMap.sources.indexOf(sassMapFile)] = sassFileSrc;
+        // Fix the sources to be relative to the vinyl base file
+        sassMap.sources = sassMap.sources.map(function(f){
+          return f == sassMapFile
+            // Replace the stdin with the original file name
+            ? sassFileSrc
+            // Get the path relative to base, not the original file path
+            : path.join(path.dirname(sassFileSrc), f);
+        });
         // Replace the map file with the original file name (but new extension)
         sassMap.file = gutil.replaceExtension(sassFileSrc, '.css');
         // Apply the map
