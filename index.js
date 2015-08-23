@@ -11,7 +11,7 @@ var PLUGIN_NAME = 'gulp-sass';
 //////////////////////////////
 // Main Gulp Sass function
 //////////////////////////////
-var gulpSass = function gulpSass(options, sync) {
+var gulpSass = function gulpSass(options, async) {
   return through.obj(function(file, enc, cb) {
     var opts,
         filePush,
@@ -112,7 +112,7 @@ var gulpSass = function gulpSass(options, sync) {
         ));
     };
 
-    if (sync !== true) {
+    if (async === true) {
       //////////////////////////////
       // Async Sass render
       //////////////////////////////
