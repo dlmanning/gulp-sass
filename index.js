@@ -33,7 +33,7 @@ var gulpSass = function gulpSass(options, sync) {
     opts = assign({}, options);
     opts.data = file.contents.toString();
 
-    if ((path.basename(file.path).indexOf('_') === 0) && (!opts.processUnderscored)) {
+    if ((path.basename(file.path).indexOf('_') === 0) && (opts.compilePartials !== true)) {
       return cb();
     }
 

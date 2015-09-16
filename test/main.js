@@ -72,6 +72,22 @@ describe('gulp-sass -- async compile', function() {
     stream.write(sassFile);
   });
 
+  it('should compile partial sass file with option', function(done) {
+    var sassFile = createVinyl('_partial.scss');
+    var stream = sass({ 'compilePartials': true });
+    stream.on('data', function(cssFile) {
+      should.exist(cssFile);
+      should.exist(cssFile.path);
+      should.exist(cssFile.relative);
+      should.exist(cssFile.contents);
+      String(cssFile.contents).should.equal(
+        fs.readFileSync(path.join(__dirname, 'expected/_partial.css'), 'utf8')
+      );
+      done();
+    });
+    stream.write(sassFile);
+  });
+
   it('should compile multiple sass files', function(done) {
     var files = [
       createVinyl('mixins.scss'),
