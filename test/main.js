@@ -129,7 +129,7 @@ describe('gulp-sass -- async compile', function() {
       // Error must include file error occurs in
       err.message.indexOf('test/scss/error.scss').should.not.equal(-1);
       // Error must include line and column error occurs on
-      err.message.indexOf('2:7').should.not.equal(-1);
+      err.message.indexOf('2:3').should.not.equal(-1);
       done();
     });
     stream.write(errorFile);
