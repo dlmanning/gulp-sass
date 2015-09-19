@@ -1,5 +1,10 @@
 # Gulp Sass Changelog
 
+## v2.0.5
+**September 18, 2015**
+
+* **New** Added `compilePartials` option that can be used to process partials from `gulp.src()`. 
+
 ## v2.0.4
 **July 15, 2015**
 

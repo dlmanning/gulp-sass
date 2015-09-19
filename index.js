@@ -25,9 +25,6 @@ var gulpSass = function gulpSass(options, sync) {
     if (file.isStream()) {
       return cb(new gutil.PluginError(PLUGIN_NAME, 'Streaming not supported'));
     }
-    if (path.basename(file.path).indexOf('_') === 0) {
-      return cb();
-    }
     if (!file.contents.length) {
       return cb(null, file);
     }
@@ -35,6 +32,10 @@ var gulpSass = function gulpSass(options, sync) {
 
     opts = assign({}, options);
     opts.data = file.contents.toString();
+
+    if ((path.basename(file.path).indexOf('_') === 0) && (opts.compilePartials !== true)) {
+      return cb();
+    }
 
     // Ensure `indentedSyntax` is true if a `.sass` file
     if (path.extname(file.path) === '.sass') {

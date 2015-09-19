@@ -54,6 +54,14 @@ gulp.task('sass:watch', function () {
 
 Pass in options just like you would for [`node-sass`](https://github.com/sass/node-sass#options); they will be passed along just as if you were using `node-sass`.
 
+There is only one additional option to process underscored files:
+```js
+ gulp.task('sass', function () {
+ gulp.src('./sass/**/*.scss')
+   .pipe(sass({compilePartials: true}))
+   .pipe(gulp.dest('./css'));
+```
+
 For example:
 ```js
  gulp.task('sass', function () {
