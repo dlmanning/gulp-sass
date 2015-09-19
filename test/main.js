@@ -438,8 +438,8 @@ describe('gulp-sass -- sync compile', function() {
 
   it('should work with gulp-sourcemaps and autoprefixer with different file.base', function(done) {
     var expectedSources = [
-      'includes/_cats.scss',
-      'includes/_dogs.sass',
+      'scss/includes/_cats.scss',
+      'scss/includes/_dogs.sass',
       'scss/inheritance.scss'
     ];
 
