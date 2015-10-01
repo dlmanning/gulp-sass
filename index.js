@@ -36,24 +36,14 @@ var gulpSass = function gulpSass(options, sync) {
 
     opts = assign({}, options);
     opts.data = file.contents.toString();
+
+    // we set the file path here so that libsass can correctly resolve import paths
     opts.file = file.path;
 
     // Ensure `indentedSyntax` is true if a `.sass` file
     if (path.extname(file.path) === '.sass') {
       opts.indentedSyntax = true;
     }
-
-    // Ensure file's parent directory in the include path
-    if (opts.includePaths) {
-      if (typeof opts.includePaths === 'string') {
-        opts.includePaths = [opts.includePaths];
-      }
-    }
-    else {
-      opts.includePaths = [];
-    }
-
-    opts.includePaths.unshift(path.dirname(file.path));
 
     // Generate Source Maps if plugin source-map present
     if (file.sourceMap) {
