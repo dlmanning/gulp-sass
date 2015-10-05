@@ -5,6 +5,7 @@ var gutil = require('gulp-util');
 var path = require('path');
 var fs = require('fs');
 var sass = require('../index');
+var rimraf = require('rimraf');
 var gulp = require('gulp');
 var sourcemaps = require('gulp-sourcemaps');
 var postcss = require('gulp-postcss');
@@ -257,6 +258,10 @@ describe('gulp-sass -- async compile', function() {
 });
 
 describe('gulp-sass -- sync compile', function() {
+  beforeEach(function(done) {
+    rimraf(path.join(__dirname, '/results/'), done);
+  });
+
   it('should pass file when it isNull()', function(done) {
     var stream = sass.sync();
     var emptyFile = {
