@@ -56,6 +56,23 @@ describe('gulp-sass -- async compile', function() {
     stream.write(streamFile);
   });
 
+  it('should compile an empty sass file', function(done) {
+    var sassFile = createVinyl('empty.scss');
+    var stream = sass();
+    stream.on('data', function(cssFile) {
+      should.exist(cssFile);
+      should.exist(cssFile.path);
+      should.exist(cssFile.relative);
+      should.exist(cssFile.contents);
+      should.equal(path.basename(cssFile.path), 'empty.css');
+      String(cssFile.contents).should.equal(
+        fs.readFileSync(path.join(__dirname, 'expected/empty.css'), 'utf8')
+      );
+      done();
+    });
+    stream.write(sassFile);
+  });
+
   it('should compile a single sass file', function(done) {
     var sassFile = createVinyl('mixins.scss');
     var stream = sass();
@@ -462,6 +479,14 @@ describe('gulp-sass -- sync compile', function() {
     gulp.src(path.join(__dirname, '/scss/empty.scss'))
       .pipe(sass.sync())
       .pipe(gulp.dest(path.join(__dirname, '/results/')))
+      .pipe(tap(function() {
+        try {
+          fs.statSync(path.join(__dirname, '/results/empty.css'));
+        }
+        catch (e) {
+          should.fail(false, true, 'Empty file was produced');
+        }
+      }))
       .on('end', done);
   });
 });

@@ -29,6 +29,7 @@ var gulpSass = function gulpSass(options, sync) {
       return cb();
     }
     if (!file.contents.length) {
+      file.path = gutil.replaceExtension(file.path, '.css');
       return cb(null, file);
     }
 
