@@ -147,7 +147,7 @@ var gulpSass = function gulpSass(options, sync) {
 
         filePush(result);
       }
-      catch(error) {
+      catch (error) {
         return errorM(error);
       }
     }
