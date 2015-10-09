@@ -12,6 +12,7 @@ var PLUGIN_NAME = 'gulp-sass';
 // Main Gulp Sass function
 //////////////////////////////
 var gulpSass = function gulpSass(options, sync) {
+  var firstFile = true;
   return through.obj(function(file, enc, cb) {
     var opts,
         filePush,
@@ -25,13 +26,14 @@ var gulpSass = function gulpSass(options, sync) {
     if (file.isStream()) {
       return cb(new gutil.PluginError(PLUGIN_NAME, 'Streaming not supported'));
     }
-    if (path.basename(file.path).indexOf('_') === 0) {
+    if (!firstFile && path.basename(file.path).indexOf('_') === 0) {
       return cb();
     }
     if (!file.contents.length) {
       return cb(null, file);
     }
 
+    firstFile = false;
 
     opts = assign({}, options);
     opts.data = file.contents.toString();
