@@ -95,6 +95,6 @@ gulp.src('./scss/*.scss')
 
 If you have a feature request/question how Sass works/concerns on how your Sass gets compiled/errors in your compiling, it's likely a `libsass` or `Sass` issue and you should file your issue with one of those projects.
 
-If you're having problems with the options you're passing in, it's likely a `node-sass` or `libsass` issued and you should file your issue with one of those projects.
+If you're having problems with the options you're passing in, it's likely a `node-sass` or `libsass` issue and you should file your issue with one of those projects.
 
 We may, in the course of resolving issues, direct you to one of these other projects. If we do so, please follow up by searching that project's issue queue (both open and closed) for your problem and, if it doesn't exist, filing an issue with them.
