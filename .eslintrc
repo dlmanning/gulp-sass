@@ -23,11 +23,10 @@ rules:
   # Disallow warning comments
   no-warning-comments:
     - 1
-    - terms
+    - terms:
         - todo
         - fixme
-      location
-        - anywhere
+      location: anywhere
 
   # Warns when variables are defined but never used
   no-unused-vars: 1
@@ -114,7 +113,6 @@ rules:
   space-after-keywords:
     - 2
     - always
-    - checkFunctionKeyword: true
 
   # Enforces quoted property names
   quote-props:
@@ -146,10 +144,17 @@ rules:
     - 2
     - single
 
-  # Enforces space inside of brackets (except property name)
-  space-in-brackets:
+  # Disallow or enforce spaces inside of curly braces in objects.
+  object-curly-spacing:
     - 2
     - always
-    - propertyName: false
-      singleValue: false
 
+  # Disallow or enforce spaces inside of brackets.
+  array-bracket-spacing:
+    - 2
+    - never
+
+  # Disallow or enforce spaces inside of computed properties.
+  computed-property-spacing:
+    - 2
+    - never
