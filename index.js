@@ -114,8 +114,7 @@ var gulpSass = function gulpSass(options, sync) {
       relativePath = path.relative(process.cwd(), filePath);
 
       message += gutil.colors.underline(relativePath) + '\n';
-      message += gutil.colors.gray('  ' + error.line + ':' + error.column) + '  ';
-      message += error.message;
+      message += error.formatted;
 
       error.messageFormatted = message;
       error.message = gutil.colors.stripColor(message);
