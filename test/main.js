@@ -272,6 +272,24 @@ describe('gulp-sass -- async compile', function() {
       stream.write(file);
     });
   });
+
+  it('should work with options.data passed in', function(done) {
+    var sassFile = createVinyl('data.scss');
+    var stream = sass({
+      'data': '$color: red;'
+    });
+    stream.on('data', function(cssFile) {
+      should.exist(cssFile);
+      should.exist(cssFile.path);
+      should.exist(cssFile.relative);
+      should.exist(cssFile.contents);
+      String(cssFile.contents).should.equal(
+        fs.readFileSync(path.join(__dirname, 'expected/data.css'), 'utf8')
+      );
+      done();
+    });
+    stream.write(sassFile);
+  });
 });
 
 describe('gulp-sass -- sync compile', function() {
