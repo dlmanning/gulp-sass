@@ -90,7 +90,17 @@ var gulpSass = function gulpSass(options, sync) {
           }
         }
         // Replace the stdin with the original file name
-        sassMap.sources[sassMap.sources.indexOf(sassMapFile)] = sassFileSrc;
+        // sassMap.sources[sassMap.sources.indexOf(sassMapFile)] = sassFileSrc;
+
+        // Commented out line 93 and added lines 95 - 103
+        // Remove 'stdin' from souces and replace with filenames!
+        var srcs = sassMap.sources.filter(function(src) {
+          if (src.indexOf("stdin") === -1) {
+            return src;
+         }
+        });
+        sassMap.sources = srcs;
+        sassMap.sources.unshift(sassFileSrc);
         // Replace the map file with the original file name (but new extension)
         sassMap.file = gutil.replaceExtension(sassFileSrc, '.css');
         // Apply the map
