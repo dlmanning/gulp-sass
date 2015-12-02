@@ -21,7 +21,7 @@ var gulp = require('gulp');
 var sass = require('gulp-sass');
 
 gulp.task('sass', function () {
-  gulp.src('./sass/**/*.scss')
+  return gulp.src('./sass/**/*.scss')
     .pipe(sass().on('error', sass.logError))
     .pipe(gulp.dest('./css'));
 });
@@ -40,7 +40,7 @@ var gulp = require('gulp');
 var sass = require('gulp-sass');
 
 gulp.task('sass', function () {
-  gulp.src('./sass/**/*.scss')
+  return gulp.src('./sass/**/*.scss')
     .pipe(sass.sync().on('error', sass.logError))
     .pipe(gulp.dest('./css'));
 });
@@ -55,10 +55,11 @@ gulp.task('sass:watch', function () {
 Pass in options just like you would for [`node-sass`](https://github.com/sass/node-sass#options); they will be passed along just as if you were using `node-sass`.
 
 For example:
-```js
- gulp.task('sass', function () {
- gulp.src('./sass/**/*.scss')
-   .pipe(sass({outputStyle: 'compressed'}))
+
+```javascript
+gulp.task('sass', function () {
+ return gulp.src('./sass/**/*.scss')
+   .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
    .pipe(gulp.dest('./css'));
 });
 ```
@@ -70,23 +71,26 @@ For example:
 ```javascript
 var sourcemaps = require('gulp-sourcemaps');
 
-gulp.src('./scss/*.scss')
+gulp.task('sass', function () {
+ return gulp.src('./sass/**/*.scss')
   .pipe(sourcemaps.init())
-    .pipe(sass())
+  .pipe(sass().on('error', sass.logError))
   .pipe(sourcemaps.write())
   .pipe(gulp.dest('./css'));
+});
 ```
 
 By default, [gulp-sourcemaps](https://github.com/floridoo/gulp-sourcemaps) writes the source maps inline in the compiled CSS files. To write them to a separate file, specify a path relative to the `gulp.dest()` destination in the `sourcemaps.write()` function.
 
 ```javascript
 var sourcemaps = require('gulp-sourcemaps');
-
-gulp.src('./scss/*.scss')
+gulp.task('sass', function () {
+ return gulp.src('./sass/**/*.scss')
   .pipe(sourcemaps.init())
-    .pipe(sass())
+  .pipe(sass().on('error', sass.logError))
   .pipe(sourcemaps.write('./maps'))
   .pipe(gulp.dest('./css'));
+});
 ```
 
 # Issues
