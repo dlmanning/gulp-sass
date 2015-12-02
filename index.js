@@ -69,7 +69,8 @@ var gulpSass = function gulpSass(options, sync) {
           sassMapFile,
           sassFileSrc,
           sassFileSrcPath,
-          sourceFileIndex;
+          sourceFileIndex
+          filteredSources;
 
       // Build Source Maps!
       if (sassObj.map) {
@@ -90,12 +91,12 @@ var gulpSass = function gulpSass(options, sync) {
           }
         }
         // Remove 'stdin' from souces and replace with filenames!
-        var srcs = sassMap.sources.filter(function(src) {
+        filteredSources = sassMap.sources.filter(function(src) {
           if (src.indexOf('stdin') === -1) {
             return src;
-         }
+          }
         });
-        sassMap.sources = srcs;
+        sassMap.sources = filteredSources;
         sassMap.sources.unshift(sassFileSrc);
         // Replace the map file with the original file name (but new extension)
         sassMap.file = gutil.replaceExtension(sassFileSrc, '.css');
