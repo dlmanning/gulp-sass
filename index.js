@@ -69,7 +69,7 @@ var gulpSass = function gulpSass(options, sync) {
           sassMapFile,
           sassFileSrc,
           sassFileSrcPath,
-          sourceFileIndex
+          sourceFileIndex,
           filteredSources;
 
       // Build Source Maps!
