@@ -60,35 +60,33 @@ var gulpSass = function gulpSass(options, sync) {
           sassMapFile,
           sassFileSrc,
           sassFileSrcPath,
-          sourceFileIndex,
-          filteredSources;
+          sourceFileIndex;
 
       // Build Source Maps!
       if (sassObj.map) {
         // Transform map into JSON
         sassMap = JSON.parse(sassObj.map.toString());
         // Grab the stdout and transform it into stdin
-        sassMapFile = sassMap.file.replace('stdout', 'stdin');
+        sassMapFile = sassMap.file.replace(/^stdout$/, 'stdin');
         // Grab the base file name that's being worked on
         sassFileSrc = file.relative;
         // Grab the path portion of the file that's being worked on
         sassFileSrcPath = path.dirname(sassFileSrc);
         if (sassFileSrcPath) {
           //Prepend the path to all files in the sources array except the file that's being worked on
-          for (sourceFileIndex = 0; sourceFileIndex < sassMap.sources.length; sourceFileIndex++) {
-            if (sourceFileIndex !== sassMap.sources.indexOf(sassMapFile)) {
-              sassMap.sources[sourceFileIndex] = path.join(sassFileSrcPath, sassMap.sources[sourceFileIndex]);
-            }
-          }
+          sourceFileIndex = sassMap.sources.indexOf(sassMapFile);
+          sassMap.sources = sassMap.sources.map(function(source, index) {
+            return (index === sourceFileIndex) ? source : path.join(sassFileSrcPath, source);
+          });
         }
+
         // Remove 'stdin' from souces and replace with filenames!
-        filteredSources = sassMap.sources.filter(function(src) {
-          if (src.indexOf('stdin') === -1) {
+        sassMap.sources = sassMap.sources.filter(function(src) {
+          if (src !== 'stdin') {
             return src;
           }
         });
-        sassMap.sources = filteredSources;
-        sassMap.sources.unshift(sassFileSrc);
+
         // Replace the map file with the original file name (but new extension)
         sassMap.file = gutil.replaceExtension(sassFileSrc, '.css');
         // Apply the map
