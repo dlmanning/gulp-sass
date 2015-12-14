@@ -147,7 +147,7 @@ describe('gulp-sass -- async compile', function() {
       // Error must include file error occurs in
       err.message.indexOf('test/scss/error.scss').should.not.equal(-1);
       // Error must include line and column error occurs on
-      err.message.indexOf('on line 2').should.not.equal(-1);
+      err.message.indexOf('on line 3').should.not.equal(-1);
       done();
     });
     stream.write(errorFile);
@@ -271,6 +271,24 @@ describe('gulp-sass -- async compile', function() {
     files.forEach(function (file) {
       stream.write(file);
     });
+  });
+
+  it('should work with options.data passed in', function(done) {
+    var sassFile = createVinyl('data.scss');
+    var stream = sass({
+      'data': '$color: red;'
+    });
+    stream.on('data', function(cssFile) {
+      should.exist(cssFile);
+      should.exist(cssFile.path);
+      should.exist(cssFile.relative);
+      should.exist(cssFile.contents);
+      String(cssFile.contents).should.equal(
+        fs.readFileSync(path.join(__dirname, 'expected/data.css'), 'utf8')
+      );
+      done();
+    });
+    stream.write(sassFile);
   });
 });
 
