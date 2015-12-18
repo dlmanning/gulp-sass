@@ -379,6 +379,7 @@ describe('gulp-sass -- sync compile', function() {
 
     stream.on('error', function(err) {
       err.message.indexOf('property "font" must be followed by a \':\'').should.not.equal(-1);
+      err.relativePath.should.equal('test/scss/error.scss');
       done();
     });
     stream.write(errorFile);
