@@ -153,6 +153,20 @@ describe('gulp-sass -- async compile', function() {
     stream.write(errorFile);
   });
 
+  it('should preserve the original sass error message', function(done) {
+    var errorFile = createVinyl('error.scss');
+    var stream = sass();
+
+    stream.on('error', function(err) {
+      // Error must include original error message
+      err.messageOriginal.indexOf('property "font" must be followed by a \':\'').should.not.equal(-1);
+      // Error must not format or change the original error message
+      err.messageOriginal.indexOf('on line 2').should.equal(-1);
+      done();
+    });
+    stream.write(errorFile);
+  });
+
    it('should compile a single sass file if the file name has been changed in the stream', function(done) {
     var sassFile = createVinyl('mixins.scss');
     var stream;
