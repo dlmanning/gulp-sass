@@ -217,9 +217,9 @@ describe('gulp-sass -- async compile', function() {
 
     // Expected sources are relative to file.base
     var expectedSources = [
+      'inheritance.scss',
       'includes/_cats.scss',
       'includes/_dogs.sass',
-      'inheritance.scss'
     ];
 
     var stream;
@@ -406,9 +406,9 @@ describe('gulp-sass -- sync compile', function() {
 
     // Expected sources are relative to file.base
     var expectedSources = [
+      'inheritance.scss',
       'includes/_cats.scss',
       'includes/_dogs.sass',
-      'inheritance.scss'
     ];
 
     var stream;
@@ -432,10 +432,16 @@ describe('gulp-sass -- sync compile', function() {
   });
 
   it('should work with gulp-sourcemaps and autoprefixer', function(done) {
-    var expectedSources = [
+    var expectedSourcesBefore = [
+      'inheritance.scss',
       'includes/_cats.scss',
       'includes/_dogs.sass',
-      'inheritance.scss'
+    ];
+
+    var expectedSourcesAfter = [
+      'includes/_cats.scss',
+      'includes/_dogs.sass',
+      'inheritance.scss',
     ];
 
     gulp.src(path.join(__dirname, '/scss/inheritance.scss'))
@@ -443,14 +449,14 @@ describe('gulp-sass -- sync compile', function() {
       .pipe(sass.sync())
       .pipe(tap(function(file) {
         should.exist(file.sourceMap);
-        file.sourceMap.sources.should.eql(expectedSources);
+        file.sourceMap.sources.should.eql(expectedSourcesBefore);
       }))
       .pipe(postcss([autoprefixer()]))
       .pipe(sourcemaps.write())
       .pipe(gulp.dest(path.join(__dirname, '/results/')))
       .pipe(tap(function(file) {
         should.exist(file.sourceMap);
-        file.sourceMap.sources.should.eql(expectedSources);
+        file.sourceMap.sources.should.eql(expectedSourcesAfter);
       }))
       .on('end', done);
   });
@@ -476,7 +482,13 @@ describe('gulp-sass -- sync compile', function() {
   });
 
   it('should work with gulp-sourcemaps and autoprefixer with different file.base', function(done) {
-    var expectedSources = [
+    var expectedSourcesBefore = [
+      'scss/inheritance.scss',
+      'scss/includes/_cats.scss',
+      'scss/includes/_dogs.sass'
+    ];
+
+    var expectedSourcesAfter = [
       'scss/includes/_cats.scss',
       'scss/includes/_dogs.sass',
       'scss/inheritance.scss'
@@ -487,12 +499,12 @@ describe('gulp-sass -- sync compile', function() {
       .pipe(sass.sync())
       .pipe(tap(function(file) {
         should.exist(file.sourceMap);
-        file.sourceMap.sources.should.eql(expectedSources);
+        file.sourceMap.sources.should.eql(expectedSourcesBefore);
       }))
       .pipe(postcss([autoprefixer()]))
       .pipe(tap(function(file) {
         should.exist(file.sourceMap);
-        file.sourceMap.sources.should.eql(expectedSources);
+        file.sourceMap.sources.should.eql(expectedSourcesAfter);
       }))
       .on('end', done);
   });
