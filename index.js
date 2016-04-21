@@ -45,6 +45,18 @@ var gulpSass = function gulpSass(options, sync) {
       opts.indentedSyntax = true;
     }
 
+    // Ensure file's parent directory in the include path
+    if (opts.includePaths) {
+      if (typeof opts.includePaths === 'string') {
+        opts.includePaths = [opts.includePaths];
+      }
+    }
+    else {
+      opts.includePaths = [];
+    }
+
+    opts.includePaths.unshift(path.dirname(file.path));
+
     // Generate Source Maps if plugin source-map present
     if (file.sourceMap) {
       opts.sourceMap = file.path;
