@@ -4,6 +4,7 @@ var gutil = require('gulp-util');
 var through = require('through2');
 var assign = require('object-assign');
 var path = require('path');
+var stripAnsi = require('strip-ansi');
 var applySourceMap = require('vinyl-sourcemaps-apply');
 
 var PLUGIN_NAME = 'gulp-sass';
@@ -127,7 +128,7 @@ var gulpSass = function gulpSass(options, sync) {
 
       error.messageFormatted = message;
       error.messageOriginal = error.message;
-      error.message = gutil.colors.stripColor(message);
+      error.message = stripAnsi(message);
 
       error.relativePath = relativePath;
 
