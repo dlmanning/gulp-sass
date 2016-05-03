@@ -1,3 +1,5 @@
+root: true
+
 env:
   mocha: true
   node: true
@@ -110,9 +112,9 @@ rules:
     - always
 
   # Enforces spaces following keywords
-  space-after-keywords:
+  keyword-spacing:
     - 2
-    - always
+    - after: true
 
   # Enforces quoted property names
   quote-props:
