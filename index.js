@@ -2,7 +2,7 @@
 
 var gutil = require('gulp-util');
 var through = require('through2');
-var assign = require('object-assign');
+var clonedeep = require('lodash.clonedeep');
 var path = require('path');
 var applySourceMap = require('vinyl-sourcemaps-apply');
 
@@ -34,7 +34,7 @@ var gulpSass = function gulpSass(options, sync) {
     }
 
 
-    opts = assign({}, options);
+    opts = clonedeep(options || {});
     opts.data = file.contents.toString();
 
     // we set the file path here so that libsass can correctly resolve import paths
