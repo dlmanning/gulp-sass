@@ -1,5 +1,10 @@
 # Gulp Sass Changelog
 
+## v2.3.3
+**November 16, 2016**
+
+* **Change** :arrow_up: Bump to Node Sass 3.12.5 to support Node.JS 7
+
 ## v2.1.0-beta
 **September 21, 2015**
 
