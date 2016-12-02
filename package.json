@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/dlmanning/gulp-sass"
+    "url": "git://github.com/tenon-io/gulp-sass"
   },
   "keywords": [
     "gulpplugin",
@@ -18,7 +18,7 @@
   "author": "David Manning",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/dlmanning/gulp-sass/issues"
+    "url": "https://github.com/tenon-io/gulp-sass/issues"
   },
   "dependencies": {
     "gulp-util": "^3.0",
