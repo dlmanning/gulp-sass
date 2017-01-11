@@ -36,6 +36,7 @@ var gulpSass = function gulpSass(options, sync) {
 
     opts = clonedeep(options || {});
     opts.data = file.contents.toString();
+    opts.file = (opts.file) ? file.path : null;
 
     // we set the file path here so that libsass can correctly resolve import paths
     opts.file = file.path;
