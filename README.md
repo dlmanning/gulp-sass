@@ -93,6 +93,24 @@ gulp.task('sass', function () {
 });
 ```
 
+## Use with Compass
+
+`gulp-sass` use `node-sass` for not depend if Ruby already has installed in your system, that why you cann't simple use ``@import "compass";`` inside your style sheets, but don't worry is easy to resolve this, just follow the next steps:
+
+1. Install `compass-mixins` and save in your package.json for future uses  
+``npm install --save compass-mixins``
+2. Update your gulpfile.js and add `includePaths` option inside your task
+```javascript
+var gulp = require('gulp');
+var sass = require('gulp-sass');
+
+gulp.task('sass', function() {
+ return gulp.src('./sass/**/*.scss')
+  .pipe(sass({includePaths: ['node_modules/compass-mixins/lib']}).on('error', sass.logError))
+  .pipe(gulp.dest('./css'));
+});
+```
+
 # Issues
 
 `gulp-sass` is a very light-weight wrapper around [`node-sass`](https://github.com/sass/node-sass), which in turn is a Node binding for [`libsass`](https://github.com/sass/libsass), which in turn is a port of [`Sass`](https://github.com/sass/sass). Because of this, the issue you're having likely isn't a `gulp-sass` issue, but an issue with one of those three projects.
