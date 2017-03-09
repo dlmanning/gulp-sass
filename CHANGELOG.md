@@ -1,5 +1,10 @@
 # Gulp Sass Changelog
 
+## v3.1.1
+**March 9, 2017**
+
+* **Change** :arrow_up: Bump to Node Sass 4.5.0
+
 ## v2.1.0-beta
 **September 21, 2015**
 
