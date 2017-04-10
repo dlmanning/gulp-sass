@@ -35,7 +35,7 @@ var gulpSass = function gulpSass(options, sync) {
 
 
     opts = clonedeep(options || {});
-    if(opts.data === void 0) {
+    if (opts.data === void 0) {
       opts.data = file.contents.toString();
     }
     else {
