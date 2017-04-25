@@ -55,8 +55,8 @@ var gulpSass = function gulpSass(options, sync) {
 
 		// *** EXTENDING *** 
 		// The ability to add custom variables from gulp task
-		if (opts.setVariables) {
-			var vars = JSON.parse( JSON.stringify(opts.setVariables) );
+		if (opts.addVariables) {
+			var vars = JSON.parse( JSON.stringify(opts.addVariables) );
 			var varsList = [];
 			var generated = '/* generated */ %s';
 			var _isarray = require('lodash/isarray');
@@ -166,6 +166,14 @@ var gulpSass = function gulpSass(options, sync) {
 			var sassFileSrcPath;
 			var sourceFileIndex;
 
+			// *** EXTENDING *** 
+			// The ability to get data with the results
+			// of a node-sass render
+			// in the gulp task for each file 
+			if (typeof opts.afterRender === 'function') {
+				opts.afterRender(sassObj, file);
+			}
+
 			// Build Source Maps!
 			if (sassObj.map) {
 				// Transform map into JSON
@@ -242,6 +250,7 @@ var gulpSass = function gulpSass(options, sync) {
 			// ============
 			callback = function (error, obj) {
 				if (error) {
+					error.renderFile = file.path;
 					return errorM(error, cb);
 				}
 				filePush(obj);
@@ -258,6 +267,7 @@ var gulpSass = function gulpSass(options, sync) {
 				filePush(result);
 			}
 			catch (error) {
+				error.renderFile = file.path;
 				return errorM(error, cb);
 			}
 		}
