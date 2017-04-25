@@ -1,24 +1,29 @@
 {
-  "name": "gulp-sass",
+  "name": "gulp-sass-extended",
   "version": "3.1.0",
-  "description": "Gulp plugin for sass",
+  "description": "Gulp plugin for sass. Extended version of gulp-sass.",
   "main": "index.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha test"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/dlmanning/gulp-sass"
+    "url": "git://github.com/dutchenkoOleg/gulp-sass-extended"
   },
   "keywords": [
     "gulpplugin",
     "sass",
-    "gulp"
+    "gulp",
+    "extended"
   ],
   "author": "David Manning",
+  "contributors": [{
+    "name": "Oleg Dutchenko",
+    "email": "dutchenko.o.wezom@gmail.com"
+  }],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/dlmanning/gulp-sass/issues"
+    "url": "https://github.com/dutchenkoOleg/gulp-sass-extended/issues"
   },
   "dependencies": {
     "gulp-util": "^3.0",
