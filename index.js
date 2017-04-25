@@ -29,11 +29,11 @@ var PLUGIN_NAME = 'gulp-sass-extended';
 var gulpSass = function gulpSass(options, sync) {
 	return through.obj(function (file, enc, cb) {
 		// create variables for work
-		var opts, // re-tuned options
-			filePush, // fn for pushing transformed files back to stream
-			errorM,   // error method
-			callback, // callback for node-sass `render` method
-			result;   // result of node-sass
+		var opts; // re-tuned options
+		var filePush; // fn for pushing transformed files back to stream
+		var errorM;   // error method
+		var callback; // callback for node-sass `render` method
+		var result;   // result of node-sass
 
 		if (file.isNull()) {
 			return cb(null, file);
@@ -83,11 +83,11 @@ var gulpSass = function gulpSass(options, sync) {
 		// Handles returning the file to the stream
 		// ============
 		filePush = function filePush(sassObj) {
-			var sassMap,
-				sassMapFile,
-				sassFileSrc,
-				sassFileSrcPath,
-				sourceFileIndex;
+			var sassMap;
+			var sassMapFile;
+			var sassFileSrc;
+			var sassFileSrcPath;
+			var sourceFileIndex;
 
 			// Build Source Maps!
 			if (sassObj.map) {
@@ -128,27 +128,38 @@ var gulpSass = function gulpSass(options, sync) {
 
 		// Handles error message
 		// ============
-		errorM = function errorM(error) {
-			var relativePath = '',
-				filePath = error.file === 'stdin' ? file.path : error.file,
-				message = '';
 
-			filePath = filePath ? filePath : file.path;
-			relativePath = path.relative(process.cwd(), filePath);
+		// *** EXTENDING *** 
+		// The ability to set your own error handler
+		// from the gulp task parameters
+		if (typeof opts.errorHandler == 'function') {
+			console.log( opts );
+			errorM = opts.errorHandler;
+			delete opts.errorHandler; // delete to avoid possible conflicts
+		} else {
+			// original handler - by default
+			errorM = function errorM(error) {
+				var relativePath = '';
+				var filePath = error.file === 'stdin' ? file.path : error.file;
+				var message = '';
 
-			message += gutil.colors.underline(relativePath) + '\n';
-			message += error.formatted;
+				filePath = filePath ? filePath : file.path;
+				relativePath = path.relative(process.cwd(), filePath);
 
-			error.messageFormatted = message;
-			error.messageOriginal = error.message;
-			error.message = gutil.colors.stripColor(message);
+				message += gutil.colors.underline(relativePath) + '\n';
+				message += error.formatted;
 
-			error.relativePath = relativePath;
+				error.messageFormatted = message;
+				error.messageOriginal = error.message;
+				error.message = gutil.colors.stripColor(message);
 
-			return cb(new gutil.PluginError(
-				PLUGIN_NAME, error
-			));
-		};
+				error.relativePath = relativePath;
+
+				return cb(new gutil.PluginError(
+					PLUGIN_NAME, error
+				));
+			};
+		}
 
 		if (sync !== true) {
 			// Async Sass render
