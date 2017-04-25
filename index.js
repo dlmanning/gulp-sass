@@ -29,11 +29,11 @@ var PLUGIN_NAME = 'gulp-sass-extended';
 var gulpSass = function gulpSass(options, sync) {
 	return through.obj(function (file, enc, cb) {
 		// create variables for work
-		var opts, // re-tuned options
-			filePush, // fn for pushing transformed files back to stream
-			errorM,   // error method
-			callback, // callback for node-sass `render` method
-			result;   // result of node-sass
+		var opts; // re-tuned options
+		var filePush; // fn for pushing transformed files back to stream
+		var errorM;   // error method
+		var callback; // callback for node-sass `render` method
+		var result;   // result of node-sass
 
 		if (file.isNull()) {
 			return cb(null, file);
@@ -52,6 +52,83 @@ var gulpSass = function gulpSass(options, sync) {
 
 		opts = clonedeep(options || {});
 		opts.data = file.contents.toString();
+
+		// *** EXTENDING *** 
+		// The ability to add custom variables from gulp task
+		if (opts.setVariables) {
+			var vars = JSON.parse( JSON.stringify(opts.setVariables) );
+			var varsList = [];
+			var generated = '/* generated */ %s';
+			var _isarray = require('lodash/isarray');
+			
+			// format vars
+			for (let key in vars) {
+				let value = vars[key];
+				let variable = false;
+				
+				switch (typeof value) {
+					case 'object':
+						if (null === value) {
+							break;
+						}
+						let list = [];
+						
+						// if array - create SASS list
+						if (_isarray(value)) {
+							for (let i = 0; i < value.length; i++) {
+								let val = value[i];
+								if (typeof val == 'object') {
+									continue;
+								}
+								list.push(val);
+							}
+							
+						// else - SASS map
+						} else {
+							for (let prop in value) {
+								let val = value[prop];
+								if (typeof val == 'object') {
+									continue;
+								}
+								list.push(prop + ': ' + val);
+							}
+						}
+						
+						if (list.length) {
+							variable = key  + ': (\n\t' + list.join(',\n\t') + '\n);';
+						}
+						break;
+						
+					default:
+						// example -> $var: 2rem;
+						variable = '$' + key + ': ' + value  + ';';
+
+				}
+				if (variable) {
+					varsList.push(generated.replace(/%s/, variable));
+				}
+			}
+			
+			// if vars parsed and exist
+			if (varsList.length) {
+				var fileContent = opts.data;
+				var charsetRegexp = /\@charset(.+;)/i;
+				varsList = varsList.join('\n');
+				
+				// if has charset
+				if (charsetRegexp.test(fileContent)) {
+					fileContent = fileContent.replace(charsetRegexp, (str, group) => {
+						return '@charset' + group + '\n' + varsList + '\n';
+					});
+				} else {
+					fileContent = varsList + '\n' + fileContent;
+				}
+				
+				// new content
+				opts.data = fileContent;
+			}
+		}
+		
 
 		// we set the file path here so that libsass can correctly resolve import paths
 		opts.file = file.path;
@@ -83,11 +160,11 @@ var gulpSass = function gulpSass(options, sync) {
 		// Handles returning the file to the stream
 		// ============
 		filePush = function filePush(sassObj) {
-			var sassMap,
-				sassMapFile,
-				sassFileSrc,
-				sassFileSrcPath,
-				sourceFileIndex;
+			var sassMap;
+			var sassMapFile;
+			var sassFileSrc;
+			var sassFileSrcPath;
+			var sourceFileIndex;
 
 			// Build Source Maps!
 			if (sassObj.map) {
@@ -138,9 +215,9 @@ var gulpSass = function gulpSass(options, sync) {
 		} else {
 			// original handler - by default
 			errorM = function errorM(error, throughCallback) {
-				var relativePath = '',
-					filePath = error.file === 'stdin' ? file.path : error.file,
-					message = '';
+				var relativePath = '';
+				var filePath = error.file === 'stdin' ? file.path : error.file;
+				var message = '';
 
 				filePath = filePath ? filePath : file.path;
 				relativePath = path.relative(process.cwd(), filePath);
