@@ -29,11 +29,11 @@ var PLUGIN_NAME = 'gulp-sass-extended';
 var gulpSass = function gulpSass(options, sync) {
 	return through.obj(function (file, enc, cb) {
 		// create variables for work
-		var opts; // re-tuned options
-		var filePush; // fn for pushing transformed files back to stream
-		var errorM;   // error method
-		var callback; // callback for node-sass `render` method
-		var result;   // result of node-sass
+		var opts, // re-tuned options
+			filePush, // fn for pushing transformed files back to stream
+			errorM,   // error method
+			callback, // callback for node-sass `render` method
+			result;   // result of node-sass
 
 		if (file.isNull()) {
 			return cb(null, file);
@@ -83,11 +83,11 @@ var gulpSass = function gulpSass(options, sync) {
 		// Handles returning the file to the stream
 		// ============
 		filePush = function filePush(sassObj) {
-			var sassMap;
-			var sassMapFile;
-			var sassFileSrc;
-			var sassFileSrcPath;
-			var sourceFileIndex;
+			var sassMap,
+				sassMapFile,
+				sassFileSrc,
+				sassFileSrcPath,
+				sourceFileIndex;
 
 			// Build Source Maps!
 			if (sassObj.map) {
@@ -133,15 +133,14 @@ var gulpSass = function gulpSass(options, sync) {
 		// The ability to set your own error handler
 		// from the gulp task parameters
 		if (typeof opts.errorHandler == 'function') {
-			console.log( opts );
 			errorM = opts.errorHandler;
 			delete opts.errorHandler; // delete to avoid possible conflicts
 		} else {
 			// original handler - by default
-			errorM = function errorM(error) {
-				var relativePath = '';
-				var filePath = error.file === 'stdin' ? file.path : error.file;
-				var message = '';
+			errorM = function errorM(error, throughCallback) {
+				var relativePath = '',
+					filePath = error.file === 'stdin' ? file.path : error.file,
+					message = '';
 
 				filePath = filePath ? filePath : file.path;
 				relativePath = path.relative(process.cwd(), filePath);
@@ -155,7 +154,7 @@ var gulpSass = function gulpSass(options, sync) {
 
 				error.relativePath = relativePath;
 
-				return cb(new gutil.PluginError(
+				return throughCallback(new gutil.PluginError(
 					PLUGIN_NAME, error
 				));
 			};
@@ -166,7 +165,7 @@ var gulpSass = function gulpSass(options, sync) {
 			// ============
 			callback = function (error, obj) {
 				if (error) {
-					return errorM(error);
+					return errorM(error, cb);
 				}
 				filePush(obj);
 			};
@@ -182,7 +181,7 @@ var gulpSass = function gulpSass(options, sync) {
 				filePush(result);
 			}
 			catch (error) {
-				return errorM(error);
+				return errorM(error, cb);
 			}
 		}
 	});
@@ -199,11 +198,16 @@ gulpSass.sync = function sync(options) {
 gulpSass.logError = function logError(error) {
 	var message = new gutil.PluginError('sass', error.messageFormatted).toString();
 	process.stderr.write(message + '\n');
+	console.log( this );
 	this.emit('end');
 };
 
 // Store compiler in a prop
 // ============
 gulpSass.compiler = require('node-sass');
+
+// add this name
+// ============
+gulpSass.pluginName = PLUGIN_NAME;
 
 module.exports = gulpSass;
