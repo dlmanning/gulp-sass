@@ -95,7 +95,7 @@ var gulpSass = function gulpSass(options, sync) {
 						}
 						
 						if (list.length) {
-							variable = key  + ': (\n\t' + list.join(',\n\t') + '\n);';
+							variable = '$' + key  + ': (' + list.join(', ') + ');';
 						}
 						break;
 						
