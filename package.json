@@ -1,6 +1,6 @@
 {
   "name": "gulp-sass-extended",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Gulp plugin for sass. Extended version of gulp-sass.",
   "main": "index.js",
   "scripts": {
@@ -19,7 +19,7 @@
   "author": "David Manning",
   "contributors": [{
     "name": "Oleg Dutchenko",
-    "email": "dutchenko.o.wezom@gmail.com"
+    "email": "dutchenko.o.dev@gmail.com"
   }],
   "license": "MIT",
   "bugs": {
