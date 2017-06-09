@@ -1,6 +1,6 @@
 {
   "name": "gulp-sass-extended",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Gulp plugin for sass. Extended version of gulp-sass.",
   "main": "index.js",
   "scripts": {

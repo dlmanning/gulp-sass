@@ -53,26 +53,26 @@ var gulpSass = function gulpSass(options, sync) {
 		opts = clonedeep(options || {});
 		opts.data = file.contents.toString();
 
-		// *** EXTENDING *** 
+		// *** EXTENDING ***
 		// The ability to add custom variables from gulp task
 		if (opts.addVariables) {
 			var vars = JSON.parse( JSON.stringify(opts.addVariables) );
 			var varsList = [];
 			var generated = '/* generated */ %s';
 			var _isarray = require('lodash/isarray');
-			
+
 			// format vars
 			for (let key in vars) {
 				let value = vars[key];
 				let variable = false;
-				
+
 				switch (typeof value) {
 					case 'object':
 						if (null === value) {
 							break;
 						}
 						let list = [];
-						
+
 						// if array - create SASS list
 						if (_isarray(value)) {
 							for (let i = 0; i < value.length; i++) {
@@ -82,7 +82,7 @@ var gulpSass = function gulpSass(options, sync) {
 								}
 								list.push(val);
 							}
-							
+
 						// else - SASS map
 						} else {
 							for (let prop in value) {
@@ -93,12 +93,12 @@ var gulpSass = function gulpSass(options, sync) {
 								list.push(prop + ': ' + val);
 							}
 						}
-						
+
 						if (list.length) {
 							variable = '$' + key  + ': (' + list.join(', ') + ');';
 						}
 						break;
-						
+
 					default:
 						// example -> $var: 2rem;
 						variable = '$' + key + ': ' + value  + ';';
@@ -108,13 +108,13 @@ var gulpSass = function gulpSass(options, sync) {
 					varsList.push(generated.replace(/%s/, variable));
 				}
 			}
-			
+
 			// if vars parsed and exist
 			if (varsList.length) {
 				var fileContent = opts.data;
 				var charsetRegexp = /\@charset(.+;)/i;
 				varsList = varsList.join('\n');
-				
+
 				// if has charset
 				if (charsetRegexp.test(fileContent)) {
 					fileContent = fileContent.replace(charsetRegexp, (str, group) => {
@@ -123,12 +123,12 @@ var gulpSass = function gulpSass(options, sync) {
 				} else {
 					fileContent = varsList + '\n' + fileContent;
 				}
-				
+
 				// new content
 				opts.data = fileContent;
 			}
 		}
-		
+
 
 		// we set the file path here so that libsass can correctly resolve import paths
 		opts.file = file.path;
@@ -166,10 +166,10 @@ var gulpSass = function gulpSass(options, sync) {
 			var sassFileSrcPath;
 			var sourceFileIndex;
 
-			// *** EXTENDING *** 
+			// *** EXTENDING ***
 			// The ability to get data with the results
 			// of a node-sass render
-			// in the gulp task for each file 
+			// in the gulp task for each file
 			if (typeof opts.afterRender === 'function') {
 				opts.afterRender(sassObj, file);
 			}
@@ -214,7 +214,7 @@ var gulpSass = function gulpSass(options, sync) {
 		// Handles error message
 		// ============
 
-		// *** EXTENDING *** 
+		// *** EXTENDING ***
 		// The ability to set your own error handler
 		// from the gulp task parameters
 		if (typeof opts.errorHandler == 'function') {
@@ -285,7 +285,6 @@ gulpSass.sync = function sync(options) {
 gulpSass.logError = function logError(error) {
 	var message = new gutil.PluginError('sass', error.messageFormatted).toString();
 	process.stderr.write(message + '\n');
-	console.log( this );
 	this.emit('end');
 };
 
