@@ -1,5 +1,11 @@
 # Gulp Sass Changelog
 
+## v3.2.0
+
+* **Change** :arrow_up: Bump to Node Sass 4.5.x
+* **Change** :arrow_up: Updated all other third party libraries
+* **Fix** Fixed issue with `gulp-tap` in tests
+
 ## v2.1.0-beta
 **September 21, 2015**
 
