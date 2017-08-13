@@ -445,6 +445,7 @@ describe('gulp-sass -- sync compile', function() {
     ];
 
     gulp.src(path.join(__dirname, '/scss/inheritance.scss'))
+      .on('end', done)
       .pipe(sourcemaps.init())
       .pipe(sass.sync())
       .pipe(tap(function(file) {
@@ -457,8 +458,7 @@ describe('gulp-sass -- sync compile', function() {
       .pipe(tap(function(file) {
         should.exist(file.sourceMap);
         file.sourceMap.sources.should.eql(expectedSourcesAfter);
-      }))
-      .on('end', done);
+      }));
   });
 
   it('should work with gulp-sourcemaps and a globbed source', function(done) {
@@ -472,13 +472,13 @@ describe('gulp-sass -- sync compile', function() {
     gulp.src(path.join(__dirname, '/scss/globbed/**/*.scss'))
       .pipe(sourcemaps.init())
       .pipe(sass.sync())
+      .on('end', done)
       .pipe(tap(function(file) {
         should.exist(file.sourceMap);
         actualContent = file.sourceMap.sourcesContent[0];
         expectedContent = filesContent[file.sourceMap.sources[0]];
         actualContent.should.eql(expectedContent);
-      }))
-      .on('end', done);
+      }));
   });
 
   it('should work with gulp-sourcemaps and autoprefixer with different file.base', function(done) {
@@ -502,17 +502,18 @@ describe('gulp-sass -- sync compile', function() {
         file.sourceMap.sources.should.eql(expectedSourcesBefore);
       }))
       .pipe(postcss([autoprefixer()]))
+      .on('end', done)
       .pipe(tap(function(file) {
         should.exist(file.sourceMap);
         file.sourceMap.sources.should.eql(expectedSourcesAfter);
-      }))
-      .on('end', done);
+      }));
   });
 
   it('should work with empty files', function(done) {
     gulp.src(path.join(__dirname, '/scss/empty.scss'))
       .pipe(sass.sync())
       .pipe(gulp.dest(path.join(__dirname, '/results/')))
+      .on('end', done)
       .pipe(tap(function() {
         try {
           fs.statSync(path.join(__dirname, '/results/empty.css'));
@@ -520,7 +521,6 @@ describe('gulp-sass -- sync compile', function() {
         catch (e) {
           should.fail(false, true, 'Empty file was produced');
         }
-      }))
-      .on('end', done);
+      }));
   });
 });
