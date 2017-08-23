@@ -25,6 +25,22 @@ var createVinyl = function createVinyl(filename, contents) {
   });
 };
 
+var normaliseEOL = function(str) {
+  if (typeof(str) === 'object') {
+    str = str.toString('utf8');
+  }
+
+  return str.replace(/\r\n/g, '\n');
+}
+
+describe('test helpers', function() {
+  it('should normalise EOL', function(done) {
+    should.equal(normaliseEOL('foo\r\nbar'), 'foo\nbar');
+    should.equal(normaliseEOL('foo\nbar'), 'foo\nbar');
+    done();
+  });
+});
+
 describe('gulp-sass -- async compile', function() {
   it('should pass file when it isNull()', function(done) {
     var stream = sass();
@@ -66,8 +82,8 @@ describe('gulp-sass -- async compile', function() {
       should.exist(cssFile.relative);
       should.exist(cssFile.contents);
       should.equal(path.basename(cssFile.path), 'empty.css');
-      String(cssFile.contents).should.equal(
-        fs.readFileSync(path.join(__dirname, 'expected/empty.css'), 'utf8')
+      String(normaliseEOL(cssFile.contents)).should.equal(
+        normaliseEOL(fs.readFileSync(path.join(__dirname, 'expected', 'empty.css'), 'utf8'))
       );
       done();
     });
@@ -82,8 +98,8 @@ describe('gulp-sass -- async compile', function() {
       should.exist(cssFile.path);
       should.exist(cssFile.relative);
       should.exist(cssFile.contents);
-      String(cssFile.contents).should.equal(
-        fs.readFileSync(path.join(__dirname, 'expected/mixins.css'), 'utf8')
+      String(normaliseEOL(cssFile.contents)).should.equal(
+        normaliseEOL(fs.readFileSync(path.join(__dirname, 'expected', 'mixins.css'), 'utf8'))
       );
       done();
     });
@@ -97,7 +113,7 @@ describe('gulp-sass -- async compile', function() {
     ];
     var stream = sass();
     var mustSee = files.length;
-    var expectedPath = 'expected/mixins.css';
+    var expectedPath = path.join('expected', 'mixins.css');
 
     stream.on('data', function(cssFile) {
       should.exist(cssFile);
@@ -105,10 +121,10 @@ describe('gulp-sass -- async compile', function() {
       should.exist(cssFile.relative);
       should.exist(cssFile.contents);
       if (cssFile.path.indexOf('variables') !== -1) {
-        expectedPath = 'expected/variables.css';
+        expectedPath = path.join('expected', 'variables.css');
       }
-      String(cssFile.contents).should.equal(
-        fs.readFileSync(path.join(__dirname, expectedPath), 'utf8')
+      String(normaliseEOL(cssFile.contents)).should.equal(
+        normaliseEOL(fs.readFileSync(path.join(__dirname, expectedPath), 'utf8'))
       );
       mustSee--;
       if (mustSee <= 0) {
@@ -129,8 +145,8 @@ describe('gulp-sass -- async compile', function() {
       should.exist(cssFile.path);
       should.exist(cssFile.relative);
       should.exist(cssFile.contents);
-      String(cssFile.contents).should.equal(
-        fs.readFileSync(path.join(__dirname, 'expected/inheritance.css'), 'utf8')
+      String(normaliseEOL(cssFile.contents)).should.equal(
+        normaliseEOL(fs.readFileSync(path.join(__dirname, 'expected', 'inheritance.css'), 'utf8'))
       );
       done();
     });
@@ -145,11 +161,11 @@ describe('gulp-sass -- async compile', function() {
       // Error must include message body
       err.message.indexOf('property "font" must be followed by a \':\'').should.not.equal(-1);
       // Error must include file error occurs in
-      err.message.indexOf('test/scss/error.scss').should.not.equal(-1);
+      err.message.indexOf('test', 'scss', 'error.scss').should.not.equal(-1);
       // Error must include line and column error occurs on
       err.message.indexOf('on line 2').should.not.equal(-1);
       // Error must include relativePath property
-      err.relativePath.should.equal('test/scss/error.scss');
+      err.relativePath.should.equal(path.join('test', 'scss', 'error.scss'));
       done();
     });
     stream.write(errorFile);
@@ -180,11 +196,11 @@ describe('gulp-sass -- async compile', function() {
     stream.on('data', function(cssFile) {
       should.exist(cssFile);
       should.exist(cssFile.path);
-      cssFile.path.split('/').pop().should.equal('mixin--changed.css');
+      cssFile.path.split(path.sep).pop().should.equal('mixin--changed.css');
       should.exist(cssFile.relative);
       should.exist(cssFile.contents);
-      String(cssFile.contents).should.equal(
-        fs.readFileSync(path.join(__dirname, 'expected/mixins.css'), 'utf8')
+      String(normaliseEOL(cssFile.contents)).should.equal(
+        normaliseEOL(fs.readFileSync(path.join(__dirname, 'expected', 'mixins.css'), 'utf8'))
       );
       done();
     });
@@ -204,8 +220,8 @@ describe('gulp-sass -- async compile', function() {
       should.exist(cssFile.path);
       should.exist(cssFile.relative);
       should.exist(cssFile.contents);
-      String(cssFile.contents).should.equal('/* Added Dynamically */\n' +
-        fs.readFileSync(path.join(__dirname, 'expected/mixins.css'), 'utf8')
+      String(normaliseEOL(cssFile.contents)).should.equal('/* Added Dynamically */\n' +
+        normaliseEOL(fs.readFileSync(path.join(__dirname, 'expected', 'mixins.css'), 'utf8'))
       );
       done();
     });
@@ -250,8 +266,8 @@ describe('gulp-sass -- async compile', function() {
       should.exist(cssFile.path);
       should.exist(cssFile.relative);
       should.exist(cssFile.contents);
-      String(cssFile.contents).should.equal(
-        fs.readFileSync(path.join(__dirname, 'expected/indent.css'), 'utf8')
+      String(normaliseEOL(cssFile.contents)).should.equal(
+        normaliseEOL(fs.readFileSync(path.join(__dirname, 'expected', 'indent.css'), 'utf8'))
       );
       done();
     });
@@ -265,7 +281,7 @@ describe('gulp-sass -- async compile', function() {
     ];
     var stream = sass();
     var mustSee = files.length;
-    var expectedPath = 'expected/mixins.css';
+    var expectedPath = path.join('expected', 'mixins.css');
 
     stream.on('data', function(cssFile) {
       should.exist(cssFile);
@@ -273,10 +289,10 @@ describe('gulp-sass -- async compile', function() {
       should.exist(cssFile.relative);
       should.exist(cssFile.contents);
       if (cssFile.path.indexOf('indent') !== -1) {
-        expectedPath = 'expected/indent.css';
+        expectedPath = path.join('expected', 'indent.css');
       }
-      String(cssFile.contents).should.equal(
-        fs.readFileSync(path.join(__dirname, expectedPath), 'utf8')
+      String(normaliseEOL(cssFile.contents)).should.equal(
+        normaliseEOL(fs.readFileSync(path.join(__dirname, expectedPath), 'utf8'))
       );
       mustSee--;
       if (mustSee <= 0) {
@@ -292,7 +308,7 @@ describe('gulp-sass -- async compile', function() {
 
 describe('gulp-sass -- sync compile', function() {
   beforeEach(function(done) {
-    rimraf(path.join(__dirname, '/results/'), done);
+    rimraf(path.join(__dirname, 'results'), done);
   });
 
   it('should pass file when it isNull()', function(done) {
@@ -334,8 +350,8 @@ describe('gulp-sass -- sync compile', function() {
       should.exist(cssFile.path);
       should.exist(cssFile.relative);
       should.exist(cssFile.contents);
-      String(cssFile.contents).should.equal(
-        fs.readFileSync(path.join(__dirname, 'expected/mixins.css'), 'utf8')
+      String(normaliseEOL(cssFile.contents)).should.equal(
+        normaliseEOL(fs.readFileSync(path.join(__dirname, 'expected', 'mixins.css'), 'utf8'))
       );
       done();
     });
@@ -349,7 +365,7 @@ describe('gulp-sass -- sync compile', function() {
     ];
     var stream = sass.sync();
     var mustSee = files.length;
-    var expectedPath = 'expected/mixins.css';
+    var expectedPath = path.join('expected', 'mixins.css');
 
     stream.on('data', function(cssFile) {
       should.exist(cssFile);
@@ -357,10 +373,10 @@ describe('gulp-sass -- sync compile', function() {
       should.exist(cssFile.relative);
       should.exist(cssFile.contents);
       if (cssFile.path.indexOf('variables') !== -1) {
-        expectedPath = 'expected/variables.css';
+        expectedPath = path.join('expected', 'variables.css');
       }
-      String(cssFile.contents).should.equal(
-        fs.readFileSync(path.join(__dirname, expectedPath), 'utf8')
+      String(normaliseEOL(cssFile.contents)).should.equal(
+        normaliseEOL(fs.readFileSync(path.join(__dirname, expectedPath), 'utf8'))
       );
       mustSee--;
       if (mustSee <= 0) {
@@ -381,8 +397,8 @@ describe('gulp-sass -- sync compile', function() {
       should.exist(cssFile.path);
       should.exist(cssFile.relative);
       should.exist(cssFile.contents);
-      String(cssFile.contents).should.equal(
-        fs.readFileSync(path.join(__dirname, 'expected/inheritance.css'), 'utf8')
+      String(normaliseEOL(cssFile.contents)).should.equal(
+        normaliseEOL(fs.readFileSync(path.join(__dirname, 'expected', 'inheritance.css'), 'utf8'))
       );
       done();
     });
@@ -395,7 +411,7 @@ describe('gulp-sass -- sync compile', function() {
 
     stream.on('error', function(err) {
       err.message.indexOf('property "font" must be followed by a \':\'').should.not.equal(-1);
-      err.relativePath.should.equal('test/scss/error.scss');
+      err.relativePath.should.equal(path.join('test', 'scss', 'error.scss'));
       done();
     });
     stream.write(errorFile);
@@ -444,7 +460,7 @@ describe('gulp-sass -- sync compile', function() {
       'inheritance.scss',
     ];
 
-    gulp.src(path.join(__dirname, '/scss/inheritance.scss'))
+    gulp.src(path.join(__dirname, 'scss', 'inheritance.scss'))
       .pipe(sourcemaps.init())
       .pipe(sass.sync())
       .pipe(tap(function(file) {
@@ -453,7 +469,7 @@ describe('gulp-sass -- sync compile', function() {
       }))
       .pipe(postcss([autoprefixer()]))
       .pipe(sourcemaps.write())
-      .pipe(gulp.dest(path.join(__dirname, '/results/')))
+      .pipe(gulp.dest(path.join(__dirname, 'results')))
       .pipe(tap(function(file) {
         should.exist(file.sourceMap);
         file.sourceMap.sources.should.eql(expectedSourcesAfter);
@@ -463,19 +479,22 @@ describe('gulp-sass -- sync compile', function() {
 
   it('should work with gulp-sourcemaps and a globbed source', function(done) {
     var files, filesContent, actualContent, expectedContent, globPath;
-    files = globule.find(path.join(__dirname, '/scss/globbed/**/*.scss'));
+    globPath = path.join(__dirname, 'scss', 'globbed');
+    files = globule.find(path.join(__dirname, 'scss', 'globbed', '**', '*.scss'));
     filesContent = {};
+
     files.forEach(function(file) {
-      globPath = file.replace(path.join(__dirname, '/scss/globbed/'), '');
-      filesContent[globPath] = fs.readFileSync(file, 'utf8');
+      var source = path.normalize(path.relative(globPath, file));
+      filesContent[source] = fs.readFileSync(file, 'utf8');
     });
-    gulp.src(path.join(__dirname, '/scss/globbed/**/*.scss'))
+
+    gulp.src(path.join(__dirname, 'scss', 'globbed', '**', '*.scss'))
       .pipe(sourcemaps.init())
       .pipe(sass.sync())
       .pipe(tap(function(file) {
         should.exist(file.sourceMap);
-        actualContent = file.sourceMap.sourcesContent[0];
-        expectedContent = filesContent[file.sourceMap.sources[0]];
+        actualContent = normaliseEOL(file.sourceMap.sourcesContent[0]);
+        expectedContent = normaliseEOL(filesContent[path.normalize(file.sourceMap.sources[0])]);
         actualContent.should.eql(expectedContent);
       }))
       .on('end', done);
@@ -494,7 +513,7 @@ describe('gulp-sass -- sync compile', function() {
       'scss/inheritance.scss'
     ];
 
-    gulp.src(path.join(__dirname, '/scss/inheritance.scss'), { 'base': 'test' })
+    gulp.src(path.join(__dirname, 'scss', 'inheritance.scss'), { 'base': 'test' })
       .pipe(sourcemaps.init())
       .pipe(sass.sync())
       .pipe(tap(function(file) {
@@ -510,12 +529,12 @@ describe('gulp-sass -- sync compile', function() {
   });
 
   it('should work with empty files', function(done) {
-    gulp.src(path.join(__dirname, '/scss/empty.scss'))
+    gulp.src(path.join(__dirname, 'scss', 'empty.scss'))
       .pipe(sass.sync())
-      .pipe(gulp.dest(path.join(__dirname, '/results/')))
+      .pipe(gulp.dest(path.join(__dirname, 'results')))
       .pipe(tap(function() {
         try {
-          fs.statSync(path.join(__dirname, '/results/empty.css'));
+          fs.statSync(path.join(__dirname, 'results', 'empty.css'));
         }
         catch (e) {
           should.fail(false, true, 'Empty file was produced');
