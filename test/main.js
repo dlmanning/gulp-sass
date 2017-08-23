@@ -25,6 +25,32 @@ var createVinyl = function createVinyl(filename, contents) {
   });
 };
 
+var normaliseEOL = function(str) {
+  if (typeof(str) === 'object') {
+    str = str.toString('utf8');
+  }
+  
+  return str.replace(/\r\n/g, '\n');
+}
+
+var normaliseSep = function(str) {
+  return str.replace(/\\/g, '/');
+}
+
+describe('test helpers', function() {
+  it('should normalise EOL', function(done) {
+    should.equal(normaliseEOL('foo\r\nbar'), 'foo\nbar');
+    should.equal(normaliseEOL('foo\nbar'), 'foo\nbar');
+    done();
+  });
+
+  it('should normalise paths', function(done) {
+    should.equal(normaliseSep('foo\\bar'), 'foo/bar');
+    should.equal(normaliseSep('foo/bar'), 'foo/bar');
+    done();
+  });
+});
+
 describe('gulp-sass -- async compile', function() {
   it('should pass file when it isNull()', function(done) {
     var stream = sass();
@@ -66,8 +92,8 @@ describe('gulp-sass -- async compile', function() {
       should.exist(cssFile.relative);
       should.exist(cssFile.contents);
       should.equal(path.basename(cssFile.path), 'empty.css');
-      String(cssFile.contents).should.equal(
-        fs.readFileSync(path.join(__dirname, 'expected/empty.css'), 'utf8')
+      String(normaliseEOL(cssFile.contents)).should.equal(
+        normaliseEOL(fs.readFileSync(path.join(__dirname, 'expected/empty.css'), 'utf8'))
       );
       done();
     });
@@ -82,8 +108,8 @@ describe('gulp-sass -- async compile', function() {
       should.exist(cssFile.path);
       should.exist(cssFile.relative);
       should.exist(cssFile.contents);
-      String(cssFile.contents).should.equal(
-        fs.readFileSync(path.join(__dirname, 'expected/mixins.css'), 'utf8')
+      String(normaliseEOL(cssFile.contents)).should.equal(
+        normaliseEOL(fs.readFileSync(path.join(__dirname, 'expected/mixins.css'), 'utf8'))
       );
       done();
     });
@@ -107,8 +133,8 @@ describe('gulp-sass -- async compile', function() {
       if (cssFile.path.indexOf('variables') !== -1) {
         expectedPath = 'expected/variables.css';
       }
-      String(cssFile.contents).should.equal(
-        fs.readFileSync(path.join(__dirname, expectedPath), 'utf8')
+      String(normaliseEOL(cssFile.contents)).should.equal(
+        normaliseEOL(fs.readFileSync(path.join(__dirname, expectedPath), 'utf8'))
       );
       mustSee--;
       if (mustSee <= 0) {
@@ -129,8 +155,8 @@ describe('gulp-sass -- async compile', function() {
       should.exist(cssFile.path);
       should.exist(cssFile.relative);
       should.exist(cssFile.contents);
-      String(cssFile.contents).should.equal(
-        fs.readFileSync(path.join(__dirname, 'expected/inheritance.css'), 'utf8')
+      String(normaliseEOL(cssFile.contents)).should.equal(
+        normaliseEOL(fs.readFileSync(path.join(__dirname, 'expected/inheritance.css'), 'utf8'))
       );
       done();
     });
@@ -149,7 +175,7 @@ describe('gulp-sass -- async compile', function() {
       // Error must include line and column error occurs on
       err.message.indexOf('on line 2').should.not.equal(-1);
       // Error must include relativePath property
-      err.relativePath.should.equal('test/scss/error.scss');
+      normaliseSep(err.relativePath).should.equal('test/scss/error.scss');
       done();
     });
     stream.write(errorFile);
@@ -180,11 +206,11 @@ describe('gulp-sass -- async compile', function() {
     stream.on('data', function(cssFile) {
       should.exist(cssFile);
       should.exist(cssFile.path);
-      cssFile.path.split('/').pop().should.equal('mixin--changed.css');
+      normaliseSep(cssFile.path).split('/').pop().should.equal('mixin--changed.css');
       should.exist(cssFile.relative);
       should.exist(cssFile.contents);
-      String(cssFile.contents).should.equal(
-        fs.readFileSync(path.join(__dirname, 'expected/mixins.css'), 'utf8')
+      String(normaliseEOL(cssFile.contents)).should.equal(
+        normaliseEOL(fs.readFileSync(path.join(__dirname, 'expected/mixins.css'), 'utf8'))
       );
       done();
     });
@@ -204,8 +230,8 @@ describe('gulp-sass -- async compile', function() {
       should.exist(cssFile.path);
       should.exist(cssFile.relative);
       should.exist(cssFile.contents);
-      String(cssFile.contents).should.equal('/* Added Dynamically */\n' +
-        fs.readFileSync(path.join(__dirname, 'expected/mixins.css'), 'utf8')
+      String(normaliseEOL(cssFile.contents)).should.equal('/* Added Dynamically */\n' +
+        normaliseEOL(fs.readFileSync(path.join(__dirname, 'expected/mixins.css'), 'utf8'))
       );
       done();
     });
@@ -250,8 +276,8 @@ describe('gulp-sass -- async compile', function() {
       should.exist(cssFile.path);
       should.exist(cssFile.relative);
       should.exist(cssFile.contents);
-      String(cssFile.contents).should.equal(
-        fs.readFileSync(path.join(__dirname, 'expected/indent.css'), 'utf8')
+      String(normaliseEOL(cssFile.contents)).should.equal(
+        normaliseEOL(fs.readFileSync(path.join(__dirname, 'expected/indent.css'), 'utf8'))
       );
       done();
     });
@@ -275,8 +301,8 @@ describe('gulp-sass -- async compile', function() {
       if (cssFile.path.indexOf('indent') !== -1) {
         expectedPath = 'expected/indent.css';
       }
-      String(cssFile.contents).should.equal(
-        fs.readFileSync(path.join(__dirname, expectedPath), 'utf8')
+      String(normaliseEOL(cssFile.contents)).should.equal(
+        normaliseEOL(fs.readFileSync(path.join(__dirname, expectedPath), 'utf8'))
       );
       mustSee--;
       if (mustSee <= 0) {
@@ -334,8 +360,8 @@ describe('gulp-sass -- sync compile', function() {
       should.exist(cssFile.path);
       should.exist(cssFile.relative);
       should.exist(cssFile.contents);
-      String(cssFile.contents).should.equal(
-        fs.readFileSync(path.join(__dirname, 'expected/mixins.css'), 'utf8')
+      String(normaliseEOL(cssFile.contents)).should.equal(
+        normaliseEOL(fs.readFileSync(path.join(__dirname, 'expected/mixins.css'), 'utf8'))
       );
       done();
     });
@@ -359,8 +385,8 @@ describe('gulp-sass -- sync compile', function() {
       if (cssFile.path.indexOf('variables') !== -1) {
         expectedPath = 'expected/variables.css';
       }
-      String(cssFile.contents).should.equal(
-        fs.readFileSync(path.join(__dirname, expectedPath), 'utf8')
+      String(normaliseEOL(cssFile.contents)).should.equal(
+        normaliseEOL(fs.readFileSync(path.join(__dirname, expectedPath), 'utf8'))
       );
       mustSee--;
       if (mustSee <= 0) {
@@ -381,8 +407,8 @@ describe('gulp-sass -- sync compile', function() {
       should.exist(cssFile.path);
       should.exist(cssFile.relative);
       should.exist(cssFile.contents);
-      String(cssFile.contents).should.equal(
-        fs.readFileSync(path.join(__dirname, 'expected/inheritance.css'), 'utf8')
+      String(normaliseEOL(cssFile.contents)).should.equal(
+        normaliseEOL(fs.readFileSync(path.join(__dirname, 'expected/inheritance.css'), 'utf8'))
       );
       done();
     });
@@ -395,7 +421,7 @@ describe('gulp-sass -- sync compile', function() {
 
     stream.on('error', function(err) {
       err.message.indexOf('property "font" must be followed by a \':\'').should.not.equal(-1);
-      err.relativePath.should.equal('test/scss/error.scss');
+      normaliseSep(err.relativePath).should.equal('test/scss/error.scss');
       done();
     });
     stream.write(errorFile);
@@ -462,20 +488,23 @@ describe('gulp-sass -- sync compile', function() {
   });
 
   it('should work with gulp-sourcemaps and a globbed source', function(done) {
-    var files, filesContent, actualContent, expectedContent, globPath;
+    var files, filesContent, actualContent, expectedContent, globPath, globReplace;
     files = globule.find(path.join(__dirname, '/scss/globbed/**/*.scss'));
     filesContent = {};
+    globReplace = normaliseSep(path.join(__dirname, '/scss/globbed/'));
+
     files.forEach(function(file) {
-      globPath = file.replace(path.join(__dirname, '/scss/globbed/'), '');
+      globPath = normaliseSep(file).replace(globReplace, '');
       filesContent[globPath] = fs.readFileSync(file, 'utf8');
     });
+
     gulp.src(path.join(__dirname, '/scss/globbed/**/*.scss'))
       .pipe(sourcemaps.init())
       .pipe(sass.sync())
       .pipe(tap(function(file) {
         should.exist(file.sourceMap);
-        actualContent = file.sourceMap.sourcesContent[0];
-        expectedContent = filesContent[file.sourceMap.sources[0]];
+        actualContent = normaliseEOL(file.sourceMap.sourcesContent[0]);
+        expectedContent = normaliseEOL(filesContent[file.sourceMap.sources[0]]);
         actualContent.should.eql(expectedContent);
       }))
       .on('end', done);
