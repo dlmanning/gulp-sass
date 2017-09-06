@@ -1,104 +1,117 @@
-# gulp-sass [![Build Status](https://travis-ci.org/dlmanning/gulp-sass.svg?branch=master)](https://travis-ci.org/dlmanning/gulp-sass) [![Join the chat at https://gitter.im/dlmanning/gulp-sass](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/dlmanning/gulp-sass?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![npm version](https://badge.fury.io/js/gulp-sass.svg)](http://badge.fury.io/js/gulp-sass)
+# gulp-sass-extended 
 
-Sass plugin for [Gulp](https://github.com/gulpjs/gulp).
+[![fork of gulp-sass](https://img.shields.io/badge/Fork_of-gulp--sass-blue.svg)](https://github.com/dlmanning/gulp-sass)
 
-**_Before filing an issue, please make sure you have [Updated to the latest Gulp Sass](https://github.com/dlmanning/gulp-sass/wiki/Update-to-the-latest-Gulp-Sass) and have gone through our [Common Issues and Their Fixes](https://github.com/dlmanning/gulp-sass/wiki/Common-Issues-and-Their-Fixes) section._**
 
-# Install
+> __This project is an fork of gulp-sass__  
+> so look at first original version - [https://github.com/dlmanning/gulp-sass](https://github.com/dlmanning/gulp-sass)
 
-```
-npm install gulp-sass --save-dev
-```
+## Options and features
 
-# Basic Usage
+They work the same as [the original >](https://github.com/dlmanning/gulp-sass#options)
 
-Something like this will compile your Sass files:
+## Extended options
 
-```javascript
-'use strict';
+### `addVariables`
 
+type `Object`  
+default `undefined`  
+
+Add your custom vars in gulp task.
+
+> This option is useful only if you calculate some conditions and want to add result values to sass render.  
+Static properties are easier to set in the files themselves.
+
+Little details about values for this option:
+
+- each property - will be Sass variable;
+- if inner property will be an array - it's make [Sass list](http://sass-lang.com/documentation/file.SASS_REFERENCE.html#lists),
+- if object - [Sass map](http://sass-lang.com/documentation/file.SASS_REFERENCE.html#maps)
+- *__Note__ You should not have more than one level of nesting in objects and arrays. Otherwise you will receive incorrect data*
+
+
+
+Usage example
+
+```js
 var gulp = require('gulp');
-var sass = require('gulp-sass');
+var sassExtended = require('gulp-sass-extended');
 
-gulp.task('sass', function () {
-  return gulp.src('./sass/**/*.scss')
-    .pipe(sass().on('error', sass.logError))
-    .pipe(gulp.dest('./css'));
-});
 
-gulp.task('sass:watch', function () {
-  gulp.watch('./sass/**/*.scss', ['sass']);
-});
-```
-
-You can also compile synchronously, doing something like this:
-
-```javascript
-'use strict';
-
-var gulp = require('gulp');
-var sass = require('gulp-sass');
-
-gulp.task('sass', function () {
-  return gulp.src('./sass/**/*.scss')
-    .pipe(sass.sync().on('error', sass.logError))
-    .pipe(gulp.dest('./css'));
-});
-
-gulp.task('sass:watch', function () {
-  gulp.watch('./sass/**/*.scss', ['sass']);
+gulp.task('styles', function() {
+	
+	var taskOptions = {
+		// original gulp-sass options
+		// ...
+		addVariables: {
+			PRODUCTION: yourProductionValue,
+			someOtherDynamicVar: calculatedValue, // '12px' for example
+			myColorsMap: {
+				color1: 'blue',
+				color2: 'yellow',
+			},
+			pointList: [
+				'1024px',
+				'1280px',
+				'1366px'
+			]
+		}
+	};
+	
+	return gulp.src('./src/styles/*.scss')
+		.pipe( sassExtended(taskOptions) )
+		.pipe( gulp.dest('./dist/css') );
 });
 ```
 
-## Options
+In *.scss files before send to node-sass render, will be added part of code with your vars in file content beginning 
 
-Pass in options just like you would for [`node-sass`](https://github.com/sass/node-sass#options); they will be passed along just as if you were using `node-sass`. Except for the `data` option which is used by gulp-sass internally. Using the `file` option is also unsupported and results in undefined behaviour that may change without notice.  
-
-For example:
-
-```javascript
-gulp.task('sass', function () {
- return gulp.src('./sass/**/*.scss')
-   .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
-   .pipe(gulp.dest('./css'));
-});
+```scss
+/* generated */ $PRODUCTION: true;
+/* generated */ $someOtherDynamicVar: 12px;
+/* generated */ $myColorsMap: (color1: blue, color2: yellow);
+/* generated */ $pointList: (1024px, 1280px, 1366px);
+/// then your code from file
 ```
 
-## Source Maps
+If the content of your *.scss contains the `@charset` directive, the variables will be inserted after this directive
 
-`gulp-sass` can be used in tandem with [gulp-sourcemaps](https://github.com/floridoo/gulp-sourcemaps) to generate source maps for the Sass to CSS compilation. You will need to initialize [gulp-sourcemaps](https://github.com/floridoo/gulp-sourcemaps) prior to running `gulp-sass` and write the source maps after.
+##### _Impact on sourcemaps_
 
-```javascript
-var sourcemaps = require('gulp-sourcemaps');
+You will notice some inconsistencies in line numbers in sourcemaps and in the original files. The more you add variables, the greater this discrepancy, because you will shift down the main content of the file.
 
-gulp.task('sass', function () {
- return gulp.src('./sass/**/*.scss')
-  .pipe(sourcemaps.init())
-  .pipe(sass().on('error', sass.logError))
-  .pipe(sourcemaps.write())
-  .pipe(gulp.dest('./css'));
-});
-```
 
-By default, [gulp-sourcemaps](https://github.com/floridoo/gulp-sourcemaps) writes the source maps inline in the compiled CSS files. To write them to a separate file, specify a path relative to the `gulp.dest()` destination in the `sourcemaps.write()` function.
+### `errorHandler(error, throughCallback)`
 
-```javascript
-var sourcemaps = require('gulp-sourcemaps');
-gulp.task('sass', function () {
- return gulp.src('./sass/**/*.scss')
-  .pipe(sourcemaps.init())
-  .pipe(sass().on('error', sass.logError))
-  .pipe(sourcemaps.write('./maps'))
-  .pipe(gulp.dest('./css'));
-});
-```
+type `function`  
+default `undefined`  
 
-# Issues
+- `error {:Error}` emitted by `node-sass` - see https://github.com/sass/node-sass#error-object
+- `throughCallback {:function}` - callback which you must call after doing your actions, first argument - your new error data;
 
-`gulp-sass` is a very light-weight wrapper around [`node-sass`](https://github.com/sass/node-sass), which in turn is a Node binding for [`libsass`](https://github.com/sass/libsass), which in turn is a port of [`Sass`](https://github.com/sass/sass). Because of this, the issue you're having likely isn't a `gulp-sass` issue, but an issue with one of those three projects.
+Add your custom method to handle errors.
 
-If you have a feature request/question how Sass works/concerns on how your Sass gets compiled/errors in your compiling, it's likely a `libsass` or `Sass` issue and you should file your issue with one of those projects.
 
-If you're having problems with the options you're passing in, it's likely a `node-sass` or `libsass` issue and you should file your issue with one of those projects.
+### `afterRender(result, renderedFile)`
 
-We may, in the course of resolving issues, direct you to one of these other projects. If we do so, please follow up by searching that project's issue queue (both open and closed) for your problem and, if it doesn't exist, filing an issue with them.
+type `function`  
+default `undefined`  
+
+- `result {:Object}` - result of the `node-sass` render call - see https://github.com/sass/node-sass#result-object
+- `renderedFile {:Buffer}` - .scss file which was rendered;
+
+Do with it whatever you want on your own risk )))) 
+ 
+Remember that `result` is a reference to an object that will be further processed taking into account the use of sourcemaps and saving new css files  
+ _And the changes inside it will also be in the main object_
+
+## Tests
+
+Here only original tests from the gulp-sass
+
+## Contributing
+
+__This project is an fork of gulp-sass__  
+so look at first original - [gulp-sass/CONTRIBUTING.md](https://github.com/dlmanning/gulp-sass/blob/master/CONTRIBUTING.md)
+
+If you have problems with the tools that were added in `gulp-sass-extended` version then go here [gulp-sass-extended/issues](https://github.com/dutchenkoOleg/gulp-sass-extended/issues)
