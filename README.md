@@ -17,8 +17,8 @@ Something like this will compile your Sass files:
 ```javascript
 'use strict';
 
-var gulp = require('gulp');
-var sass = require('gulp-sass');
+const gulp = require('gulp');
+const sass = require('gulp-sass');
 
 gulp.task('sass', function () {
   return gulp.src('./sass/**/*.scss')
@@ -36,8 +36,8 @@ You can also compile synchronously, doing something like this:
 ```javascript
 'use strict';
 
-var gulp = require('gulp');
-var sass = require('gulp-sass');
+const gulp = require('gulp');
+const sass = require('gulp-sass');
 
 gulp.task('sass', function () {
   return gulp.src('./sass/**/*.scss')
@@ -69,7 +69,8 @@ gulp.task('sass', function () {
 `gulp-sass` can be used in tandem with [gulp-sourcemaps](https://github.com/floridoo/gulp-sourcemaps) to generate source maps for the Sass to CSS compilation. You will need to initialize [gulp-sourcemaps](https://github.com/floridoo/gulp-sourcemaps) prior to running `gulp-sass` and write the source maps after.
 
 ```javascript
-var sourcemaps = require('gulp-sourcemaps');
+'use strict';
+const sourcemaps = require('gulp-sourcemaps');
 
 gulp.task('sass', function () {
  return gulp.src('./sass/**/*.scss')
@@ -83,7 +84,7 @@ gulp.task('sass', function () {
 By default, [gulp-sourcemaps](https://github.com/floridoo/gulp-sourcemaps) writes the source maps inline in the compiled CSS files. To write them to a separate file, specify a path relative to the `gulp.dest()` destination in the `sourcemaps.write()` function.
 
 ```javascript
-var sourcemaps = require('gulp-sourcemaps');
+const sourcemaps = require('gulp-sourcemaps');
 gulp.task('sass', function () {
  return gulp.src('./sass/**/*.scss')
   .pipe(sourcemaps.init())
