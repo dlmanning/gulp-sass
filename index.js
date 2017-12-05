@@ -4,7 +4,6 @@ var gutil = require('gulp-util');
 var through = require('through2');
 var clonedeep = require('lodash.clonedeep');
 var path = require('path');
-var applySourceMap = require('vinyl-sourcemaps-apply');
 
 var PLUGIN_NAME = 'gulp-sass';
 
@@ -74,7 +73,7 @@ var gulpSass = function gulpSass(options, sync) {
           sassFileSrcPath,
           sourceFileIndex;
 
-      // Build Source Maps!
+      // // Build Source Maps!
       if (sassObj.map) {
         // Transform map into JSON
         sassMap = JSON.parse(sassObj.map.toString());
@@ -102,9 +101,9 @@ var gulpSass = function gulpSass(options, sync) {
         // Replace the map file with the original file name (but new extension)
         sassMap.file = gutil.replaceExtension(sassFileSrc, '.css');
         // Apply the map
-        applySourceMap(file, sassMap);
+        file.sourceMap = sassMap;
       }
-
+      
       file.contents = sassObj.css;
       file.path = gutil.replaceExtension(file.path, '.css');
 
