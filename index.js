@@ -4,7 +4,6 @@ var gutil = require('gulp-util');
 var through = require('through2');
 var clonedeep = require('lodash.clonedeep');
 var path = require('path');
-var applySourceMap = require('vinyl-sourcemaps-apply');
 
 var PLUGIN_NAME = 'gulp-sass';
 
