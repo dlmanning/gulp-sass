@@ -68,6 +68,43 @@ var gulpSass = function gulpSass(options, sync) {
     // Handles returning the file to the stream
     //////////////////////////////
     filePush = function filePush(sassObj) {
+      var sassMap,
+          sassMapFile,
+          sassFileSrc,
+          sassFileSrcPath,
+          sourceFileIndex;
+
+      // // Build Source Maps!
+      if (sassObj.map) {
+        // Transform map into JSON
+        sassMap = JSON.parse(sassObj.map.toString());
+        // Grab the stdout and transform it into stdin
+        sassMapFile = sassMap.file.replace(/^stdout$/, 'stdin');
+        // Grab the base file name that's being worked on
+        sassFileSrc = file.relative;
+        // Grab the path portion of the file that's being worked on
+        sassFileSrcPath = path.dirname(sassFileSrc);
+        if (sassFileSrcPath) {
+          //Prepend the path to all files in the sources array except the file that's being worked on
+          sourceFileIndex = sassMap.sources.indexOf(sassMapFile);
+          sassMap.sources = sassMap.sources.map(function(source, index) {
+            return (index === sourceFileIndex) ? source : path.join(sassFileSrcPath, source);
+          });
+        }
+
+        // Remove 'stdin' from souces and replace with filenames!
+        sassMap.sources = sassMap.sources.filter(function(src) {
+          if (src !== 'stdin') {
+            return src;
+          }
+        });
+
+        // Replace the map file with the original file name (but new extension)
+        sassMap.file = gutil.replaceExtension(sassFileSrc, '.css');
+        // Apply the map
+        file.sourceMap = sassMap;
+      }
+      
       file.contents = sassObj.css;
       file.path = gutil.replaceExtension(file.path, '.css');
 
