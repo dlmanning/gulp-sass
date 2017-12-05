@@ -101,8 +101,6 @@ var gulpSass = function gulpSass(options, sync) {
 
         // Replace the map file with the original file name (but new extension)
         sassMap.file = gutil.replaceExtension(sassFileSrc, '.css');
-        // Apply the map
-        applySourceMap(file, sassMap);
       }
 
       file.contents = sassObj.css;
