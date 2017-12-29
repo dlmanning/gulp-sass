@@ -1,6 +1,9 @@
 'use strict';
 
-var gutil = require('gulp-util');
+var chalk = require('chalk');
+var PluginError = require('plugin-error');
+var replaceExtension = require('replace-ext');
+var stripAnsi = require('strip-ansi');
 var through = require('through2');
 var clonedeep = require('lodash.clonedeep');
 var path = require('path');
@@ -23,13 +26,13 @@ var gulpSass = function gulpSass(options, sync) {
       return cb(null, file);
     }
     if (file.isStream()) {
-      return cb(new gutil.PluginError(PLUGIN_NAME, 'Streaming not supported'));
+      return cb(new PluginError(PLUGIN_NAME, 'Streaming not supported'));
     }
     if (path.basename(file.path).indexOf('_') === 0) {
       return cb();
     }
     if (!file.contents.length) {
-      file.path = gutil.replaceExtension(file.path, '.css');
+      file.path = replaceExtension(file.path, '.css');
       return cb(null, file);
     }
 
@@ -100,13 +103,13 @@ var gulpSass = function gulpSass(options, sync) {
         });
 
         // Replace the map file with the original file name (but new extension)
-        sassMap.file = gutil.replaceExtension(sassFileSrc, '.css');
+        sassMap.file = replaceExtension(sassFileSrc, '.css');
         // Apply the map
         applySourceMap(file, sassMap);
       }
 
       file.contents = sassObj.css;
-      file.path = gutil.replaceExtension(file.path, '.css');
+      file.path = replaceExtension(file.path, '.css');
 
       cb(null, file);
     };
@@ -122,16 +125,16 @@ var gulpSass = function gulpSass(options, sync) {
       filePath = filePath ? filePath : file.path;
       relativePath = path.relative(process.cwd(), filePath);
 
-      message += gutil.colors.underline(relativePath) + '\n';
+      message += chalk.underline(relativePath) + '\n';
       message += error.formatted;
 
       error.messageFormatted = message;
       error.messageOriginal = error.message;
-      error.message = gutil.colors.stripColor(message);
+      error.message = stripAnsi(message);
 
       error.relativePath = relativePath;
 
-      return cb(new gutil.PluginError(
+      return cb(new PluginError(
           PLUGIN_NAME, error
         ));
     };
@@ -176,7 +179,7 @@ gulpSass.sync = function sync(options) {
 // Log errors nicely
 //////////////////////////////
 gulpSass.logError = function logError(error) {
-  var message = new gutil.PluginError('sass', error.messageFormatted).toString();
+  var message = new PluginError('sass', error.messageFormatted).toString();
   process.stderr.write(message + '\n');
   this.emit('end');
 };
