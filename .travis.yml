@@ -1,6 +1,7 @@
 language: node_js
 node_js:
-  - "0.10"
-  - node
-  - iojs
+  - "lts/argon"
+  - "lts/boron"
+  - "lts/carbon"
+  - "node"
 sudo: false
