@@ -85,7 +85,7 @@ var gulpSass = function gulpSass(options, sync) {
         // Grab the path portion of the file that's being worked on
         sassFileSrcPath = path.dirname(sassFileSrc);
         if (sassFileSrcPath) {
-          //Prepend the path to all files in the sources array except the file that's being worked on
+          // Prepend the path to all files in the sources array except the file that's being worked on
           sourceFileIndex = sassMap.sources.indexOf(sassMapFile);
           sassMap.sources = sassMap.sources.map(function(source, index) {
             return (index === sourceFileIndex) ? source : path.join(sassFileSrcPath, source);
