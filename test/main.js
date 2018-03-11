@@ -483,15 +483,20 @@ describe('gulp-sass -- sync compile', function() {
     filesContent = {};
 
     files.forEach(function(file) {
-      globPath = path.relative(path.join(__dirname, 'scss', 'globbed', ''), file);
-      filesContent[globPath] = fs.readFileSync(file, 'utf8');
+      globPath = path.normalize(file)
+        .replace(path.normalize(path.join(__dirname, 'scss', 'globbed')), '');
+      filesContent[path.normalize(globPath)] = fs.readFileSync(file, 'utf8');
     });
+
+    console.log(files)
+    console.log(Object.keys(filesContent))
 
     gulp.src(path.join(__dirname, 'scss', 'globbed', '**', '*.scss'))
       .pipe(sourcemaps.init())
       .pipe(sass.sync())
       .pipe(tap(function(file) {
         should.exist(file.sourceMap);
+        console.log(file.sourceMap.sources);
         actualContent = normaliseEOL(file.sourceMap.sourcesContent[0]);
         expectedContent = normaliseEOL(filesContent[file.sourceMap.sources[0]]);
         actualContent.should.eql(expectedContent);
