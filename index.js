@@ -35,8 +35,13 @@ var gulpSass = function gulpSass(options, sync) {
 
 
     opts = clonedeep(options || {});
-    opts.data = file.contents.toString();
-
+    if (opts.data === void 0) {
+      opts.data = file.contents.toString();
+    }
+    else {
+      opts.data = opts.data + file.contents.toString();
+    }
+    
     // we set the file path here so that libsass can correctly resolve import paths
     opts.file = file.path;
 
@@ -49,6 +54,9 @@ var gulpSass = function gulpSass(options, sync) {
     if (opts.includePaths) {
       if (typeof opts.includePaths === 'string') {
         opts.includePaths = [opts.includePaths];
+      }
+      else {
+        throw new Error('options.includePaths expected to be a string, ' + typeof opts.includePaths + ' given.');
       }
     }
     else {
