@@ -3,6 +3,9 @@
   "version": "3.2.1",
   "description": "Gulp plugin for sass",
   "main": "index.js",
+  "engines": {
+    "node": ">=6"
+  },
   "scripts": {
     "test": "./node_modules/.bin/mocha test"
   },
