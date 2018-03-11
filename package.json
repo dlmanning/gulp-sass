@@ -34,8 +34,10 @@
     "vinyl-sourcemaps-apply": "^0.2.0"
   },
   "devDependencies": {
-    "eslint": "^2.9.0",
     "autoprefixer": "^8.1.0",
+    "eslint": "^4.18.2",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.9.0",
     "globule": "^1.0.0",
     "gulp": "^3.8.11",
     "gulp-postcss": "^7.0.1",

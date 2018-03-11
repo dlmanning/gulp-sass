@@ -1,16 +1,12 @@
-'use strict';
+const eslint = require('eslint');
+const should = require('should');
 
-var eslint = require('eslint');
-var should = require('should');
+describe('code style guide', () => {
+  it('index.js should follow our lint style guide', (done) => {
+    const cli = new eslint.CLIEngine({ rules: { 'spaced-comment': 0 } });
+    const formatter = cli.getFormatter();
+    const report = cli.executeOnFiles(['index.js']);
 
-var cli = new eslint.CLIEngine();
-var formatter = cli.getFormatter();
-
-var report;
-
-describe('code style guide', function() {
-  it('index.js should follow our lint style guide', function(done) {
-    report = cli.executeOnFiles(['index.js']);
     if (report.errorCount > 0 || report.warningCount > 0) {
       console.log(formatter(report.results));
     }
@@ -20,8 +16,11 @@ describe('code style guide', function() {
     done();
   });
 
-  it('test/main.js should follow our lint style guide', function(done) {
-    report = cli.executeOnFiles(['test/main.js']);
+  it('test/main.js should follow our lint style guide', (done) => {
+    const cli = new eslint.CLIEngine();
+    const formatter = cli.getFormatter();
+    const report = cli.executeOnFiles(['test/main.js']);
+
     if (report.errorCount > 0 || report.warningCount > 0) {
       console.log(formatter(report.results));
     }
@@ -31,13 +30,11 @@ describe('code style guide', function() {
     done();
   });
 
-  it('test/lint.js should follow our lint style guide', function(done) {
-    cli = new eslint.CLIEngine({
-      'rules': {
-        'no-console': 0
-      }
-    });
-    report = cli.executeOnFiles(['test/lint.js']);
+  it('test/lint.js should follow our lint style guide', (done) => {
+    const cli = new eslint.CLIEngine({ rules: { 'no-console': 0 } });
+    const formatter = cli.getFormatter();
+    const report = cli.executeOnFiles(['test/lint.js']);
+
     if (report.errorCount > 0 || report.warningCount > 0) {
       console.log(formatter(report.results));
     }
