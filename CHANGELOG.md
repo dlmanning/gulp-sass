@@ -1,5 +1,30 @@
 # Gulp Sass Changelog
 
+## v4.0.0
+**Upcoming**
+
+* **Breaking change** Drop support for Node for versions that reached end of life (`< 4`).
+
+## v3.1.0
+**January 9, 2017**
+
+* **Change** ⬆️ Bump to Node Sass 4.2.0
+
+## v3.0.0
+**December 10, 2016**
+
+* **Breaking change** ⬆️ Bump to Node Sass 4.0.0
+
+## v2.3.2
+**June 15, 2016**
+
+* **Fix** Prevent options from leaking between compilations
+* **Chore** Update dependencies
+
+## v2.1.0 to v2.3.1
+
+(missing, please open a PR if you wish to fill the gap)
+
 ## v2.1.0-beta
 **September 21, 2015**
 
