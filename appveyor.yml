@@ -1,56 +1,28 @@
--
-  os: Visual Studio 2013
+version: "{build}"
 
-  configuration: release
+cache:
+  - '%AppData%\npm-cache'
 
-  platform:
-    - x64
-    - x86
+build: off
 
-  version: "{build}"
+platform:
+  - x64
+  - x86
 
-  cache:
-    - '%userprofile%\.node-gyp'
-    - '%AppData%\npm-cache'
+environment:
+  matrix:
+    - nodejs_version: 0.10
+    - nodejs_version: 0.12
+    - nodejs_version: 4
+    - nodejs_version: 6
+    - nodejs_version: 8
+    - nodejs_version: 9
 
-  environment:
-    matrix:
-      - nodejs_version: 0.10
-        GYP_MSVS_VERSION: 2013
-        APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
-      - nodejs_version: 0.12
-        GYP_MSVS_VERSION: 2013
-        APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
-      - nodejs_version: 1
-        GYP_MSVS_VERSION: 2013
-        APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
-      - nodejs_version: 2
-        GYP_MSVS_VERSION: 2013
-        APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
-      - nodejs_version: 3
-        GYP_MSVS_VERSION: 2013
-        APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
-      - nodejs_version: 4
-        GYP_MSVS_VERSION: 2013
-        APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
-      - nodejs_version: 5
-        GYP_MSVS_VERSION: 2013
-        APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
-      - nodejs_version: 6
-        GYP_MSVS_VERSION: 2015
-        APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-      - nodejs_version: 7
-        GYP_MSVS_VERSION: 2015
-        APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-      - nodejs_version: 8
-        GYP_MSVS_VERSION: 2015
-        APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-      - nodejs_version: 9
-        GYP_MSVS_VERSION: 2015
-        APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+install:
+  - ps: Install-Product node $env:nodejs_version $env:platform
+  - npm install
 
-  install:
-    - ps: Install-Product node $env:nodejs_version $env:platform
-    - node --version
-    - npm --version
-    - npm install
+test_script:
+  - node --version
+  - npm --version
+  - npm test
