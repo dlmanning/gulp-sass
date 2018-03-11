@@ -34,11 +34,11 @@
     "vinyl-sourcemaps-apply": "^0.2.0"
   },
   "devDependencies": {
-    "autoprefixer-core": "^5.2.1",
     "eslint": "^2.9.0",
+    "autoprefixer": "^8.1.0",
     "globule": "^1.0.0",
     "gulp": "^3.8.11",
-    "gulp-postcss": "^5.1.10",
+    "gulp-postcss": "^7.0.1",
     "gulp-sourcemaps": "^2.6.4",
     "gulp-tap": "^0.1.3",
     "mocha": "^5.0.4",

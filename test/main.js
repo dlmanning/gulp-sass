@@ -9,7 +9,7 @@ var rimraf = require('rimraf');
 var gulp = require('gulp');
 var sourcemaps = require('gulp-sourcemaps');
 var postcss = require('gulp-postcss');
-var autoprefixer = require('autoprefixer-core');
+var autoprefixer = require('autoprefixer');
 var tap = require('gulp-tap');
 var globule = require('globule');
 
