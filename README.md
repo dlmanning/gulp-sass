@@ -4,6 +4,12 @@ Sass plugin for [Gulp](https://github.com/gulpjs/gulp).
 
 **_Before filing an issue, please make sure you have [Updated to the latest Gulp Sass](https://github.com/dlmanning/gulp-sass/wiki/Update-to-the-latest-Gulp-Sass) and have gone through our [Common Issues and Their Fixes](https://github.com/dlmanning/gulp-sass/wiki/Common-Issues-and-Their-Fixes) section._**
 
+# Support
+
+Only [Active LTS and Current releases][1] are supported.
+
+[1]: https://github.com/nodejs/Release#release-schedule
+
 # Install
 
 ```
@@ -52,7 +58,7 @@ gulp.task('sass:watch', function () {
 
 ## Options
 
-Pass in options just like you would for [`node-sass`](https://github.com/sass/node-sass#options); they will be passed along just as if you were using `node-sass`. Except for the `data` option which is used by gulp-sass internally. Using the `file` option is also unsupported and results in undefined behaviour that may change without notice.  
+Pass in options just like you would for [`node-sass`](https://github.com/sass/node-sass#options); they will be passed along just as if you were using `node-sass`. Except for the `data` option which is used by gulp-sass internally. Using the `file` option is also unsupported and results in undefined behaviour that may change without notice.
 
 For example:
 

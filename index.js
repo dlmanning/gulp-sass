@@ -1,183 +1,158 @@
-'use strict';
+const chalk = require('chalk');
+const PluginError = require('plugin-error');
+const replaceExtension = require('replace-ext');
+const stripAnsi = require('strip-ansi');
+const through = require('through2');
+const clonedeep = require('lodash.clonedeep');
+const path = require('path');
+const applySourceMap = require('vinyl-sourcemaps-apply');
 
-var gutil = require('gulp-util');
-var through = require('through2');
-var clonedeep = require('lodash.clonedeep');
-var path = require('path');
-var applySourceMap = require('vinyl-sourcemaps-apply');
-
-var PLUGIN_NAME = 'gulp-sass';
+const PLUGIN_NAME = 'gulp-sass';
 
 //////////////////////////////
 // Main Gulp Sass function
 //////////////////////////////
-var gulpSass = function gulpSass(options, sync) {
-  return through.obj(function(file, enc, cb) {
-    var opts,
-        filePush,
-        errorM,
-        callback,
-        result;
+const gulpSass = (options, sync) => through.obj((file, enc, cb) => { // eslint-disable-line consistent-return
+  if (file.isNull()) {
+    return cb(null, file);
+  }
 
-    if (file.isNull()) {
-      return cb(null, file);
+  if (file.isStream()) {
+    return cb(new PluginError(PLUGIN_NAME, 'Streaming not supported'));
+  }
+
+  if (path.basename(file.path).indexOf('_') === 0) {
+    return cb();
+  }
+
+  if (!file.contents.length) {
+    file.path = replaceExtension(file.path, '.css'); // eslint-disable-line no-param-reassign
+    return cb(null, file);
+  }
+
+  const opts = clonedeep(options || {});
+  opts.data = file.contents.toString();
+
+  // we set the file path here so that libsass can correctly resolve import paths
+  opts.file = file.path;
+
+  // Ensure `indentedSyntax` is true if a `.sass` file
+  if (path.extname(file.path) === '.sass') {
+    opts.indentedSyntax = true;
+  }
+
+  // Ensure file's parent directory in the include path
+  if (opts.includePaths) {
+    if (typeof opts.includePaths === 'string') {
+      opts.includePaths = [opts.includePaths];
     }
-    if (file.isStream()) {
-      return cb(new gutil.PluginError(PLUGIN_NAME, 'Streaming not supported'));
-    }
-    if (path.basename(file.path).indexOf('_') === 0) {
-      return cb();
-    }
-    if (!file.contents.length) {
-      file.path = gutil.replaceExtension(file.path, '.css');
-      return cb(null, file);
-    }
+  } else {
+    opts.includePaths = [];
+  }
 
+  opts.includePaths.unshift(path.dirname(file.path));
 
-    opts = clonedeep(options || {});
-    opts.data = file.contents.toString();
+  // Generate Source Maps if plugin source-map present
+  if (file.sourceMap) {
+    opts.sourceMap = file.path;
+    opts.omitSourceMapUrl = true;
+    opts.sourceMapContents = true;
+  }
 
-    // we set the file path here so that libsass can correctly resolve import paths
-    opts.file = file.path;
+  //////////////////////////////
+  // Handles returning the file to the stream
+  //////////////////////////////
+  const filePush = (sassObj) => {
+    let sassMap;
+    let sassMapFile;
+    let sassFileSrc;
+    let sassFileSrcPath;
+    let sourceFileIndex;
 
-    // Ensure `indentedSyntax` is true if a `.sass` file
-    if (path.extname(file.path) === '.sass') {
-      opts.indentedSyntax = true;
-    }
-
-    // Ensure file's parent directory in the include path
-    if (opts.includePaths) {
-      if (typeof opts.includePaths === 'string') {
-        opts.includePaths = [opts.includePaths];
-      }
-    }
-    else {
-      opts.includePaths = [];
-    }
-
-    opts.includePaths.unshift(path.dirname(file.path));
-
-    // Generate Source Maps if plugin source-map present
-    if (file.sourceMap) {
-      opts.sourceMap = file.path;
-      opts.omitSourceMapUrl = true;
-      opts.sourceMapContents = true;
-    }
-
-    //////////////////////////////
-    // Handles returning the file to the stream
-    //////////////////////////////
-    filePush = function filePush(sassObj) {
-      var sassMap,
-          sassMapFile,
-          sassFileSrc,
-          sassFileSrcPath,
-          sourceFileIndex;
-
-      // Build Source Maps!
-      if (sassObj.map) {
-        // Transform map into JSON
-        sassMap = JSON.parse(sassObj.map.toString());
-        // Grab the stdout and transform it into stdin
-        sassMapFile = sassMap.file.replace(/^stdout$/, 'stdin');
-        // Grab the base file name that's being worked on
-        sassFileSrc = file.relative;
-        // Grab the path portion of the file that's being worked on
-        sassFileSrcPath = path.dirname(sassFileSrc);
-        if (sassFileSrcPath) {
-          // Prepend the path to all files in the sources array except the file that's being worked on
-          sourceFileIndex = sassMap.sources.indexOf(sassMapFile);
-          sassMap.sources = sassMap.sources.map(function(source, index) {
-            return (index === sourceFileIndex) ? source : path.join(sassFileSrcPath, source);
-          });
-        }
-
-        // Remove 'stdin' from souces and replace with filenames!
-        sassMap.sources = sassMap.sources.filter(function(src) {
-          if (src !== 'stdin') {
-            return src;
-          }
+    // Build Source Maps!
+    if (sassObj.map) {
+      // Transform map into JSON
+      sassMap = JSON.parse(sassObj.map.toString());
+      // Grab the stdout and transform it into stdin
+      sassMapFile = sassMap.file.replace(/^stdout$/, 'stdin');
+      // Grab the base file name that's being worked on
+      sassFileSrc = file.relative;
+      // Grab the path portion of the file that's being worked on
+      sassFileSrcPath = path.dirname(sassFileSrc);
+      if (sassFileSrcPath) {
+        // Prepend the path to all files in the sources array except the file that's being worked on
+        sourceFileIndex = sassMap.sources.indexOf(sassMapFile);
+        sassMap.sources = sassMap.sources.map((source, index) => { // eslint-disable-line arrow-body-style
+          return index === sourceFileIndex ? source : path.join(sassFileSrcPath, source);
         });
-
-        // Replace the map file with the original file name (but new extension)
-        sassMap.file = gutil.replaceExtension(sassFileSrc, '.css');
-        // Apply the map
-        applySourceMap(file, sassMap);
       }
 
-      file.contents = sassObj.css;
-      file.path = gutil.replaceExtension(file.path, '.css');
+      // Remove 'stdin' from souces and replace with filenames!
+      sassMap.sources = sassMap.sources.filter(src => src !== 'stdin' && src);
 
-      cb(null, file);
-    };
-
-    //////////////////////////////
-    // Handles error message
-    //////////////////////////////
-    errorM = function errorM(error) {
-      var relativePath = '',
-          filePath = error.file === 'stdin' ? file.path : error.file,
-          message = '';
-
-      filePath = filePath ? filePath : file.path;
-      relativePath = path.relative(process.cwd(), filePath);
-
-      message += gutil.colors.underline(relativePath) + '\n';
-      message += error.formatted;
-
-      error.messageFormatted = message;
-      error.messageOriginal = error.message;
-      error.message = gutil.colors.stripColor(message);
-
-      error.relativePath = relativePath;
-
-      return cb(new gutil.PluginError(
-          PLUGIN_NAME, error
-        ));
-    };
-
-    if (sync !== true) {
-      //////////////////////////////
-      // Async Sass render
-      //////////////////////////////
-      callback = function(error, obj) {
-        if (error) {
-          return errorM(error);
-        }
-        filePush(obj);
-      };
-
-      gulpSass.compiler.render(opts, callback);
+      // Replace the map file with the original file name (but new extension)
+      sassMap.file = replaceExtension(sassFileSrc, '.css');
+      // Apply the map
+      applySourceMap(file, sassMap);
     }
-    else {
-      //////////////////////////////
-      // Sync Sass render
-      //////////////////////////////
-      try {
-        result = gulpSass.compiler.renderSync(opts);
 
-        filePush(result);
-      }
-      catch (error) {
+    file.contents = sassObj.css; // eslint-disable-line no-param-reassign
+    file.path = replaceExtension(file.path, '.css'); // eslint-disable-line no-param-reassign
+
+    cb(null, file);
+  };
+
+  //////////////////////////////
+  // Handles error message
+  //////////////////////////////
+  const errorM = (error) => {
+    const filePath = (error.file === 'stdin' ? file.path : error.file) || file.path;
+    const relativePath = path.relative(process.cwd(), filePath);
+    const message = [chalk.underline(relativePath), error.formatted].join('\n');
+
+    error.messageFormatted = message; // eslint-disable-line no-param-reassign
+    error.messageOriginal = error.message; // eslint-disable-line no-param-reassign
+    error.message = stripAnsi(message); // eslint-disable-line no-param-reassign
+    error.relativePath = relativePath; // eslint-disable-line no-param-reassign
+
+    return cb(new PluginError(PLUGIN_NAME, error));
+  };
+
+  if (sync !== true) {
+    //////////////////////////////
+    // Async Sass render
+    //////////////////////////////
+    const callback = (error, obj) => { // eslint-disable-line consistent-return
+      if (error) {
         return errorM(error);
       }
+      filePush(obj);
+    };
+
+    gulpSass.compiler.render(opts, callback);
+  } else {
+    //////////////////////////////
+    // Sync Sass render
+    //////////////////////////////
+    try {
+      filePush(gulpSass.compiler.renderSync(opts));
+    } catch (error) {
+      return errorM(error);
     }
-  });
-};
+  }
+});
 
 //////////////////////////////
 // Sync Sass render
 //////////////////////////////
-gulpSass.sync = function sync(options) {
-  return gulpSass(options, true);
-};
+gulpSass.sync = options => gulpSass(options, true);
 
 //////////////////////////////
 // Log errors nicely
 //////////////////////////////
-gulpSass.logError = function logError(error) {
-  var message = new gutil.PluginError('sass', error.messageFormatted).toString();
-  process.stderr.write(message + '\n');
+gulpSass.logError = (error) => {
+  const message = new PluginError('sass', error.messageFormatted).toString();
+  process.stderr.write(`${message}\n`);
   this.emit('end');
 };
 
