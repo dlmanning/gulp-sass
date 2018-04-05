@@ -1,7 +1,7 @@
 'use strict';
 
 var should = require('should');
-var gutil = require('gulp-util');
+var Vinyl = require('vinyl');
 var path = require('path');
 var fs = require('fs');
 var sass = require('../index');
@@ -17,7 +17,7 @@ var createVinyl = function createVinyl(filename, contents) {
   var base = path.join(__dirname, 'scss');
   var filePath = path.join(base, filename);
 
-  return new gutil.File({
+  return new Vinyl({
     'cwd': __dirname,
     'base': base,
     'path': filePath,
