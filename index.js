@@ -1,10 +1,13 @@
 'use strict';
 
-var gutil = require('gulp-util');
 var through = require('through2');
 var clonedeep = require('lodash.clonedeep');
 var path = require('path');
 var applySourceMap = require('vinyl-sourcemaps-apply');
+var PluginError = require('plugin-error');
+var replaceExt = require('replace-ext');
+var colors = require('ansi-colors');
+var stripColor = require('strip-color');
 
 var PLUGIN_NAME = 'gulp-sass';
 
@@ -23,13 +26,13 @@ var gulpSass = function gulpSass(options, sync) {
       return cb(null, file);
     }
     if (file.isStream()) {
-      return cb(new gutil.PluginError(PLUGIN_NAME, 'Streaming not supported'));
+      return cb(new PluginError(PLUGIN_NAME, 'Streaming not supported'));
     }
     if (path.basename(file.path).indexOf('_') === 0) {
       return cb();
     }
     if (!file.contents.length) {
-      file.path = gutil.replaceExtension(file.path, '.css');
+      file.path = replaceExt(file.path, '.css');
       return cb(null, file);
     }
 
@@ -100,13 +103,13 @@ var gulpSass = function gulpSass(options, sync) {
         });
 
         // Replace the map file with the original file name (but new extension)
-        sassMap.file = gutil.replaceExtension(sassFileSrc, '.css');
+        sassMap.file = replaceExt(sassFileSrc, '.css');
         // Apply the map
         applySourceMap(file, sassMap);
       }
 
       file.contents = sassObj.css;
-      file.path = gutil.replaceExtension(file.path, '.css');
+      file.path = replaceExt(file.path, '.css');
 
       cb(null, file);
     };
@@ -122,18 +125,16 @@ var gulpSass = function gulpSass(options, sync) {
       filePath = filePath ? filePath : file.path;
       relativePath = path.relative(process.cwd(), filePath);
 
-      message += gutil.colors.underline(relativePath) + '\n';
+      message += colors.underline(relativePath) + '\n';
       message += error.formatted;
 
       error.messageFormatted = message;
       error.messageOriginal = error.message;
-      error.message = gutil.colors.stripColor(message);
+      error.message = stripColor(message);
 
       error.relativePath = relativePath;
 
-      return cb(new gutil.PluginError(
-          PLUGIN_NAME, error
-        ));
+      return cb(new PluginError(PLUGIN_NAME, error));
     };
 
     if (sync !== true) {
@@ -176,7 +177,7 @@ gulpSass.sync = function sync(options) {
 // Log errors nicely
 //////////////////////////////
 gulpSass.logError = function logError(error) {
-  var message = new gutil.PluginError('sass', error.messageFormatted).toString();
+  var message = new PluginError('sass', error.messageFormatted).toString();
   process.stderr.write(message + '\n');
   this.emit('end');
 };
