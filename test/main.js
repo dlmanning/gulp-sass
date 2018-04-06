@@ -140,6 +140,15 @@ describe('gulp-sass -- async compile', () => {
     stream.write(sassFile);
   });
 
+  it('should emit logError on sass error', (done) => {
+    const errorFile = createVinyl('error.scss');
+    const stream = sass();
+
+    stream.on('error', sass.logError);
+    stream.on('end', done);
+    stream.write(errorFile);
+  });
+
   it('should handle sass errors', (done) => {
     const errorFile = createVinyl('error.scss');
     const stream = sass();
@@ -394,6 +403,15 @@ describe('gulp-sass -- sync compile', () => {
       err.relativePath.should.equal(path.join('test', 'scss', 'error.scss'));
       done();
     });
+    stream.write(errorFile);
+  });
+
+  it('should emit logError on sass error', (done) => {
+    const errorFile = createVinyl('error.scss');
+    const stream = sass.sync();
+
+    stream.on('error', sass.logError);
+    stream.on('end', done);
     stream.write(errorFile);
   });
 

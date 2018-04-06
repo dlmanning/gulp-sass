@@ -150,7 +150,7 @@ gulpSass.sync = options => gulpSass(options, true);
 //////////////////////////////
 // Log errors nicely
 //////////////////////////////
-gulpSass.logError = (error) => {
+gulpSass.logError = function logError(error) {
   const message = new PluginError('sass', error.messageFormatted).toString();
   process.stderr.write(`${message}\n`);
   this.emit('end');
