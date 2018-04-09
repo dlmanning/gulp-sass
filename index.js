@@ -1,3 +1,5 @@
+'use strict';
+
 const chalk = require('chalk');
 const PluginError = require('plugin-error');
 const replaceExtension = require('replace-ext');
