@@ -13,7 +13,7 @@ Only [Active LTS and Current releases][1] are supported.
 # Install
 
 ```
-npm install gulp-sass --save-dev
+npm install sass gulp-sass --save-dev
 ```
 
 # Basic Usage
@@ -24,7 +24,7 @@ Something like this will compile your Sass files:
 'use strict';
 
 var gulp = require('gulp');
-var sass = require('gulp-sass');
+var sass = require('gulp-sass')(require('sass'));
 
 gulp.task('sass', function () {
   return gulp.src('./sass/**/*.scss')
@@ -43,7 +43,7 @@ You can also compile synchronously, doing something like this:
 'use strict';
 
 var gulp = require('gulp');
-var sass = require('gulp-sass');
+var sass = require('gulp-sass')(require('sass'));
 
 gulp.task('sass', function () {
   return gulp.src('./sass/**/*.scss')
@@ -58,7 +58,12 @@ gulp.task('sass:watch', function () {
 
 ## Options
 
-Pass in options just like you would for [`node-sass`](https://github.com/sass/node-sass#options); they will be passed along just as if you were using `node-sass`. Except for the `data` option which is used by gulp-sass internally. Using the `file` option is also unsupported and results in undefined behaviour that may change without notice.
+`gulp-sass` supports both [Dart Sass][] and [Node Sass][]. You choose which one to use by writing either `require('gulp-sass')(require('sass'))` for Dart Sass or `require('gulp-sass')(require('node-sass'))` for Node Sass. One or the other must be passed in.
+
+[Dart Sass]: http://sass-lang.com/dart-sass
+[Node Sass]: https://github.com/sass/node-sass
+
+Pass in options just like you would for [Node Sass](https://github.com/sass/node-sass#options); they will be passed along just as if you were using Node Sass. Except for the `data` option which is used by gulp-sass internally. Using the `file` option is also unsupported and results in undefined behaviour that may change without notice.
 
 For example:
 
@@ -111,10 +116,13 @@ gulp.task('sass', function () {
 
 # Issues
 
-`gulp-sass` is a very light-weight wrapper around [`node-sass`](https://github.com/sass/node-sass), which in turn is a Node binding for [`libsass`](https://github.com/sass/libsass), which in turn is a port of [`Sass`](https://github.com/sass/sass). Because of this, the issue you're having likely isn't a `gulp-sass` issue, but an issue with one of those three projects.
+`gulp-sass` is a very light-weight wrapper around either [Dart Sass][] or [Node Sass][] (which in turn is a Node binding for [LibSass][]. Because of this, the issue you're having likely isn't a `gulp-sass` issue, but an issue with one those projects or with [Sass][] as a whole.
 
-If you have a feature request/question how Sass works/concerns on how your Sass gets compiled/errors in your compiling, it's likely a `libsass` or `Sass` issue and you should file your issue with one of those projects.
+[LibSass]: https://sass-lang.com/libsass
+[Sass]: https://sass-lang.com
 
-If you're having problems with the options you're passing in, it's likely a `node-sass` or `libsass` issue and you should file your issue with one of those projects.
+If you have a feature request/question how Sass works/concerns on how your Sass gets compiled/errors in your compiling, it's likely a Dart Sass or LibSass issue and you should file your issue with one of those projects.
+
+If you're having problems with the options you're passing in, it's likely a Dart Sass or Node Sass issue and you should file your issue with one of those projects.
 
 We may, in the course of resolving issues, direct you to one of these other projects. If we do so, please follow up by searching that project's issue queue (both open and closed) for your problem and, if it doesn't exist, filing an issue with them.

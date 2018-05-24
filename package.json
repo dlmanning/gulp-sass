@@ -1,6 +1,6 @@
 {
   "name": "gulp-sass",
-  "version": "4.0.1",
+  "version": "5.0.0",
   "description": "Gulp plugin for sass",
   "main": "index.js",
   "engines": {
@@ -26,7 +26,6 @@
   "dependencies": {
     "chalk": "^2.3.0",
     "lodash.clonedeep": "^4.3.2",
-    "node-sass": "^4.8.3",
     "plugin-error": "^1.0.1",
     "replace-ext": "^1.0.0",
     "strip-ansi": "^4.0.0",
@@ -44,6 +43,7 @@
     "gulp-sourcemaps": "^2.6.4",
     "gulp-tap": "^0.1.3",
     "mocha": "^5.0.4",
+    "node-sass": "^4.8.3",
     "rimraf": "^2.4.3",
     "should": "^13.2.1",
     "vinyl": "^2.1.0"
