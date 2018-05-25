@@ -56,6 +56,26 @@ gulp.task('sass:watch', function () {
 });
 ```
 
+Note that when using Dart Sass, **synchronous compilation is twice as fast as asynchronous compilation** by default, due to the overhead of asynchronous callbacks. To avoid this overhead, you can use the [`fibers`](https://www.npmjs.com/package/fibers) package to call asynchronous importers from the synchronous code path. To enable this, pass the `Fiber` class to the `fiber` option:
+
+```javascript
+'use strict';
+
+var Fiber = require('fibers');
+var gulp = require('gulp');
+var sass = require('gulp-sass')(require('sass'));
+
+gulp.task('sass', function () {
+  return gulp.src('./sass/**/*.scss')
+    .pipe(sass({fiber: Fiber}).on('error', sass.logError))
+    .pipe(gulp.dest('./css'));
+});
+
+gulp.task('sass:watch', function () {
+  gulp.watch('./sass/**/*.scss', ['sass']);
+});
+```
+
 ## Options
 
 `gulp-sass` supports both [Dart Sass][] and [Node Sass][]. You choose which one to use by writing either `require('gulp-sass')(require('sass'))` for Dart Sass or `require('gulp-sass')(require('node-sass'))` for Node Sass. One or the other must be passed in.
