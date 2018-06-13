@@ -1,9 +1,5 @@
 # Gulp Sass Changelog
 
-## v5.0.0
-
-https://github.com/dlmanning/gulp-sass/releases/tag/v5.0.0
-
 ## v3.2.0
 **March 11, 2018**
 
