@@ -26,7 +26,7 @@ Something like this will compile your Sass files:
 var gulp = require('gulp');
 var sass = require('gulp-sass');
 
-sass.compiler = require(node-sass');
+sass.compiler = require('node-sass');
 
 gulp.task('sass', function () {
   return gulp.src('./sass/**/*.scss')
@@ -47,7 +47,7 @@ You can also compile synchronously, doing something like this:
 var gulp = require('gulp');
 var sass = require('gulp-sass');
 
-sass.compiler = require(node-sass');
+sass.compiler = require('node-sass');
 
 gulp.task('sass', function () {
   return gulp.src('./sass/**/*.scss')
