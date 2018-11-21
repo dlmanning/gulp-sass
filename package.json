@@ -26,7 +26,7 @@
   "dependencies": {
     "chalk": "^2.3.0",
     "lodash.clonedeep": "^4.3.2",
-    "node-sass": "^4.8.3",
+    "node-sass": "^4.11.0",
     "plugin-error": "^1.0.1",
     "replace-ext": "^1.0.0",
     "strip-ansi": "^4.0.0",
