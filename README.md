@@ -13,8 +13,9 @@ Only [Active LTS and Current releases][1] are supported.
 # Install
 
 ```
-npm install node-sass gulp-sass --save-dev
+npm install gulp-sass --save-dev
 ```
+You must also install either `node-sass` or `sass`.
 
 # Basic Usage
 
@@ -60,7 +61,8 @@ gulp.task('sass:watch', function () {
 });
 ```
 
-You can choose whether to use [Dart Sass][] or [Node Sass][] by setting the `sass.compiler` property. Node Sass will be used by default, but it's strongly recommended that you set it explicitly for forwards-compatibility in case the default ever changes.
+## Compiler implementation
+You can choose whether to use [Dart Sass][] or [Node Sass][] by setting the `sass.compiler` property. Node Sass will be used by default, but it's strongly recommended that you set it explicitly for forwards-compatibility in case the default ever changes. For the default behavior to work the `node-sass` package has to be installed.
 
 [Dart Sass]: http://sass-lang.com/dart-sass
 [Node Sass]: https://github.com/sass/node-sass
