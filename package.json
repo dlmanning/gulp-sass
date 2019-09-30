@@ -26,7 +26,6 @@
   "dependencies": {
     "chalk": "^2.3.0",
     "lodash": "^4.17.11",
-    "node-sass": "^4.8.3",
     "plugin-error": "^1.0.1",
     "replace-ext": "^1.0.0",
     "strip-ansi": "^4.0.0",
@@ -44,6 +43,7 @@
     "gulp-sourcemaps": "^2.6.4",
     "gulp-tap": "^0.1.3",
     "mocha": "^5.0.4",
+    "node-sass": "^4.12.0",
     "rimraf": "^2.4.3",
     "should": "^13.2.1",
     "vinyl": "^2.1.0"
