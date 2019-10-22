@@ -18,6 +18,8 @@ npm install node-sass gulp-sass --save-dev
 
 # Basic Usage
 
+Note: These example work with Gulp 4. For Gulp 3, [check an older version of the doc](https://github.com/dlmanning/gulp-sass/tree/v4.0.2).
+
 Something like this will compile your Sass files:
 
 ```javascript
@@ -28,15 +30,16 @@ var sass = require('gulp-sass');
 
 sass.compiler = require('node-sass');
 
-gulp.task('sass', function () {
+function sassTask() {
   return gulp.src('./sass/**/*.scss')
     .pipe(sass().on('error', sass.logError))
     .pipe(gulp.dest('./css'));
-});
+};
 
-gulp.task('sass:watch', function () {
+exports.sass = sassTask;
+exports.watch = function () {
   gulp.watch('./sass/**/*.scss', ['sass']);
-});
+};
 ```
 
 You can also compile synchronously, doing something like this:
@@ -49,15 +52,16 @@ var sass = require('gulp-sass');
 
 sass.compiler = require('node-sass');
 
-gulp.task('sass', function () {
+function sassTask() {
   return gulp.src('./sass/**/*.scss')
     .pipe(sass.sync().on('error', sass.logError))
     .pipe(gulp.dest('./css'));
-});
+};
 
-gulp.task('sass:watch', function () {
+exports.sass = sassTask;
+exports.watch = function () {
   gulp.watch('./sass/**/*.scss', ['sass']);
-});
+};
 ```
 
 You can choose whether to use [Dart Sass][] or [Node Sass][] by setting the `sass.compiler` property. Node Sass will be used by default, but it's strongly recommended that you set it explicitly for forwards-compatibility in case the default ever changes.
@@ -76,15 +80,16 @@ var sass = require('gulp-sass');
 
 sass.compiler = require('sass');
 
-gulp.task('sass', function () {
+function sassTask() {
   return gulp.src('./sass/**/*.scss')
     .pipe(sass({fiber: Fiber}).on('error', sass.logError))
     .pipe(gulp.dest('./css'));
-});
+};
 
-gulp.task('sass:watch', function () {
-  gulp.watch('./sass/**/*.scss', ['sass']);
-});
+exports.sass = sassTask;
+exports.watch = function () {
+  gulp.watch('./sass/**/*.scss', [sassTask]);
+};
 ```
 
 ## Options
@@ -94,21 +99,25 @@ Pass in options just like you would for [Node Sass](https://github.com/sass/node
 For example:
 
 ```javascript
-gulp.task('sass', function () {
+function sassTask() {
  return gulp.src('./sass/**/*.scss')
    .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
    .pipe(gulp.dest('./css'));
-});
+};
+
+exports.sass = sassTask;
 ```
 
 Or this for synchronous code:
 
 ```javascript
-gulp.task('sass', function () {
+function sassTask() {
  return gulp.src('./sass/**/*.scss')
    .pipe(sass.sync({outputStyle: 'compressed'}).on('error', sass.logError))
    .pipe(gulp.dest('./css'));
-});
+};
+
+exports.sass = sassTask;
 ```
 
 ## Source Maps
@@ -118,26 +127,30 @@ gulp.task('sass', function () {
 ```javascript
 var sourcemaps = require('gulp-sourcemaps');
 
-gulp.task('sass', function () {
+function sassTask() {
  return gulp.src('./sass/**/*.scss')
   .pipe(sourcemaps.init())
   .pipe(sass().on('error', sass.logError))
   .pipe(sourcemaps.write())
   .pipe(gulp.dest('./css'));
-});
+};
+
+exports.sass = sassTask;
 ```
 
 By default, [gulp-sourcemaps](https://github.com/floridoo/gulp-sourcemaps) writes the source maps inline in the compiled CSS files. To write them to a separate file, specify a path relative to the `gulp.dest()` destination in the `sourcemaps.write()` function.
 
 ```javascript
 var sourcemaps = require('gulp-sourcemaps');
-gulp.task('sass', function () {
+function sassTask() {
  return gulp.src('./sass/**/*.scss')
   .pipe(sourcemaps.init())
   .pipe(sass().on('error', sass.logError))
   .pipe(sourcemaps.write('./maps'))
   .pipe(gulp.dest('./css'));
-});
+};
+
+exports.sass = sassTask;
 ```
 
 # Issues
