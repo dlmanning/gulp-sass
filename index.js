@@ -99,7 +99,7 @@ const gulpSass = (options, sync) => through.obj((file, enc, cb) => { // eslint-d
     file.contents = sassObj.css; // eslint-disable-line no-param-reassign
     file.path = replaceExtension(file.path, '.css'); // eslint-disable-line no-param-reassign
 
-    if ( file.stat ) {
+    if (file.stat) {
       file.stat.atime = file.stat.mtime = file.stat.ctime = new Date(); // eslint-disable-line
     }
 
