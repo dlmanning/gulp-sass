@@ -1,9 +1,39 @@
 # Gulp Sass Changelog
 
+## v4.1.0
+**April 23, 2020**
+
+https://github.com/dlmanning/gulp-sass/releases/tag/v4.1.0
+
+## v4.0.2
+**October 16, 2018**
+
+https://github.com/dlmanning/gulp-sass/releases/tag/v4.0.2
+
+## v4.0.1
+**Apr 8, 2018**
+
+https://github.com/dlmanning/gulp-sass/releases/tag/v4.0.1
+
+## v4.0.0
+**April 5, 2018**
+
+https://github.com/dlmanning/gulp-sass/releases/tag/v4.0.0
+
+## v3.2.1
+**March 24, 2018**
+
+https://github.com/dlmanning/gulp-sass/releases/tag/v3.2.1
+
 ## v3.2.0
-**March 11, 2018**
+**March 12, 2018**
 
 https://github.com/dlmanning/gulp-sass/releases/tag/v3.2.0
+
+## v3.1.0
+**January 9, 2017**
+
+https://github.com/dlmanning/gulp-sass/releases/tag/v3.1.0
 
 ## v3.0.0
 **January 9, 2017**
