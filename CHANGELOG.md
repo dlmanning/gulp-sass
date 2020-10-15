@@ -1,5 +1,9 @@
 # Gulp Sass Changelog
 
+## v4.1.1
+**October 15, 2020**
+* Upgrade lodash to address a security issue (Prototype Pollution).
+
 ## v4.1.0
 **April 23, 2020**
 
