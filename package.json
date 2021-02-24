@@ -26,9 +26,9 @@
   "dependencies": {
     "chalk": "^2.3.0",
     "lodash": "^4.17.11",
-    "node-sass": "^4.8.3",
     "plugin-error": "^1.0.1",
     "replace-ext": "^1.0.0",
+    "sass": "^1.32.6",
     "strip-ansi": "^4.0.0",
     "through2": "^2.0.0",
     "vinyl-sourcemaps-apply": "^0.2.0"
