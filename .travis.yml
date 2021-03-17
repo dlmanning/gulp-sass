@@ -1,6 +1,12 @@
 language: node_js
 
+# https://github.com/nodejs/release
 node_js:
-  - lts/boron
-  - lts/carbon
-  - node
+  - 10
+  - 12
+  - 14
+  - current
+
+jobs:
+  allow_failures:
+    - current
