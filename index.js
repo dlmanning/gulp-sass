@@ -167,7 +167,7 @@ Object.defineProperty(gulpSass, 'compiler', {
   writeable: true,
   configurable: true,
   enumerable: true,
-  get: function () {
+  get: function getCompiler() {
     delete gulpSass.compiler;
     return gulpSass.compiler = require('node-sass');
   }
