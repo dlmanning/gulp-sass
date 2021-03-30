@@ -163,6 +163,14 @@ gulpSass.logError = function logError(error) {
 //////////////////////////////
 // Store compiler in a prop
 //////////////////////////////
-gulpSass.compiler = require('node-sass');
+Object.defineProperty(gulpSass, 'compiler', {
+  writeable: true,
+  configurable: true,
+  enumerable: true,
+  get: function () {
+    delete gulpSass.compiler;
+    return gulpSass.compiler = require('node-sass');
+  }
+});
 
 module.exports = gulpSass;
