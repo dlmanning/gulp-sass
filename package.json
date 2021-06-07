@@ -1,10 +1,10 @@
 {
   "name": "gulp-sass",
-  "version": "4.1.0",
+  "version": "5.0.0",
   "description": "Gulp plugin for sass",
   "main": "index.js",
   "engines": {
-    "node": ">=6"
+    "node": ">=12"
   },
   "scripts": {
     "test": "./node_modules/.bin/mocha test"
