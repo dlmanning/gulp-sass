@@ -469,8 +469,8 @@ describe('gulp-sass -- sync compile', () => {
       .pipe(tap((file) => {
         should.exist(file.sourceMap);
         file.sourceMap.sources.should.eql(expectedSourcesAfter);
-      }))
-      .on('end', done);
+      }));
+    done();
   });
 
   it('should work with gulp-sourcemaps and a globbed source', (done) => {
@@ -491,8 +491,8 @@ describe('gulp-sass -- sync compile', () => {
         const actual = normaliseEOL(file.sourceMap.sourcesContent[0]);
         const expected = normaliseEOL(filesContent[path.normalize(file.sourceMap.sources[0])]);
         actual.should.eql(expected);
-      }))
-      .on('end', done);
+      }));
+    done();
   });
 
   it('should work with gulp-sourcemaps and autoprefixer with different file.base', (done) => {
@@ -519,8 +519,8 @@ describe('gulp-sass -- sync compile', () => {
       .pipe(tap((file) => {
         should.exist(file.sourceMap);
         file.sourceMap.sources.should.eql(expectedSourcesAfter);
-      }))
-      .on('end', done);
+      }));
+    done();
   });
 
   it('should work with empty files', (done) => {
@@ -533,7 +533,7 @@ describe('gulp-sass -- sync compile', () => {
         } catch (e) {
           should.fail(false, true, 'Empty file was produced');
         }
-      }))
-      .on('end', done);
+      }));
+    done();
   });
 });
