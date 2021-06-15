@@ -1,18 +1,34 @@
 const chalk = require('chalk');
 const PluginError = require('plugin-error');
+const { Transform } = require('stream');
 const replaceExtension = require('replace-ext');
 const stripAnsi = require('strip-ansi');
-const through = require('through2');
 const clonedeep = require('lodash/cloneDeep');
 const path = require('path');
 const applySourceMap = require('vinyl-sourcemaps-apply');
 
 const PLUGIN_NAME = 'gulp-sass';
 
+
+/**
+ * @typedef { import('stream').TransformCallback } TransformCallback
+ *
+ * A tiny wrapper for dealing with streams.
+ * @param {function(*, BufferEncoding, TransformCallback):void} transform
+ * @see https://metafizzy.co/blog/transfob-replaces-through2-gulp/
+ */
+function transfob(transform) {
+  return new Transform({
+    transform,
+    objectMode: true,
+  });
+}
+
+
 //////////////////////////////
 // Main Gulp Sass function
 //////////////////////////////
-const gulpSass = (options, sync) => through.obj((file, enc, cb) => { // eslint-disable-line consistent-return
+const gulpSass = (options, sync) => transfob((file, enc, cb) => { // eslint-disable-line consistent-return
   if (file.isNull()) {
     return cb(null, file);
   }
