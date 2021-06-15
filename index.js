@@ -1,50 +1,18 @@
 const chalk = require('chalk');
 const PluginError = require('plugin-error');
-const { Transform } = require('stream');
 const replaceExtension = require('replace-ext');
 const stripAnsi = require('strip-ansi');
+const transfob = require('transfob');
 const clonedeep = require('lodash/cloneDeep');
 const path = require('path');
 const applySourceMap = require('vinyl-sourcemaps-apply');
 
 const PLUGIN_NAME = 'gulp-sass';
 
-
-/**
- * @typedef { import('stream').TransformCallback } TransformCallback
- *
- * A tiny wrapper for dealing with streams.
- * @param {function(*, BufferEncoding, TransformCallback):void} transform
- * @see https://metafizzy.co/blog/transfob-replaces-through2-gulp/
- */
-function transfob(transform) {
-  return new Transform({
-    transform,
-    objectMode: true,
-  });
-}
-
-
 //////////////////////////////
 // Main Gulp Sass function
 //////////////////////////////
 const gulpSass = (options, sync) => transfob((file, enc, cb) => { // eslint-disable-line consistent-return
-  if (!gulpSass.compiler || !gulpSass.compiler.render) {
-    const message = new PluginError(
-      PLUGIN_NAME,
-      '\n' +
-      'gulp-sass 5 does not have a default Sass compiler; please set one yourself.\n' +
-      'Both the `sass` and `node-sass` packages are permitted.\n' +
-
-        'For example, in your gulpfile:\n\n' +
-        '  var sass = require(\'gulp-sass\');\n' +
-        '  sass.compiler = require(\'sass\');\n',
-      { showProperties: false },
-    ).toString();
-    process.stderr.write(`${message}\n`);
-    process.exit(1);
-  }
-
   if (file.isNull()) {
     return cb(null, file);
   }
@@ -192,4 +160,21 @@ gulpSass.logError = function logError(error) {
   this.emit('end');
 };
 
-module.exports = gulpSass;
+module.exports = (compiler) => {
+  if (!compiler || !compiler.render) {
+    const message = new PluginError(
+      PLUGIN_NAME,
+      '\n' +
+      'gulp-sass 5 does not have a default Sass compiler; please set one yourself.\n' +
+      'Both the `sass` and `node-sass` packages are permitted.\n' +
+
+        'For example, in your gulpfile:\n\n' +
+        '  var sass = require(\'gulp-sass\')(require(\'sass\'));\n',
+      { showProperties: false },
+    ).toString();
+    process.stderr.write(`${message}\n`);
+    process.exit(1);
+  }
+  gulpSass.compiler = compiler;
+  return gulpSass;
+};
