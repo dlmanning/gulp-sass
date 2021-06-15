@@ -33,7 +33,7 @@ const gulpSass = (options, sync) => transfob((file, enc, cb) => { // eslint-disa
     const message = new PluginError(
       PLUGIN_NAME,
       '\n' +
-      'gulp-sass 5 does not have a default SASS compiler; please set one yourself.\n' +
+      'gulp-sass 5 does not have a default Sass compiler; please set one yourself.\n' +
       'Both the `sass` and `node-sass` packages are permitted.\n' +
 
         'For example, in your gulpfile:\n\n' +
