@@ -29,6 +29,22 @@ function transfob(transform) {
 // Main Gulp Sass function
 //////////////////////////////
 const gulpSass = (options, sync) => transfob((file, enc, cb) => { // eslint-disable-line consistent-return
+  if (!gulpSass.compiler || !gulpSass.compiler.render) {
+    const message = new PluginError(
+      PLUGIN_NAME,
+      '\n' +
+      'gulp-sass 5 does not have a default SASS compiler; please set one yourself.\n' +
+      'Both the `sass` and `node-sass` packages are permitted.\n' +
+
+        'For example, in your gulpfile:\n\n' +
+        '  var sass = require(\'gulp-sass\');\n' +
+        '  sass.compiler = require(\'sass\');\n',
+      { showProperties: false },
+    ).toString();
+    process.stderr.write(`${message}\n`);
+    process.exit(1);
+  }
+
   if (file.isNull()) {
     return cb(null, file);
   }
@@ -175,10 +191,5 @@ gulpSass.logError = function logError(error) {
   process.stderr.write(`${message}\n`);
   this.emit('end');
 };
-
-//////////////////////////////
-// Store compiler in a prop
-//////////////////////////////
-gulpSass.compiler = require('node-sass');
 
 module.exports = gulpSass;
