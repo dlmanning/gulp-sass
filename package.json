@@ -48,8 +48,5 @@
     "rimraf": "^2.4.3",
     "should": "^13.2.1",
     "vinyl": "^2.1.0"
-  },
-  "peerDependencies": {
-    "node-sass": "^6.0.0"
   }
 }
