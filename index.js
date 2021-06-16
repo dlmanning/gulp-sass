@@ -9,9 +9,9 @@ const applySourceMap = require('vinyl-sourcemaps-apply');
 
 const PLUGIN_NAME = 'gulp-sass';
 
-//////////////////////////////
+/// ///////////////////////////
 // Main Gulp Sass function
-//////////////////////////////
+/// ///////////////////////////
 const gulpSass = (options, sync) => transfob((file, enc, cb) => { // eslint-disable-line consistent-return
   if (file.isNull()) {
     return cb(null, file);
@@ -59,9 +59,9 @@ const gulpSass = (options, sync) => transfob((file, enc, cb) => { // eslint-disa
     opts.sourceMapContents = true;
   }
 
-  //////////////////////////////
+  /// ///////////////////////////
   // Handles returning the file to the stream
-  //////////////////////////////
+  /// ///////////////////////////
   const filePush = (sassObj) => {
     let sassMap;
     let sassMapFile;
@@ -88,7 +88,7 @@ const gulpSass = (options, sync) => transfob((file, enc, cb) => { // eslint-disa
       }
 
       // Remove 'stdin' from souces and replace with filenames!
-      sassMap.sources = sassMap.sources.filter(src => src !== 'stdin' && src);
+      sassMap.sources = sassMap.sources.filter((src) => src !== 'stdin' && src);
 
       // Replace the map file with the original file name (but new extension)
       sassMap.file = replaceExtension(sassFileSrc, '.css');
@@ -106,9 +106,9 @@ const gulpSass = (options, sync) => transfob((file, enc, cb) => { // eslint-disa
     cb(null, file);
   };
 
-  //////////////////////////////
+  /// ///////////////////////////
   // Handles error message
-  //////////////////////////////
+  /// ///////////////////////////
   const errorM = (error) => {
     const filePath = (error.file === 'stdin' ? file.path : error.file) || file.path;
     const relativePath = path.relative(process.cwd(), filePath);
@@ -123,9 +123,9 @@ const gulpSass = (options, sync) => transfob((file, enc, cb) => { // eslint-disa
   };
 
   if (sync !== true) {
-    //////////////////////////////
+    /// ///////////////////////////
     // Async Sass render
-    //////////////////////////////
+    /// ///////////////////////////
     const callback = (error, obj) => { // eslint-disable-line consistent-return
       if (error) {
         return errorM(error);
@@ -135,9 +135,9 @@ const gulpSass = (options, sync) => transfob((file, enc, cb) => { // eslint-disa
 
     gulpSass.compiler.render(opts, callback);
   } else {
-    //////////////////////////////
+    /// ///////////////////////////
     // Sync Sass render
-    //////////////////////////////
+    /// ///////////////////////////
     try {
       filePush(gulpSass.compiler.renderSync(opts));
     } catch (error) {
@@ -146,14 +146,14 @@ const gulpSass = (options, sync) => transfob((file, enc, cb) => { // eslint-disa
   }
 });
 
-//////////////////////////////
+/// ///////////////////////////
 // Sync Sass render
-//////////////////////////////
-gulpSass.sync = options => gulpSass(options, true);
+/// ///////////////////////////
+gulpSass.sync = (options) => gulpSass(options, true);
 
-//////////////////////////////
+/// ///////////////////////////
 // Log errors nicely
-//////////////////////////////
+/// ///////////////////////////
 gulpSass.logError = function logError(error) {
   const message = new PluginError('sass', error.messageFormatted).toString();
   process.stderr.write(`${message}\n`);
@@ -164,12 +164,12 @@ module.exports = (compiler) => {
   if (!compiler || !compiler.render) {
     const message = new PluginError(
       PLUGIN_NAME,
-      '\n' +
-      'gulp-sass 5 does not have a default Sass compiler; please set one yourself.\n' +
-      'Both the `sass` and `node-sass` packages are permitted.\n' +
+      '\n'
+      + 'gulp-sass 5 does not have a default Sass compiler; please set one yourself.\n'
+      + 'Both the `sass` and `node-sass` packages are permitted.\n'
 
-        'For example, in your gulpfile:\n\n' +
-        '  var sass = require(\'gulp-sass\')(require(\'sass\'));\n',
+        + 'For example, in your gulpfile:\n\n'
+        + '  var sass = require(\'gulp-sass\')(require(\'sass\'));\n',
       { showProperties: false },
     ).toString();
     process.stderr.write(`${message}\n`);
