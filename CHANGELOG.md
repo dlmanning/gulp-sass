@@ -1,5 +1,9 @@
 # Gulp Sass Changelog
 
+## v4.1.1
+**June 24, 2021**
+https://github.com/dlmanning/gulp-sass/releases/tag/v4.1.1
+
 ## v4.1.0
 **April 23, 2020**
 
