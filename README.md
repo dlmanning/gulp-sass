@@ -22,13 +22,17 @@ Whichever compiler you choose, it's best to install these as dev dependencies:
 npm install sass gulp-sass --save-dev
 ```
 
-## Basic usage: render your Sass
+## Usage
 
-You need to import `gulp-sass` into your gulpfile and pass it the compiler of your choice. From there, you can call `sass()` inside `gulp.pipe()` to asynchronously render your Sass into CSS. To render your CSS synchronously, you can call `sass.sync()`.
+**Note:** These examples assume you're using Gulp 4. For examples that work with Gulp 3, [check the docs for an earlier version of `gulp-sass`](https://github.com/dlmanning/gulp-sass/tree/v4.1.1).
+
+`gulp-sass` runs inside of Gulp tasks. No matter what else you do with `gulp-sass`, you must first import it into your gulpfile, making sure to pass it the compiler of your choice. From there, create a Gulp task that calls either `sass()` (to asynchronously render your CSS), or `sass.sync()` (to render it synchronously). Then, export your task with the `export` keyword. We'll show some examples of how to do that.
 
 **⚠️ Note:** With Dart Sass, **synchronous rendering is twice as fast as asynchronous rendering**. The Sass team is exploring ways to improve asynchronous rendering with Dart Sass, but for now you will get the best performance from `sass.sync()`
 
-Rendering your Sass in a Gulp task looks something like this:
+### Basic tasks: render your Sass
+
+Rendering your Sass with a Gulp task looks something like this:
 
 ```javascript
 'use strict';
@@ -36,28 +40,29 @@ Rendering your Sass in a Gulp task looks something like this:
 var gulp = require('gulp');
 var sass = require('gulp-sass')(require('sass'));
 
-  gulp.task('sass', function() {
-    return gulp.src('./sass/**/*.scss')
-      .pipe(sass().on('error', sass.logError))
-      .pipe(gulp.dest('./css'));
-  });
+function buildStyles() {
+  return gulp.src('./sass/**/*.scss')
+    .pipe(sass().on('error', sass.logError))
+    .pipe(gulp.dest('./css'));
+};
 
-  gulp.task('sass:watch', function() {
-    gulp.watch('./sass/**/*.scss', ['sass']);
-  });
+exports.buildStyles = buildStyles;
+exports.watch = function () {
+  gulp.watch('./sass/**/*.scss', ['sass']);
+};
 ```
 
 With synchronous rendering, that Gulp task looks like this:
 
 ``` javascript
-gulp.task('sass', function() {
-  return gulp.src('./sass/**/*.scss')
-    .pipe(sass.sync().on('error', sass.logError))
-    .pipe(gulp.dest('./css'));
-});
+function sassTask() {
+return gulp.src('./sass/**/*.scss')
+  .pipe(sass().on('error', sass.logError))
+  .pipe(gulp.dest('./css'));
+};
 ```
 
-## Render with options
+### Advanced tasks: render with options
 
 To change the final output of your CSS, you can pass an options object to your renderer. `gulp-sass` supports [Node Sass's render options](https://github.com/sass/node-sass#options), with two unsupported exceptions:
 
@@ -67,21 +72,25 @@ To change the final output of your CSS, you can pass an options object to your r
 For example, to compress your CSS, you can call `sass({outputStyle: 'compressed'}`. In the context of a Gulp task, that looks like this:
 
 ```javascript
-gulp.task('sass', function() {
- return gulp.src('./sass/**/*.scss')
-   .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
-   .pipe(gulp.dest('./css'));
-});
+function buildStyles() {
+  return gulp.src('./sass/**/*.scss')
+    .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
+    .pipe(gulp.dest('./css'));
+};
+
+exports.buildStyles = buildStyles;
 ```
 
 Or this for synchronous rendering:
 
 ```javascript
-gulp.task('sass', function() {
- return gulp.src('./sass/**/*.scss')
-   .pipe(sass.sync({outputStyle: 'compressed'}).on('error', sass.logError))
-   .pipe(gulp.dest('./css'));
-});
+function buildStyles() {
+  return gulp.src('./sass/**/*.scss')
+    .pipe(sass.sync({outputStyle: 'compressed'}).on('error', sass.logError))
+    .pipe(gulp.dest('./css'));
+};
+
+exports.buildStyles = buildStyles;
 ```
 
 ## Source maps
@@ -91,26 +100,31 @@ gulp.task('sass', function() {
 ```javascript
 var sourcemaps = require('gulp-sourcemaps');
 
-gulp.task('sass', function() {
- return gulp.src('./sass/**/*.scss')
-  .pipe(sourcemaps.init())
-  .pipe(sass().on('error', sass.logError))
-  .pipe(sourcemaps.write())
-  .pipe(gulp.dest('./css'));
-});
+function buildStyles() {
+  return gulp.src('./sass/**/*.scss')
+    .pipe(sourcemaps.init())
+    .pipe(sass().on('error', sass.logError))
+    .pipe(sourcemaps.write())
+    .pipe(gulp.dest('./css'));
+}
+
+exports.buildStyles = buildStyles;
 ```
 
 By default, `gulp-sourcemaps` writes the source maps inline, in the compiled CSS files. To write them to a separate file, specify a path relative to the `gulp.dest()` destination in the `sourcemaps.write()` function.
 
 ```javascript
 var sourcemaps = require('gulp-sourcemaps');
-gulp.task('sass', function() {
- return gulp.src('./sass/**/*.scss')
-  .pipe(sourcemaps.init())
-  .pipe(sass().on('error', sass.logError))
-  .pipe(sourcemaps.write('./maps'))
-  .pipe(gulp.dest('./css'));
-});
+
+function buildStyles() {
+  return gulp.src('./sass/**/*.scss')
+    .pipe(sourcemaps.init())
+    .pipe(sass().on('error', sass.logError))
+    .pipe(sourcemaps.write('./maps'))
+    .pipe(gulp.dest('./css'));
+};
+
+exports.buildStyles = buildStyles;
 ```
 
 <h2 id="migrating-to-version-5">Migrating to version 5</h2>
