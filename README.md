@@ -56,9 +56,9 @@ With synchronous rendering, that Gulp task looks like this:
 
 ``` javascript
 function buildStyles() {
-return gulp.src('./sass/**/*.scss')
-  .pipe(sass.sync().on('error', sass.logError))
-  .pipe(gulp.dest('./css'));
+  return gulp.src('./sass/**/*.scss')
+    .pipe(sass.sync().on('error', sass.logError))
+    .pipe(gulp.dest('./css'));
 };
 ```
 
