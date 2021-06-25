@@ -2,7 +2,6 @@ const should = require('should');
 const Vinyl = require('vinyl');
 const path = require('path');
 const fs = require('fs');
-const sass = require('../index');
 const rimraf = require('rimraf');
 const gulp = require('gulp');
 const sourcemaps = require('gulp-sourcemaps');
@@ -10,6 +9,8 @@ const postcss = require('gulp-postcss');
 const autoprefixer = require('autoprefixer');
 const tap = require('gulp-tap');
 const globule = require('globule');
+
+const sass = require('../index')(require('node-sass'));
 
 const createVinyl = (filename, contents) => {
   const base = path.join(__dirname, 'scss');
@@ -23,7 +24,7 @@ const createVinyl = (filename, contents) => {
   });
 };
 
-const normaliseEOL = str => str.toString('utf8').replace(/\r\n/g, '\n');
+const normaliseEOL = (str) => str.toString('utf8').replace(/\r\n/g, '\n');
 
 describe('test helpers', () => {
   it('should normalise EOL', (done) => {
@@ -224,14 +225,14 @@ describe('gulp-sass -- async compile', () => {
   it('should work with gulp-sourcemaps', (done) => {
     const sassFile = createVinyl('inheritance.scss');
 
-    sassFile.sourceMap = '{' +
-      '"version": 3,' +
-      '"file": "scss/subdir/multilevelimport.scss",' +
-      '"names": [],' +
-      '"mappings": "",' +
-      '"sources": [ "scss/subdir/multilevelimport.scss" ],' +
-      '"sourcesContent": [ "@import ../inheritance;" ]' +
-    '}';
+    sassFile.sourceMap = '{'
+      + '"version": 3,'
+      + '"file": "scss/subdir/multilevelimport.scss",'
+      + '"names": [],'
+      + '"mappings": "",'
+      + '"sources": [ "scss/subdir/multilevelimport.scss" ],'
+      + '"sourcesContent": [ "@import ../inheritance;" ]'
+    + '}';
 
     // Expected sources are relative to file.base
     const expectedSources = [
@@ -425,14 +426,14 @@ describe('gulp-sass -- sync compile', () => {
       'includes/_dogs.sass',
     ];
 
-    sassFile.sourceMap = '{' +
-      '"version": 3,' +
-      '"file": "scss/subdir/multilevelimport.scss",' +
-      '"names": [],' +
-      '"mappings": "",' +
-      '"sources": [ "scss/subdir/multilevelimport.scss" ],' +
-      '"sourcesContent": [ "@import ../inheritance;" ]' +
-    '}';
+    sassFile.sourceMap = '{'
+      + '"version": 3,'
+      + '"file": "scss/subdir/multilevelimport.scss",'
+      + '"names": [],'
+      + '"mappings": "",'
+      + '"sources": [ "scss/subdir/multilevelimport.scss" ],'
+      + '"sourcesContent": [ "@import ../inheritance;" ]'
+    + '}';
 
     const stream = sass.sync();
     stream.on('data', (cssFile) => {
@@ -469,8 +470,8 @@ describe('gulp-sass -- sync compile', () => {
       .pipe(tap((file) => {
         should.exist(file.sourceMap);
         file.sourceMap.sources.should.eql(expectedSourcesAfter);
-      }))
-      .on('end', done);
+      }));
+    done();
   });
 
   it('should work with gulp-sourcemaps and a globbed source', (done) => {
@@ -491,8 +492,8 @@ describe('gulp-sass -- sync compile', () => {
         const actual = normaliseEOL(file.sourceMap.sourcesContent[0]);
         const expected = normaliseEOL(filesContent[path.normalize(file.sourceMap.sources[0])]);
         actual.should.eql(expected);
-      }))
-      .on('end', done);
+      }));
+    done();
   });
 
   it('should work with gulp-sourcemaps and autoprefixer with different file.base', (done) => {
@@ -519,8 +520,8 @@ describe('gulp-sass -- sync compile', () => {
       .pipe(tap((file) => {
         should.exist(file.sourceMap);
         file.sourceMap.sources.should.eql(expectedSourcesAfter);
-      }))
-      .on('end', done);
+      }));
+    done();
   });
 
   it('should work with empty files', (done) => {
@@ -533,7 +534,7 @@ describe('gulp-sass -- sync compile', () => {
         } catch (e) {
           should.fail(false, true, 'Empty file was produced');
         }
-      }))
-      .on('end', done);
+      }));
+    done();
   });
 });

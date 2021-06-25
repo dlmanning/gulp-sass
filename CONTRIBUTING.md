@@ -1,10 +1,15 @@
 # Contributing to Gulp Sass
 
-Gulp Sass is a very light-weight [Gulp](https://github.com/gulpjs/gulp) wrapper for [`node-sass`](https://github.com/sass/node-sass), which in turn is a Node binding for [`libsass`](https://github.com/sass/libsass), which in turn is a port of [`Sass`](https://github.com/sass/sass).
+`gulp-sass` is a very light-weight wrapper around either [Dart Sass][] or [Node Sass][] (which in turn is a Node binding for [LibSass][]. All of these are implementations of the [Sass][] language.
+
+[Dart Sass]: http://sass-lang.com/dart-sass
+[Node Sass]: https://github.com/sass/node-sass
+[LibSass]: https://sass-lang.com/libsass
+[Sass]: https://sass-lang.com
 
 ## Submitting Issues
 
-* Before creating a new issue, perform a [cursory search](https://github.com/issues?utf8=%E2%9C%93&q=repo%3Adlmanning%2Fgulp-sass+repo%3Asass%2Fnode-sass+repo%3Asass%2Flibsass+repo%3Asass%2Fsass+repo%3Asass-eyeglass%2Feyeglass) in the Gulp Sass, Node Sass, Libsass, and main Sass repos to see if a similar issue has already been submitted. Please also refer to our [Common Issues and Their Fixes](https://github.com/dlmanning/gulp-sass/wiki/Common-Issues-and-Their-Fixes) page for some basic troubleshooting.
+* Before creating a new issue, perform a [cursory search](https://github.com/issues?utf8=%E2%9C%93&q=repo%3Adlmanning%2Fgulp-sass+repo%3Asass%2Fdart-sass+repo%3Asass%2Fnode-sass+repo%3Asass%2Flibsass+repo%3Asass%2Fsass+repo%3Asass-eyeglass%2Feyeglass) in the Gulp Sass, Dart Sass, Node Sass, Libsass, and main Sass repos to see if a similar issue has already been submitted. Please also refer to our [Common Issues and Their Fixes](https://github.com/dlmanning/gulp-sass/wiki/Common-Issues-and-Their-Fixes) page for some basic troubleshooting.
 * You can create an issue [here](https://github.com/dlmanning/gulp-sass/issues). Please include as many details as possible in your report.
 * Issue titles should be descriptive, explaining at the high level what it is about.
 * Please include the version of `gulp-sass`, Node, and NPM you are using, as well as what operating system you are having a problem on.
