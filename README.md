@@ -30,7 +30,7 @@ npm install sass gulp-sass --save-dev
 
 **⚠️ Note:** With Dart Sass, **synchronous rendering is twice as fast as asynchronous rendering**. The Sass team is exploring ways to improve asynchronous rendering with Dart Sass, but for now you will get the best performance from `sass.sync()`
 
-### Basic tasks: render your Sass
+### Render your CSS
 
 To render your CSS with a build task, then watch your files for changes, you might write something like this.:
 
@@ -62,7 +62,7 @@ return gulp.src('./sass/**/*.scss')
 };
 ```
 
-### Advanced tasks: render with options
+### Render with options
 
 To change the final output of your CSS, you can pass an options object to your renderer. `gulp-sass` supports [Node Sass's render options](https://github.com/sass/node-sass#options), with two unsupported exceptions:
 
@@ -93,7 +93,7 @@ function buildStyles() {
 exports.buildStyles = buildStyles;
 ```
 
-## Source maps
+### Include a source map
 
 `gulp-sass` can be used in tandem with [`gulp-sourcemaps`](https://github.com/floridoo/gulp-sourcemaps) to generate source maps for the Sass-to-CSS compilation. You will need to initialize `gulp-sourcemaps` _before_ running `gulp-sass`, and write the source maps after.
 
