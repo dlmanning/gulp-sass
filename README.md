@@ -32,7 +32,7 @@ npm install sass gulp-sass --save-dev
 
 ### Basic tasks: render your Sass
 
-Rendering your Sass with a Gulp task looks something like this:
+To render your CSS with a build task, then watch your files for changes, you might write something like this.:
 
 ```javascript
 'use strict';
@@ -55,9 +55,9 @@ exports.watch = function () {
 With synchronous rendering, that Gulp task looks like this:
 
 ``` javascript
-function sassTask() {
+function buildStyles() {
 return gulp.src('./sass/**/*.scss')
-  .pipe(sass().on('error', sass.logError))
+  .pipe(sass.sync().on('error', sass.logError))
   .pipe(gulp.dest('./css'));
 };
 ```
