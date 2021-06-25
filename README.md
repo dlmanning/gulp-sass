@@ -13,7 +13,7 @@ Only [Active LTS and Current releases][1] are supported.
 # Install
 
 ```
-npm install node-sass gulp-sass --save-dev
+npm install sass gulp-sass --save-dev
 ```
 
 # Basic Usage
@@ -24,9 +24,7 @@ Something like this will compile your Sass files:
 'use strict';
 
 var gulp = require('gulp');
-var sass = require('gulp-sass');
-
-sass.compiler = require('node-sass');
+var sass = require('gulp-sass')(require('sass'));
 
 gulp.task('sass', function () {
   return gulp.src('./sass/**/*.scss')
@@ -45,9 +43,7 @@ You can also compile synchronously, doing something like this:
 'use strict';
 
 var gulp = require('gulp');
-var sass = require('gulp-sass');
-
-sass.compiler = require('node-sass');
+var sass = require('gulp-sass')(require('sass'));
 
 gulp.task('sass', function () {
   return gulp.src('./sass/**/*.scss')
@@ -60,34 +56,12 @@ gulp.task('sass:watch', function () {
 });
 ```
 
-You can choose whether to use [Dart Sass][] or [Node Sass][] by setting the `sass.compiler` property. Node Sass will be used by default, but it's strongly recommended that you set it explicitly for forwards-compatibility in case the default ever changes.
+## Options
+
+`gulp-sass` supports both [Dart Sass][] and [Node Sass][]. You choose which one to use by writing either `require('gulp-sass')(require('sass'))` for Dart Sass or `require('gulp-sass')(require('node-sass'))` for Node Sass. One or the other must be passed in.
 
 [Dart Sass]: http://sass-lang.com/dart-sass
 [Node Sass]: https://github.com/sass/node-sass
-
-Note that when using Dart Sass, **synchronous compilation is twice as fast as asynchronous compilation** by default, due to the overhead of asynchronous callbacks. To avoid this overhead, you can use the [`fibers`](https://www.npmjs.com/package/fibers) package to call asynchronous importers from the synchronous code path. To enable this, pass the `Fiber` class to the `fiber` option:
-
-```javascript
-'use strict';
-
-var Fiber = require('fibers');
-var gulp = require('gulp');
-var sass = require('gulp-sass');
-
-sass.compiler = require('sass');
-
-gulp.task('sass', function () {
-  return gulp.src('./sass/**/*.scss')
-    .pipe(sass({fiber: Fiber}).on('error', sass.logError))
-    .pipe(gulp.dest('./css'));
-});
-
-gulp.task('sass:watch', function () {
-  gulp.watch('./sass/**/*.scss', ['sass']);
-});
-```
-
-## Options
 
 Pass in options just like you would for [Node Sass](https://github.com/sass/node-sass#options); they will be passed along just as if you were using Node Sass. Except for the `data` option which is used by gulp-sass internally. Using the `file` option is also unsupported and results in undefined behaviour that may change without notice.
 
@@ -142,7 +116,7 @@ gulp.task('sass', function () {
 
 # Issues
 
-`gulp-sass` is a very light-weight wrapper around either [Dart Sass][] or [Node Sass][] (which in turn is a Node binding for [LibSass][]). Because of this, the issue you're having likely isn't a `gulp-sass` issue, but an issue with one those projects or with [Sass][] as a whole.
+`gulp-sass` is a very light-weight wrapper around either [Dart Sass][] or [Node Sass][] (which in turn is a Node binding for [LibSass][]. Because of this, the issue you're having likely isn't a `gulp-sass` issue, but an issue with one those projects or with [Sass][] as a whole.
 
 [LibSass]: https://sass-lang.com/libsass
 [Sass]: https://sass-lang.com
