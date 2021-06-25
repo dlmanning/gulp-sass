@@ -152,7 +152,7 @@ These changes look something like this:
 
 ### What about fibers?
 
-We used to recommend Node fibers as a way to speed up asynchronous rendering with Dart Sass. Unfortunately, [Node fibers are discontinued](https://sass-lang.com/blog/node-fibers-discontinued). The Sass team is exploring ways to improve asynchronous rendering with Dart Sass, but for now you will get the best performance from `sass.sync()`.
+We used to recommend Node fibers as a way to speed up asynchronous rendering with Dart Sass. Unfortunately, [Node fibers are discontinued](https://sass-lang.com/blog/node-fibers-discontinued). The Sass team is exploring its optons for future performance improvements, but for now you will get the best performance from `sass.sync()`.
 
 ## Issues
 
