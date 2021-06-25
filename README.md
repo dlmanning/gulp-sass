@@ -1,8 +1,10 @@
-# gulp-sass [![Build Status](https://travis-ci.org/dlmanning/gulp-sass.svg?branch=master)](https://travis-ci.org/dlmanning/gulp-sass) [![Join the chat at https://gitter.im/dlmanning/gulp-sass](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/dlmanning/gulp-sass?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![npm version](https://badge.fury.io/js/gulp-sass.svg)](http://badge.fury.io/js/gulp-sass)
+# gulp-sass ![Build status](https://img.shields.io/travis/dlmanning/gulp-sass) [![Join the chat at https://gitter.im/dlmanning/gulp-sass](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/dlmanning/gulp-sass?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) ![Node support](https://img.shields.io/node/v/gulp-sass) ![NPM package version](https://img.shields.io/npm/v/gulp-sass?label=npm%20version)
 
 Sass plugin for [Gulp](https://github.com/gulpjs/gulp).
 
-**_Before filing an issue, please make sure you have [Updated to the latest Gulp Sass](https://github.com/dlmanning/gulp-sass/wiki/Update-to-the-latest-Gulp-Sass) and have gone through our [Common Issues and Their Fixes](https://github.com/dlmanning/gulp-sass/wiki/Common-Issues-and-Their-Fixes) section._**
+**_Before filing an issue, please make sure you have [updated to the latest version of `gulp-sass`](https://github.com/dlmanning/gulp-sass/wiki/Update-to-the-latest-Gulp-Sass) and have gone through our [Common Issues and Their Fixes](https://github.com/dlmanning/gulp-sass/wiki/Common-Issues-and-Their-Fixes) section._**
+
+**Migrating your existing project to version 5? Please read our (short!) [migration guide](#migrating-to-version-5).**
 
 ## Support
 
@@ -24,7 +26,7 @@ npm install sass gulp-sass --save-dev
 
 You need to import `gulp-sass` into your gulpfile and pass it the compiler of your choice. From there, you can call `sass()` inside `gulp.pipe()` to asynchronously render your Sass into CSS. To render your CSS synchronously, you can call `sass.sync()`.
 
-**⚠️ Note:** With Dart Sass, asynchronous rendering is much slower than synchronous rendering. If you're using Dart Sass, you're better off using synchronous rendering.
+**⚠️ Note:** With Dart Sass, **synchronous rendering is twice as fast as asynchronous rendering**. The Sass team is exploring ways to improve asynchronous rendering with Dart Sass, but for now you will get the best performance from `sass.sync()`
 
 Rendering your Sass in a Gulp task looks something like this:
 
@@ -110,6 +112,33 @@ gulp.task('sass', function() {
   .pipe(gulp.dest('./css'));
 });
 ```
+
+<h2 id="migrating-to-version-5">Migrating to version 5</h2>
+
+`gulp-sass` version 5 requires Node 12 or later, and introduces some breaking changes. Additionally, changes in Node itself mean that we should no longer use Node fibers to speed up asynchronous rendering with Dart Sass.
+
+### Setting a Sass compiler
+
+As of version 5, `gulp-sass` _does not include a default Sass compiler_, so you must install one (either `node-sass` or `sass`) along with `gulp-sass`.
+
+```
+npm install sass gulp-sass --save-dev
+```
+
+Then, you must explicitly set that compiler in your gulpfille. Instead of setting a `compiler` prop on the `gulp-sass` instance, you pass the compiler into a function call when instantiating `gulp-sass`.
+
+These changes look something like this:
+
+``` diff
+- var sass = require('gulp-sass'));
+- var compiler = require('sass');
+- sass.compiler = compiler;
++ var sass = require('gulp-sass')(require('sass'));
+```
+
+### What about fibers?
+
+We used to recommend Node fibers as a way to speed up asynchronous rendering with Dart Sass. Unfortunately, [Node fibers are discontinued](https://sass-lang.com/blog/node-fibers-discontinued). The Sass team is exploring ways to improve asynchronous rendering with Dart Sass, but for now you will get the best performance from `sass.sync()`.
 
 ## Issues
 
