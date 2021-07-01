@@ -14,7 +14,7 @@ Only [Active LTS and Current releases][1] are supported.
 
 ## Installation
 
-To use `gulp-sass`, you must install both `gulp-sass` itself *and* a Sass compiler. `gulp-sass` supports both [Dart Sass][] and [Node Sass][], but Node Sass is [deprecated](https://sass-lang.com/blog/libsass-is-deprecated). We recommend that you use Dart Sass for new projects, and migrate Node Sass projects to Dart Sass when possible.
+To use `gulp-sass`, you must install both `gulp-sass` itself *and* a Sass compiler. `gulp-sass` supports both [Dart Sass][] and [Node Sass][], although Node Sass is [deprecated](https://sass-lang.com/blog/libsass-is-deprecated). We recommend that you use Dart Sass for new projects, and migrate Node Sass projects to Dart Sass when possible.
 
 Whichever compiler you choose, it's best to install these as dev dependencies:
 
@@ -22,17 +22,33 @@ Whichever compiler you choose, it's best to install these as dev dependencies:
 npm install sass gulp-sass --save-dev
 ```
 
+### Importing it into your project
+
+`gulp-sass` must be imported into your gulpfile, where you provide it the compiler of your choice. To use `gulp-sass` in a CommonJS module (which is most Node environments), do something like this:
+
+``` js
+const sass = require('gulp-sass')(require('sass');
+```
+
+To use `gulp-sass` in an ECMAScript module (which is supported in newer Node 14 and later), do something like this:
+
+```
+import dartSass from 'sass';
+import gulpSass from 'gulp-sass';
+const sass = gulpSass( dartSass );
+```
+
 ## Usage
 
-**Note:** These examples assume you're using Gulp 4. For examples that work with Gulp 3, [check the docs for an earlier version of `gulp-sass`](https://github.com/dlmanning/gulp-sass/tree/v4.1.1).
+**Note:** These examples are written for CommonJS modules and assume you're using Gulp 4. For examples that work with Gulp 3, [check the docs for an earlier version of `gulp-sass`](https://github.com/dlmanning/gulp-sass/tree/v4.1.1).
 
-`gulp-sass` runs inside of Gulp tasks. No matter what else you do with `gulp-sass`, you must first import it into your gulpfile, making sure to pass it the compiler of your choice. From there, create a Gulp task that calls either `sass()` (to asynchronously render your CSS), or `sass.sync()` (to render it synchronously). Then, export your task with the `export` keyword. We'll show some examples of how to do that.
+`gulp-sass` must be used in a Gulp task. Your task can call `sass()` (to asynchronously render your CSS), or `sass.sync()` (to synchronously render your CSS). Then, export your task with the `export` keyword. We'll show some examples of how to do that.
 
-**⚠️ Note:** With Dart Sass, **synchronous rendering is twice as fast as asynchronous rendering**. The Sass team is exploring ways to improve asynchronous rendering with Dart Sass, but for now you will get the best performance from `sass.sync()`
+**⚠️ Note:** When using Dart Sass, **synchronous rendering is twice as fast as asynchronous rendering**. The Sass team is exploring ways to improve asynchronous rendering with Dart Sass, but for now you will get the best performance from `sass.sync()`. If performance is critical, you can use `node-sass` instead, but bear in mind that `node-sass` may not support modern Sass features you rely on. 
 
 ### Render your CSS
 
-To render your CSS with a build task, then watch your files for changes, you might write something like this.:
+To render your CSS with a build task, then watch your files for changes, you might write something like this:
 
 ```javascript
 'use strict';
@@ -129,7 +145,7 @@ exports.buildStyles = buildStyles;
 
 <h2 id="migrating-to-version-5">Migrating to version 5</h2>
 
-`gulp-sass` version 5 requires Node 12 or later, and introduces some breaking changes. Additionally, changes in Node itself mean that we should no longer use Node fibers to speed up asynchronous rendering with Dart Sass.
+`gulp-sass` version 5 requires Node 12 or later, and introduces some breaking changes. Additionally, changes in Node itself mean that Node fibers can no longer be used to speed up Dart Sass in Node 16.
 
 ### Setting a Sass compiler
 
@@ -150,9 +166,21 @@ These changes look something like this:
 + var sass = require('gulp-sass')(require('sass'));
 ```
 
+If you're migrating an ECMAScript module, that'll look something like this:
+
+``` diff
+import dartSass from 'sass';
+- import sass from 'gulp-sass';
+- sass.compiler = dartSass;
+
+import dartSass from 'sass';
++ import gulpSass from 'gulp-sass';
++ const sass = gulpSass( dartSass );
+```
+
 ### What about fibers?
 
-We used to recommend Node fibers as a way to speed up asynchronous rendering with Dart Sass. Unfortunately, [Node fibers are discontinued](https://sass-lang.com/blog/node-fibers-discontinued). The Sass team is exploring its optons for future performance improvements, but for now you will get the best performance from `sass.sync()`.
+We used to recommend Node fibers as a way to speed up asynchronous rendering with Dart Sass. Unfortunately, [Node fibers are discontinued](https://sass-lang.com/blog/node-fibers-discontinued) and will not work in Node 16. The Sass team is exploring its optons for future performance improvements, but for now you will get the best performance from `sass.sync()`.
 
 ## Issues
 
