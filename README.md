@@ -27,7 +27,7 @@ npm install sass gulp-sass --save-dev
 `gulp-sass` must be imported into your gulpfile, where you provide it the compiler of your choice. To use `gulp-sass` in a CommonJS module (which is most Node environments), do something like this:
 
 ``` js
-const sass = require('gulp-sass')(require('sass');
+const sass = require('gulp-sass')(require('sass'));
 ```
 
 To use `gulp-sass` in an ECMAScript module (which is supported in newer Node 14 and later), do something like this:
