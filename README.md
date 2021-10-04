@@ -1,4 +1,4 @@
-# gulp-sass [![Build Status](https://img.shields.io/github/workflow/status/dlmanning/gulp-sass/CI/master)](https://github.com/dlmanning/gulp-sass/actions?query=workflow%3ACI+branch%3Amaster) [![Join the chat at https://gitter.im/dlmanning/gulp-sass](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/dlmanning/gulp-sass) ![Node support](https://img.shields.io/node/v/gulp-sass) ![npm package version](https://img.shields.io/npm/v/gulp-sass?label=npm%20version)
+# gulp-sass ![npm package version](https://img.shields.io/npm/v/gulp-sass?label=npm%20version) [![Build Status](https://img.shields.io/github/workflow/status/dlmanning/gulp-sass/CI/master)](https://github.com/dlmanning/gulp-sass/actions?query=workflow%3ACI+branch%3Amaster) [![Join the chat at https://gitter.im/dlmanning/gulp-sass](https://img.shields.io/gitter/room/dlmanning/gulp-sass?color=%2346b091&label=chat&logo=gitter)](https://gitter.im/dlmanning/gulp-sass) ![Node support](https://img.shields.io/node/v/gulp-sass)
 
 Sass plugin for [Gulp](https://github.com/gulpjs/gulp).
 
@@ -8,9 +8,7 @@ Sass plugin for [Gulp](https://github.com/gulpjs/gulp).
 
 ## Support
 
-Only [Active LTS and Current releases][1] are supported.
-
-[1]: https://github.com/nodejs/Release#release-schedule
+Only [Active LTS and Current releases](https://github.com/nodejs/Release#release-schedule) are supported.
 
 ## Installation
 
@@ -18,7 +16,7 @@ To use `gulp-sass`, you must install both `gulp-sass` itself *and* a Sass compil
 
 Whichever compiler you choose, it's best to install these as dev dependencies:
 
-```
+```sh
 npm install sass gulp-sass --save-dev
 ```
 
@@ -26,16 +24,16 @@ npm install sass gulp-sass --save-dev
 
 `gulp-sass` must be imported into your gulpfile, where you provide it the compiler of your choice. To use `gulp-sass` in a CommonJS module (which is most Node environments), do something like this:
 
-``` js
+```js
 const sass = require('gulp-sass')(require('sass'));
 ```
 
 To use `gulp-sass` in an ECMAScript module (which is supported in newer Node 14 and later), do something like this:
 
-```
+```js
 import dartSass from 'sass';
 import gulpSass from 'gulp-sass';
-const sass = gulpSass( dartSass );
+const sass = gulpSass(dartSass);
 ```
 
 ## Usage
@@ -50,11 +48,11 @@ const sass = gulpSass( dartSass );
 
 To render your CSS with a build task, then watch your files for changes, you might write something like this:
 
-```javascript
+```js
 'use strict';
 
-var gulp = require('gulp');
-var sass = require('gulp-sass')(require('sass'));
+const gulp = require('gulp');
+const sass = require('gulp-sass')(require('sass'));
 
 function buildStyles() {
   return gulp.src('./sass/**/*.scss')
@@ -70,7 +68,7 @@ exports.watch = function () {
 
 With synchronous rendering, that Gulp task looks like this:
 
-``` javascript
+```js
 function buildStyles() {
   return gulp.src('./sass/**/*.scss')
     .pipe(sass.sync().on('error', sass.logError))
@@ -87,7 +85,7 @@ To change the final output of your CSS, you can pass an options object to your r
 
 For example, to compress your CSS, you can call `sass({outputStyle: 'compressed'}`. In the context of a Gulp task, that looks like this:
 
-```javascript
+```js
 function buildStyles() {
   return gulp.src('./sass/**/*.scss')
     .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
@@ -99,7 +97,7 @@ exports.buildStyles = buildStyles;
 
 Or this for synchronous rendering:
 
-```javascript
+```js
 function buildStyles() {
   return gulp.src('./sass/**/*.scss')
     .pipe(sass.sync({outputStyle: 'compressed'}).on('error', sass.logError))
@@ -111,10 +109,10 @@ exports.buildStyles = buildStyles;
 
 ### Include a source map
 
-`gulp-sass` can be used in tandem with [`gulp-sourcemaps`](https://github.com/floridoo/gulp-sourcemaps) to generate source maps for the Sass-to-CSS compilation. You will need to initialize `gulp-sourcemaps` _before_ running `gulp-sass`, and write the source maps after.
+`gulp-sass` can be used in tandem with [`gulp-sourcemaps`](https://github.com/gulp-sourcemaps/gulp-sourcemaps) to generate source maps for the Sass-to-CSS compilation. You will need to initialize `gulp-sourcemaps` _before_ running `gulp-sass`, and write the source maps after.
 
-```javascript
-var sourcemaps = require('gulp-sourcemaps');
+```js
+const sourcemaps = require('gulp-sourcemaps');
 
 function buildStyles() {
   return gulp.src('./sass/**/*.scss')
@@ -129,8 +127,8 @@ exports.buildStyles = buildStyles;
 
 By default, `gulp-sourcemaps` writes the source maps inline, in the compiled CSS files. To write them to a separate file, specify a path relative to the `gulp.dest()` destination in the `sourcemaps.write()` function.
 
-```javascript
-var sourcemaps = require('gulp-sourcemaps');
+```js
+const sourcemaps = require('gulp-sourcemaps');
 
 function buildStyles() {
   return gulp.src('./sass/**/*.scss')
@@ -151,7 +149,7 @@ exports.buildStyles = buildStyles;
 
 As of version 5, `gulp-sass` _does not include a default Sass compiler_, so you must install one (either `node-sass` or `sass`) along with `gulp-sass`.
 
-```
+```sh
 npm install sass gulp-sass --save-dev
 ```
 
@@ -159,23 +157,23 @@ Then, you must explicitly set that compiler in your gulpfille. Instead of settin
 
 These changes look something like this:
 
-``` diff
-- var sass = require('gulp-sass'));
-- var compiler = require('sass');
+```diff
+- const sass = require('gulp-sass'));
+- const compiler = require('sass');
 - sass.compiler = compiler;
-+ var sass = require('gulp-sass')(require('sass'));
++ const sass = require('gulp-sass')(require('sass'));
 ```
 
 If you're migrating an ECMAScript module, that'll look something like this:
 
-``` diff
+```diff
 import dartSass from 'sass';
 - import sass from 'gulp-sass';
 - sass.compiler = dartSass;
 
 import dartSass from 'sass';
 + import gulpSass from 'gulp-sass';
-+ const sass = gulpSass( dartSass );
++ const sass = gulpSass(dartSass);
 ```
 
 ### What about fibers?
@@ -192,7 +190,7 @@ If you're having problems with the options you're passing in, it's likely a Dart
 
 We may, in the course of resolving issues, direct you to one of these other projects. If we do so, please follow up by searching that project's issue queue (both open and closed) for your problem and, if it doesn't exist, filing an issue with them.
 
-[Dart Sass]: http://sass-lang.com/dart-sass
+[Dart Sass]: https://sass-lang.com/dart-sass
 [LibSass]: https://sass-lang.com/libsass
 [Node Sass]: https://github.com/sass/node-sass
 [Sass]: https://sass-lang.com
