@@ -8,7 +8,7 @@
   },
   "scripts": {
     "lint": "eslint --report-unused-disable-directives --ignore-path .gitignore .",
-    "fix": "npm run eslint -- --fix",
+    "fix": "npm run lint -- --fix",
     "mocha": "mocha",
     "test": "mocha"
   },
