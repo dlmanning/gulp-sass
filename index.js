@@ -1,10 +1,10 @@
+const path = require('path');
 const chalk = require('chalk');
 const PluginError = require('plugin-error');
 const replaceExtension = require('replace-ext');
 const stripAnsi = require('strip-ansi');
 const transfob = require('transfob');
 const clonedeep = require('lodash.clonedeep');
-const path = require('path');
 const applySourceMap = require('vinyl-sourcemaps-apply');
 
 const PLUGIN_NAME = 'gulp-sass';
@@ -21,7 +21,7 @@ const gulpSass = (options, sync) => transfob((file, enc, cb) => { // eslint-disa
     return cb(new PluginError(PLUGIN_NAME, 'Streaming not supported'));
   }
 
-  if (path.basename(file.path).indexOf('_') === 0) {
+  if (path.basename(file.path).startsWith('_')) {
     return cb();
   }
 

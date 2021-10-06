@@ -1,7 +1,7 @@
+const fs = require('fs');
+const path = require('path');
 const should = require('should');
 const Vinyl = require('vinyl');
-const path = require('path');
-const fs = require('fs');
 const rimraf = require('rimraf');
 const gulp = require('gulp');
 const sourcemaps = require('gulp-sourcemaps');
@@ -107,7 +107,7 @@ describe('gulp-sass -- async compile', () => {
       should.exist(cssFile.path);
       should.exist(cssFile.relative);
       should.exist(cssFile.contents);
-      if (cssFile.path.indexOf('variables') !== -1) {
+      if (cssFile.path.includes('variables')) {
         expectedPath = path.join('expected', 'variables.css');
       }
 
@@ -156,11 +156,11 @@ describe('gulp-sass -- async compile', () => {
 
     stream.on('error', (err) => {
       // Error must include message body
-      err.message.indexOf('property "font" must be followed by a \':\'').should.not.equal(-1);
+      err.message.includes('property "font" must be followed by a \':\'').should.equal(true);
       // Error must include file error occurs in
-      err.message.indexOf('test', 'scss', 'error.scss').should.not.equal(-1);
+      err.message.includes('test', 'scss', 'error.scss').should.equal(true);
       // Error must include line and column error occurs on
-      err.message.indexOf('on line 2').should.not.equal(-1);
+      err.message.includes('on line 2').should.equal(true);
       // Error must include relativePath property
       err.relativePath.should.equal(path.join('test', 'scss', 'error.scss'));
       done();
@@ -174,9 +174,9 @@ describe('gulp-sass -- async compile', () => {
 
     stream.on('error', (err) => {
       // Error must include original error message
-      err.messageOriginal.indexOf('property "font" must be followed by a \':\'').should.not.equal(-1);
+      err.messageOriginal.includes('property "font" must be followed by a \':\'').should.equal(true);
       // Error must not format or change the original error message
-      err.messageOriginal.indexOf('on line 2').should.equal(-1);
+      err.messageOriginal.includes('on line 2').should.equal(false);
       done();
     });
     stream.write(errorFile);
@@ -280,7 +280,7 @@ describe('gulp-sass -- async compile', () => {
       should.exist(cssFile.path);
       should.exist(cssFile.relative);
       should.exist(cssFile.contents);
-      if (cssFile.path.indexOf('indent') !== -1) {
+      if (cssFile.path.includes('indent')) {
         expectedPath = path.join('expected', 'indent.css');
       }
 
@@ -360,7 +360,7 @@ describe('gulp-sass -- sync compile', () => {
       should.exist(cssFile.relative);
       should.exist(cssFile.contents);
 
-      if (cssFile.path.indexOf('variables') !== -1) {
+      if (cssFile.path.includes('variables')) {
         expectedPath = path.join('expected', 'variables.css');
       }
 
@@ -400,7 +400,7 @@ describe('gulp-sass -- sync compile', () => {
     const stream = sass.sync();
 
     stream.on('error', (err) => {
-      err.message.indexOf('property "font" must be followed by a \':\'').should.not.equal(-1);
+      err.message.includes('property "font" must be followed by a \':\'').should.equal(true);
       err.relativePath.should.equal(path.join('test', 'scss', 'error.scss'));
       done();
     });
