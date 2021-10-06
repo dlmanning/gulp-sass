@@ -63,25 +63,20 @@ const gulpSass = (options, sync) => transfob((file, enc, cb) => { // eslint-disa
   // Handles returning the file to the stream
   /// ///////////////////////////
   const filePush = (sassObj) => {
-    let sassMap;
-    let sassMapFile;
-    let sassFileSrc;
-    let sassFileSrcPath;
-    let sourceFileIndex;
-
     // Build Source Maps!
     if (sassObj.map) {
       // Transform map into JSON
-      sassMap = JSON.parse(sassObj.map.toString());
+      const sassMap = JSON.parse(sassObj.map.toString());
       // Grab the stdout and transform it into stdin
-      sassMapFile = sassMap.file.replace(/^stdout$/, 'stdin');
+      const sassMapFile = sassMap.file.replace(/^stdout$/, 'stdin');
       // Grab the base file name that's being worked on
-      sassFileSrc = file.relative;
+      const sassFileSrc = file.relative;
       // Grab the path portion of the file that's being worked on
-      sassFileSrcPath = path.dirname(sassFileSrc);
+      const sassFileSrcPath = path.dirname(sassFileSrc);
+
       if (sassFileSrcPath) {
         // Prepend the path to all files in the sources array except the file that's being worked on
-        sourceFileIndex = sassMap.sources.indexOf(sassMapFile);
+        const sourceFileIndex = sassMap.sources.indexOf(sassMapFile);
         sassMap.sources = sassMap.sources.map((source, index) => { // eslint-disable-line arrow-body-style
           return index === sourceFileIndex ? source : path.join(sassFileSrcPath, source);
         });
