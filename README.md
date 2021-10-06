@@ -1,4 +1,4 @@
-# gulp-sass ![Build status](https://img.shields.io/travis/dlmanning/gulp-sass) [![Join the chat at https://gitter.im/dlmanning/gulp-sass](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/dlmanning/gulp-sass?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) ![Node support](https://img.shields.io/node/v/gulp-sass) ![NPM package version](https://img.shields.io/npm/v/gulp-sass?label=npm%20version)
+# gulp-sass [![Build Status](https://img.shields.io/github/workflow/status/dlmanning/gulp-sass/CI/master)](https://github.com/dlmanning/gulp-sass/actions?query=workflow%3ACI+branch%3Amaster) [![Join the chat at https://gitter.im/dlmanning/gulp-sass](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/dlmanning/gulp-sass) ![Node support](https://img.shields.io/node/v/gulp-sass) ![npm package version](https://img.shields.io/npm/v/gulp-sass?label=npm%20version)
 
 Sass plugin for [Gulp](https://github.com/gulpjs/gulp).
 
@@ -44,7 +44,7 @@ const sass = gulpSass( dartSass );
 
 `gulp-sass` must be used in a Gulp task. Your task can call `sass()` (to asynchronously render your CSS), or `sass.sync()` (to synchronously render your CSS). Then, export your task with the `export` keyword. We'll show some examples of how to do that.
 
-**⚠️ Note:** When using Dart Sass, **synchronous rendering is twice as fast as asynchronous rendering**. The Sass team is exploring ways to improve asynchronous rendering with Dart Sass, but for now you will get the best performance from `sass.sync()`. If performance is critical, you can use `node-sass` instead, but bear in mind that `node-sass` may not support modern Sass features you rely on. 
+**⚠️ Note:** When using Dart Sass, **synchronous rendering is twice as fast as asynchronous rendering**. The Sass team is exploring ways to improve asynchronous rendering with Dart Sass, but for now you will get the best performance from `sass.sync()`. If performance is critical, you can use `node-sass` instead, but bear in mind that `node-sass` may not support modern Sass features you rely on.
 
 ### Render your CSS
 
