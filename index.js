@@ -2,7 +2,6 @@ const path = require('path');
 const chalk = require('chalk');
 const PluginError = require('plugin-error');
 const replaceExtension = require('replace-ext');
-const stripAnsi = require('strip-ansi');
 const transfob = require('transfob');
 const clonedeep = require('lodash.clonedeep');
 const applySourceMap = require('vinyl-sourcemaps-apply');
@@ -112,11 +111,12 @@ const gulpSass = (options, sync) => transfob((file, enc, cb) => { // eslint-disa
   const errorM = (error) => {
     const filePath = (error.file === 'stdin' ? file.path : error.file) || file.path;
     const relativePath = path.relative(process.cwd(), filePath);
-    const message = [chalk.underline(relativePath), error.formatted].join('\n');
+    const message = `${relativePath}\n${error.formatted}`;
+    const messageFormatted = `${chalk.underline(relativePath)}\n${error.formatted}`;
 
-    error.messageFormatted = message; // eslint-disable-line no-param-reassign
+    error.messageFormatted = messageFormatted; // eslint-disable-line no-param-reassign
     error.messageOriginal = error.message; // eslint-disable-line no-param-reassign
-    error.message = stripAnsi(message); // eslint-disable-line no-param-reassign
+    error.message = message; // eslint-disable-line no-param-reassign
     error.relativePath = relativePath; // eslint-disable-line no-param-reassign
 
     return cb(new PluginError(PLUGIN_NAME, error));
