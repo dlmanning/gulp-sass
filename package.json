@@ -7,11 +7,14 @@
     "node": ">=12"
   },
   "scripts": {
-    "test": "mocha test"
+    "lint": "eslint --report-unused-disable-directives --ignore-path .gitignore .",
+    "fix": "npm run eslint -- --fix",
+    "mocha": "mocha",
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/dlmanning/gulp-sass"
+    "url": "git+https://github.com/dlmanning/gulp-sass.git"
   },
   "keywords": [
     "gulpplugin",
@@ -23,6 +26,7 @@
   "bugs": {
     "url": "https://github.com/dlmanning/gulp-sass/issues"
   },
+  "homepage": "https://github.com/dlmanning/gulp-sass#readme",
   "files": [
     "index.js"
   ],
