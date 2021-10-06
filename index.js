@@ -20,6 +20,66 @@ For example, in your gulpfile:
 `;
 
 /*
+  Handles returning the file to the stream
+*/
+const filePush = (file, sassObj, cb) => {
+  // Build Source Maps!
+  if (sassObj.map) {
+    // Transform map into JSON
+    const sassMap = JSON.parse(sassObj.map.toString());
+    // Grab the stdout and transform it into stdin
+    const sassMapFile = sassMap.file.replace(/^stdout$/, 'stdin');
+    // Grab the base filename that's being worked on
+    const sassFileSrc = file.relative;
+    // Grab the path portion of the file that's being worked on
+    const sassFileSrcPath = path.dirname(sassFileSrc);
+
+    if (sassFileSrcPath) {
+      const sourceFileIndex = sassMap.sources.indexOf(sassMapFile);
+      // Prepend the path to all files in the sources array except the file that's being worked on
+      sassMap.sources = sassMap.sources.map((source, index) => (
+        index === sourceFileIndex
+          ? source
+          : path.join(sassFileSrcPath, source)
+      ));
+    }
+
+    // Remove 'stdin' from souces and replace with filenames!
+    sassMap.sources = sassMap.sources.filter((src) => src !== 'stdin' && src);
+
+    // Replace the map file with the original filename (but new extension)
+    sassMap.file = replaceExtension(sassFileSrc, '.css');
+    // Apply the map
+    applySourceMap(file, sassMap);
+  }
+
+  file.contents = sassObj.css;
+  file.path = replaceExtension(file.path, '.css');
+
+  if (file.stat) {
+    file.stat.atime = file.stat.mtime = file.stat.ctime = new Date();
+  }
+
+  cb(null, file);
+};
+
+/*
+  Handles error message
+*/
+const handleError = (error, file, cb) => {
+  const filePath = (error.file === 'stdin' ? file.path : error.file) || file.path;
+  const relativePath = path.relative(process.cwd(), filePath);
+  const message = [chalk.underline(relativePath), error.formatted].join('\n');
+
+  error.messageFormatted = message;
+  error.messageOriginal = error.message;
+  error.message = stripAnsi(message);
+  error.relativePath = relativePath;
+
+  return cb(new PluginError(PLUGIN_NAME, error));
+};
+
+/*
   Main Gulp Sass function
 */
 
@@ -73,66 +133,6 @@ const gulpSass = (options, sync) => {
       opts.sourceMapContents = true;
     }
 
-    /*
-      Handles returning the file to the stream
-    */
-    const filePush = (sassObj) => {
-      // Build Source Maps!
-      if (sassObj.map) {
-        // Transform map into JSON
-        const sassMap = JSON.parse(sassObj.map.toString());
-        // Grab the stdout and transform it into stdin
-        const sassMapFile = sassMap.file.replace(/^stdout$/, 'stdin');
-        // Grab the base filename that's being worked on
-        const sassFileSrc = file.relative;
-        // Grab the path portion of the file that's being worked on
-        const sassFileSrcPath = path.dirname(sassFileSrc);
-
-        if (sassFileSrcPath) {
-          const sourceFileIndex = sassMap.sources.indexOf(sassMapFile);
-          // Prepend the path to all files in the sources array except the file that's being worked on
-          sassMap.sources = sassMap.sources.map((source, index) => (
-            index === sourceFileIndex
-              ? source
-              : path.join(sassFileSrcPath, source)
-          ));
-        }
-
-        // Remove 'stdin' from souces and replace with filenames!
-        sassMap.sources = sassMap.sources.filter((src) => src !== 'stdin' && src);
-
-        // Replace the map file with the original filename (but new extension)
-        sassMap.file = replaceExtension(sassFileSrc, '.css');
-        // Apply the map
-        applySourceMap(file, sassMap);
-      }
-
-      file.contents = sassObj.css;
-      file.path = replaceExtension(file.path, '.css');
-
-      if (file.stat) {
-        file.stat.atime = file.stat.mtime = file.stat.ctime = new Date();
-      }
-
-      cb(null, file);
-    };
-
-    /*
-      Handles error message
-    */
-    const handleError = (error) => {
-      const filePath = (error.file === 'stdin' ? file.path : error.file) || file.path;
-      const relativePath = path.relative(process.cwd(), filePath);
-      const message = [chalk.underline(relativePath), error.formatted].join('\n');
-
-      error.messageFormatted = message;
-      error.messageOriginal = error.message;
-      error.message = stripAnsi(message);
-      error.relativePath = relativePath;
-
-      return cb(new PluginError(PLUGIN_NAME, error));
-    };
-
     if (sync !== true) {
       /*
         Async Sass render
@@ -140,19 +140,19 @@ const gulpSass = (options, sync) => {
       // eslint-disable-next-line consistent-return
       gulpSass.compiler.render(opts, (error, obj) => {
         if (error) {
-          return handleError(error);
+          return handleError(error, file, cb);
         }
 
-        filePush(obj);
+        filePush(file, obj, cb);
       });
     } else {
       /*
         Sync Sass render
       */
       try {
-        filePush(gulpSass.compiler.renderSync(opts));
+        filePush(file, gulpSass.compiler.renderSync(opts), cb);
       } catch (error) {
-        return handleError(error);
+        return handleError(error, file, cb);
       }
     }
   });
