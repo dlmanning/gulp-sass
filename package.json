@@ -10,7 +10,7 @@
     "lint": "eslint --report-unused-disable-directives --ignore-path .gitignore .",
     "fix": "npm run eslint -- --fix",
     "mocha": "mocha",
-    "test": "npm run lint && mocha"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
