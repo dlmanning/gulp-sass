@@ -3,7 +3,7 @@ const PluginError = require('plugin-error');
 const replaceExtension = require('replace-ext');
 const stripAnsi = require('strip-ansi');
 const transfob = require('transfob');
-const clonedeep = require('lodash/cloneDeep');
+const clonedeep = require('lodash.clonedeep');
 const path = require('path');
 const applySourceMap = require('vinyl-sourcemaps-apply');
 
