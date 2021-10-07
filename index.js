@@ -22,11 +22,11 @@ For example, in your gulpfile:
 /*
   Handles returning the file to the stream
 */
-const filePush = (file, sassObj, cb) => {
+const filePush = (file, sassObject, callback) => {
   // Build Source Maps!
-  if (sassObj.map) {
+  if (sassObject.map) {
     // Transform map into JSON
-    const sassMap = JSON.parse(sassObj.map.toString());
+    const sassMap = JSON.parse(sassObject.map.toString());
     // Grab the stdout and transform it into stdin
     const sassMapFile = sassMap.file.replace(/^stdout$/, 'stdin');
     // Grab the base filename that's being worked on
@@ -53,20 +53,20 @@ const filePush = (file, sassObj, cb) => {
     applySourceMap(file, sassMap);
   }
 
-  file.contents = sassObj.css;
+  file.contents = sassObject.css;
   file.path = replaceExtension(file.path, '.css');
 
   if (file.stat) {
     file.stat.atime = file.stat.mtime = file.stat.ctime = new Date();
   }
 
-  cb(null, file);
+  callback(null, file);
 };
 
 /*
   Handles error message
 */
-const handleError = (error, file, cb) => {
+const handleError = (error, file, callback) => {
   const filePath = (error.file === 'stdin' ? file.path : error.file) || file.path;
   const relativePath = path.relative(process.cwd(), filePath);
   const message = [chalk.underline(relativePath), error.formatted].join('\n');
@@ -76,7 +76,7 @@ const handleError = (error, file, cb) => {
   error.message = stripAnsi(message);
   error.relativePath = relativePath;
 
-  return cb(new PluginError(PLUGIN_NAME, error));
+  return callback(new PluginError(PLUGIN_NAME, error));
 };
 
 /*
@@ -86,22 +86,22 @@ const handleError = (error, file, cb) => {
 // eslint-disable-next-line arrow-body-style
 const gulpSass = (options, sync) => {
   // eslint-disable-next-line consistent-return
-  return transfob((file, enc, cb) => {
+  return transfob((file, encoding, callback) => {
     if (file.isNull()) {
-      return cb(null, file);
+      return callback(null, file);
     }
 
     if (file.isStream()) {
-      return cb(new PluginError(PLUGIN_NAME, 'Streaming not supported'));
+      return callback(new PluginError(PLUGIN_NAME, 'Streaming not supported'));
     }
 
     if (path.basename(file.path).startsWith('_')) {
-      return cb();
+      return callback();
     }
 
     if (!file.contents.length) {
       file.path = replaceExtension(file.path, '.css');
-      return cb(null, file);
+      return callback(null, file);
     }
 
     const opts = clonedeep(options || {});
@@ -140,19 +140,19 @@ const gulpSass = (options, sync) => {
       // eslint-disable-next-line consistent-return
       gulpSass.compiler.render(opts, (error, obj) => {
         if (error) {
-          return handleError(error, file, cb);
+          return handleError(error, file, callback);
         }
 
-        filePush(file, obj, cb);
+        filePush(file, obj, callback);
       });
     } else {
       /*
         Sync Sass render
       */
       try {
-        filePush(file, gulpSass.compiler.renderSync(opts), cb);
+        filePush(file, gulpSass.compiler.renderSync(opts), callback);
       } catch (error) {
-        return handleError(error, file, cb);
+        return handleError(error, file, callback);
       }
     }
   });
