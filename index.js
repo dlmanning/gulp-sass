@@ -103,6 +103,9 @@ const gulpSass = (options, sync) => transfob((file, enc, cb) => { // eslint-disa
       file.stat.atime = file.stat.mtime = file.stat.ctime = new Date(); // eslint-disable-line
     }
 
+    // Pass along some potentially useful data.
+    file.sassStats = sassObj.stats;
+
     cb(null, file);
   };
 
