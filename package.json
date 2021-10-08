@@ -10,7 +10,8 @@
     "lint": "eslint --report-unused-disable-directives --ignore-path .gitignore .",
     "fix": "npm run lint -- --fix",
     "mocha": "mocha",
-    "test": "mocha"
+    "test": "mocha",
+    "test:cover": "c8 mocha"
   },
   "repository": {
     "type": "git",
@@ -41,6 +42,7 @@
   },
   "devDependencies": {
     "autoprefixer": "^10.3.7",
+    "c8": "^7.10.0",
     "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.24.2",
@@ -55,5 +57,12 @@
     "rimraf": "^3.0.2",
     "should": "^13.2.3",
     "vinyl": "^2.2.1"
+  },
+  "c8": {
+    "reporter": [
+      "html",
+      "lcovonly",
+      "text"
+    ]
   }
 }
