@@ -71,7 +71,7 @@ describe('gulp-sass -- async compile', () => {
       should.equal(path.basename(cssFile.path), 'empty.css');
 
       const actual = fs.readFileSync(path.join(__dirname, 'expected', 'empty.css'), 'utf8');
-      String(normaliseEOL(cssFile.contents)).should.equal(normaliseEOL(actual));
+      normaliseEOL(cssFile.contents).should.equal(normaliseEOL(actual));
       done();
     });
     stream.write(sassFile);
@@ -87,7 +87,7 @@ describe('gulp-sass -- async compile', () => {
       should.exist(cssFile.contents);
 
       const actual = fs.readFileSync(path.join(__dirname, 'expected', 'mixins.css'), 'utf8');
-      String(normaliseEOL(cssFile.contents)).should.equal(normaliseEOL(actual));
+      normaliseEOL(cssFile.contents).should.equal(normaliseEOL(actual));
       done();
     });
     stream.write(sassFile);
@@ -112,7 +112,7 @@ describe('gulp-sass -- async compile', () => {
       }
 
       const actual = fs.readFileSync(path.join(__dirname, expectedPath), 'utf8');
-      String(normaliseEOL(cssFile.contents)).should.equal(normaliseEOL(actual));
+      normaliseEOL(cssFile.contents).should.equal(normaliseEOL(actual));
 
       mustSee -= 1;
       if (mustSee <= 0) {
@@ -135,7 +135,7 @@ describe('gulp-sass -- async compile', () => {
       should.exist(cssFile.contents);
 
       const actual = fs.readFileSync(path.join(__dirname, 'expected', 'inheritance.css'), 'utf8');
-      String(normaliseEOL(cssFile.contents)).should.equal(normaliseEOL(actual));
+      normaliseEOL(cssFile.contents).should.equal(normaliseEOL(actual));
       done();
     });
     stream.write(sassFile);
@@ -196,7 +196,7 @@ describe('gulp-sass -- async compile', () => {
       should.exist(cssFile.contents);
 
       const actual = fs.readFileSync(path.join(__dirname, 'expected', 'mixins.css'), 'utf8');
-      String(normaliseEOL(cssFile.contents)).should.equal(normaliseEOL(actual));
+      normaliseEOL(cssFile.contents).should.equal(normaliseEOL(actual));
       done();
     });
     stream.write(sassFile);
@@ -215,8 +215,7 @@ describe('gulp-sass -- async compile', () => {
       should.exist(cssFile.contents);
 
       const actual = fs.readFileSync(path.join(__dirname, 'expected', 'mixins.css'), 'utf8');
-      String(normaliseEOL(cssFile.contents))
-        .should.equal(`/* Added Dynamically */\n${normaliseEOL(actual)}`);
+      normaliseEOL(cssFile.contents).should.equal(`/* Added Dynamically */\n${normaliseEOL(actual)}`);
       done();
     });
     stream.write(sassFile);
@@ -260,7 +259,7 @@ describe('gulp-sass -- async compile', () => {
       should.exist(cssFile.contents);
 
       const actual = fs.readFileSync(path.join(__dirname, 'expected', 'indent.css'), 'utf8');
-      String(normaliseEOL(cssFile.contents)).should.equal(normaliseEOL(actual));
+      normaliseEOL(cssFile.contents).should.equal(normaliseEOL(actual));
       done();
     });
     stream.write(sassFile);
@@ -285,7 +284,7 @@ describe('gulp-sass -- async compile', () => {
       }
 
       const actual = fs.readFileSync(path.join(__dirname, expectedPath), 'utf8');
-      String(normaliseEOL(cssFile.contents)).should.equal(normaliseEOL(actual));
+      normaliseEOL(cssFile.contents).should.equal(normaliseEOL(actual));
 
       mustSee -= 1;
       if (mustSee <= 0) {
@@ -339,7 +338,7 @@ describe('gulp-sass -- sync compile', () => {
       should.exist(cssFile.contents);
 
       const actual = fs.readFileSync(path.join(__dirname, 'expected', 'mixins.css'), 'utf8');
-      String(normaliseEOL(cssFile.contents)).should.equal(normaliseEOL(actual));
+      normaliseEOL(cssFile.contents).should.equal(normaliseEOL(actual));
       done();
     });
     stream.write(sassFile);
@@ -365,7 +364,7 @@ describe('gulp-sass -- sync compile', () => {
       }
 
       const actual = normaliseEOL(fs.readFileSync(path.join(__dirname, expectedPath), 'utf8'));
-      String(normaliseEOL(cssFile.contents)).should.equal(actual);
+      normaliseEOL(cssFile.contents).should.equal(actual);
 
       mustSee -= 1;
       if (mustSee <= 0) {
@@ -389,7 +388,7 @@ describe('gulp-sass -- sync compile', () => {
       should.exist(cssFile.contents);
 
       const actual = fs.readFileSync(path.join(__dirname, 'expected', 'inheritance.css'), 'utf8');
-      String(normaliseEOL(cssFile.contents)).should.equal(normaliseEOL(actual));
+      normaliseEOL(cssFile.contents).should.equal(normaliseEOL(actual));
       done();
     });
     stream.write(sassFile);
