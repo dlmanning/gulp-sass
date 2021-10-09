@@ -19,9 +19,9 @@ For example, in your gulpfile:
   const sass = require('gulp-sass')(require('sass'));
 `;
 
-/*
-  Handles returning the file to the stream
-*/
+/**
+ * Handles returning the file to the stream
+ */
 const filePush = (file, sassObject, callback) => {
   // Build Source Maps!
   if (sassObject.map) {
@@ -63,9 +63,9 @@ const filePush = (file, sassObject, callback) => {
   callback(null, file);
 };
 
-/*
-  Handles error message
-*/
+/**
+ * Handles error message
+ */
 const handleError = (error, file, callback) => {
   const filePath = (error.file === 'stdin' ? file.path : error.file) || file.path;
   const relativePath = path.relative(process.cwd(), filePath);
@@ -79,9 +79,9 @@ const handleError = (error, file, callback) => {
   return callback(new PluginError(PLUGIN_NAME, error));
 };
 
-/*
-  Main Gulp Sass function
-*/
+/**
+ * Main Gulp Sass function
+ */
 
 // eslint-disable-next-line arrow-body-style
 const gulpSass = (options, sync) => {
@@ -134,9 +134,9 @@ const gulpSass = (options, sync) => {
     }
 
     if (sync !== true) {
-      /*
-        Async Sass render
-      */
+      /**
+       * Async Sass render
+       */
       // eslint-disable-next-line consistent-return
       gulpSass.compiler.render(opts, (error, obj) => {
         if (error) {
@@ -146,9 +146,9 @@ const gulpSass = (options, sync) => {
         filePush(file, obj, callback);
       });
     } else {
-      /*
-        Sync Sass render
-      */
+      /**
+       * Sync Sass render
+       */
       try {
         filePush(file, gulpSass.compiler.renderSync(opts), callback);
       } catch (error) {
@@ -158,14 +158,14 @@ const gulpSass = (options, sync) => {
   });
 };
 
-/*
-  Sync Sass render
-*/
+/**
+ * Sync Sass render
+ */
 gulpSass.sync = (options) => gulpSass(options, true);
 
-/*
-  Log errors nicely
-*/
+/**
+ * Log errors nicely
+ */
 gulpSass.logError = function logError(error) {
   const message = new PluginError('sass', error.messageFormatted).toString();
   process.stderr.write(`${message}\n`);
