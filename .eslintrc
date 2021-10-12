@@ -4,9 +4,17 @@ env:
   mocha: true
   node: true
 
+extends: "airbnb-base"
+
+parserOptions:
+  sourceType: "script"
+
 rules:
   max-len:
     - 2
     - 120
-
-extends: "airbnb-base"
+  no-multi-assign: "off"
+  no-param-reassign: "off"
+  strict:
+    - "error"
+    - "safe"
