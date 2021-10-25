@@ -1,7 +1,7 @@
 'use strict';
 
 const path = require('path');
-const chalk = require('chalk');
+const picocolors = require('picocolors');
 const PluginError = require('plugin-error');
 const replaceExtension = require('replace-ext');
 const stripAnsi = require('strip-ansi');
@@ -69,7 +69,7 @@ const filePush = (file, sassObject, callback) => {
 const handleError = (error, file, callback) => {
   const filePath = (error.file === 'stdin' ? file.path : error.file) || file.path;
   const relativePath = path.relative(process.cwd(), filePath);
-  const message = [chalk.underline(relativePath), error.formatted].join('\n');
+  const message = `${picocolors.underline(relativePath)}\n${error.formatted}`;
 
   error.messageFormatted = message;
   error.messageOriginal = error.message;
