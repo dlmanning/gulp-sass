@@ -1,11 +1,11 @@
 'use strict';
 
 const path = require('path');
-const chalk = require('chalk');
+const { Transform } = require('stream');
+const { underline } = require('colorette');
 const PluginError = require('plugin-error');
 const replaceExtension = require('replace-ext');
 const stripAnsi = require('strip-ansi');
-const transfob = require('transfob');
 const clonedeep = require('lodash.clonedeep');
 const applySourceMap = require('vinyl-sourcemaps-apply');
 
@@ -69,7 +69,7 @@ const filePush = (file, sassObject, callback) => {
 const handleError = (error, file, callback) => {
   const filePath = (error.file === 'stdin' ? file.path : error.file) || file.path;
   const relativePath = path.relative(process.cwd(), filePath);
-  const message = [chalk.underline(relativePath), error.formatted].join('\n');
+  const message = [underline(relativePath), error.formatted].join('\n');
 
   error.messageFormatted = message;
   error.messageOriginal = error.message;
@@ -78,6 +78,10 @@ const handleError = (error, file, callback) => {
 
   return callback(new PluginError(PLUGIN_NAME, error));
 };
+
+const transfob = (transform) => (
+  new Transform({ transform, objectMode: true })
+);
 
 /**
  * Main Gulp Sass function

@@ -31,12 +31,11 @@
     "index.js"
   ],
   "dependencies": {
-    "chalk": "^4.1.2",
+    "colorette": "^2.0.16",
     "lodash.clonedeep": "^4.5.0",
     "plugin-error": "^1.0.1",
     "replace-ext": "^2.0.0",
     "strip-ansi": "^6.0.1",
-    "transfob": "^1.0.0",
     "vinyl-sourcemaps-apply": "^0.2.1"
   },
   "devDependencies": {
