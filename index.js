@@ -12,7 +12,7 @@ const applySourceMap = require('vinyl-sourcemaps-apply');
 const PLUGIN_NAME = 'gulp-sass';
 
 const MISSING_COMPILER_MESSAGE = `
-gulp-sass 5 does not have a default Sass compiler; please set one yourself.
+gulp-sass no longer has a default Sass compiler; please set one yourself.
 Both the "sass" and "node-sass" packages are permitted.
 For example, in your gulpfile:
 
