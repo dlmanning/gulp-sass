@@ -36,7 +36,6 @@
     "plugin-error": "^1.0.1",
     "replace-ext": "^2.0.0",
     "strip-ansi": "^6.0.1",
-    "transfob": "^1.0.0",
     "vinyl-sourcemaps-apply": "^0.2.1"
   },
   "devDependencies": {
