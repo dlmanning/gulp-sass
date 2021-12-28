@@ -85,23 +85,26 @@ const handleError = (error, file, callback) => {
 
 // eslint-disable-next-line arrow-body-style
 const gulpSass = (options, sync) => {
-  // eslint-disable-next-line consistent-return
   return transfob((file, encoding, callback) => {
     if (file.isNull()) {
-      return callback(null, file);
+      callback(null, file);
+      return;
     }
 
     if (file.isStream()) {
-      return callback(new PluginError(PLUGIN_NAME, 'Streaming not supported'));
+      callback(new PluginError(PLUGIN_NAME, 'Streaming not supported'));
+      return;
     }
 
     if (path.basename(file.path).startsWith('_')) {
-      return callback();
+      callback();
+      return;
     }
 
     if (!file.contents.length) {
       file.path = replaceExtension(file.path, '.css');
-      return callback(null, file);
+      callback(null, file);
+      return;
     }
 
     const opts = clonedeep(options || {});
@@ -137,10 +140,10 @@ const gulpSass = (options, sync) => {
       /**
        * Async Sass render
        */
-      // eslint-disable-next-line consistent-return
       gulpSass.compiler.render(opts, (error, obj) => {
         if (error) {
-          return handleError(error, file, callback);
+          handleError(error, file, callback);
+          return;
         }
 
         filePush(file, obj, callback);
@@ -152,7 +155,7 @@ const gulpSass = (options, sync) => {
       try {
         filePush(file, gulpSass.compiler.renderSync(opts), callback);
       } catch (error) {
-        return handleError(error, file, callback);
+        handleError(error, file, callback);
       }
     }
   });
