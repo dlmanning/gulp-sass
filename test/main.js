@@ -1,8 +1,8 @@
 'use strict';
 
+const assert = require('assert').strict;
 const fs = require('fs');
 const path = require('path');
-const should = require('should');
 const Vinyl = require('vinyl');
 const rimraf = require('rimraf');
 const gulp = require('gulp');
@@ -30,8 +30,8 @@ const normaliseEOL = (str) => str.toString('utf8').replace(/\r\n/g, '\n');
 
 describe('test helpers', () => {
   it('should normalise EOL', (done) => {
-    should.equal(normaliseEOL('foo\r\nbar'), 'foo\nbar');
-    should.equal(normaliseEOL('foo\nbar'), 'foo\nbar');
+    assert.equal(normaliseEOL('foo\r\nbar'), 'foo\nbar');
+    assert.equal(normaliseEOL('foo\nbar'), 'foo\nbar');
     done();
   });
 });
@@ -43,7 +43,7 @@ describe('gulp-sass -- async compile', () => {
       isNull: () => true,
     };
     stream.on('data', (data) => {
-      data.should.equal(emptyFile);
+      assert.deepEqual(data, emptyFile);
       done();
     });
     stream.write(emptyFile);
@@ -56,7 +56,7 @@ describe('gulp-sass -- async compile', () => {
       isStream: () => true,
     };
     stream.on('error', (err) => {
-      err.message.should.equal('Streaming not supported');
+      assert.equal(err.message, 'Streaming not supported');
       done();
     });
     stream.write(streamFile);
@@ -66,14 +66,14 @@ describe('gulp-sass -- async compile', () => {
     const sassFile = createVinyl('empty.scss');
     const stream = sass();
     stream.on('data', (cssFile) => {
-      should.exist(cssFile);
-      should.exist(cssFile.path);
-      should.exist(cssFile.relative);
-      should.exist(cssFile.contents);
-      should.equal(path.basename(cssFile.path), 'empty.css');
+      assert.ok(cssFile);
+      assert.ok(cssFile.path);
+      assert.ok(cssFile.relative);
+      assert.ok(cssFile.contents);
+      assert.equal(path.basename(cssFile.path), 'empty.css');
 
       const actual = fs.readFileSync(path.join(__dirname, 'expected', 'empty.css'), 'utf8');
-      String(normaliseEOL(cssFile.contents)).should.equal(normaliseEOL(actual));
+      assert.equal(String(normaliseEOL(cssFile.contents)), normaliseEOL(actual));
       done();
     });
     stream.write(sassFile);
@@ -83,13 +83,13 @@ describe('gulp-sass -- async compile', () => {
     const sassFile = createVinyl('mixins.scss');
     const stream = sass();
     stream.on('data', (cssFile) => {
-      should.exist(cssFile);
-      should.exist(cssFile.path);
-      should.exist(cssFile.relative);
-      should.exist(cssFile.contents);
+      assert.ok(cssFile);
+      assert.ok(cssFile.path);
+      assert.ok(cssFile.relative);
+      assert.ok(cssFile.contents);
 
       const actual = fs.readFileSync(path.join(__dirname, 'expected', 'mixins.css'), 'utf8');
-      String(normaliseEOL(cssFile.contents)).should.equal(normaliseEOL(actual));
+      assert.equal(String(normaliseEOL(cssFile.contents)), normaliseEOL(actual));
       done();
     });
     stream.write(sassFile);
@@ -105,16 +105,16 @@ describe('gulp-sass -- async compile', () => {
     let expectedPath = path.join('expected', 'mixins.css');
 
     stream.on('data', (cssFile) => {
-      should.exist(cssFile);
-      should.exist(cssFile.path);
-      should.exist(cssFile.relative);
-      should.exist(cssFile.contents);
+      assert.ok(cssFile);
+      assert.ok(cssFile.path);
+      assert.ok(cssFile.relative);
+      assert.ok(cssFile.contents);
       if (cssFile.path.includes('variables')) {
         expectedPath = path.join('expected', 'variables.css');
       }
 
       const actual = fs.readFileSync(path.join(__dirname, expectedPath), 'utf8');
-      String(normaliseEOL(cssFile.contents)).should.equal(normaliseEOL(actual));
+      assert.equal(String(normaliseEOL(cssFile.contents)), normaliseEOL(actual));
 
       mustSee -= 1;
       if (mustSee <= 0) {
@@ -131,13 +131,13 @@ describe('gulp-sass -- async compile', () => {
     const sassFile = createVinyl('inheritance.scss');
     const stream = sass();
     stream.on('data', (cssFile) => {
-      should.exist(cssFile);
-      should.exist(cssFile.path);
-      should.exist(cssFile.relative);
-      should.exist(cssFile.contents);
+      assert.ok(cssFile);
+      assert.ok(cssFile.path);
+      assert.ok(cssFile.relative);
+      assert.ok(cssFile.contents);
 
       const actual = fs.readFileSync(path.join(__dirname, 'expected', 'inheritance.css'), 'utf8');
-      String(normaliseEOL(cssFile.contents)).should.equal(normaliseEOL(actual));
+      assert.equal(String(normaliseEOL(cssFile.contents)), normaliseEOL(actual));
       done();
     });
     stream.write(sassFile);
@@ -158,13 +158,13 @@ describe('gulp-sass -- async compile', () => {
 
     stream.on('error', (err) => {
       // Error must include message body
-      err.message.includes('property "font" must be followed by a \':\'').should.equal(true);
+      assert.equal(err.message.includes('property "font" must be followed by a \':\''), true);
       // Error must include file error occurs in
-      err.message.includes('test', 'scss', 'error.scss').should.equal(true);
+      assert.equal(err.message.includes('test', 'scss', 'error.scss'), true);
       // Error must include line and column error occurs on
-      err.message.includes('on line 2').should.equal(true);
+      assert.equal(err.message.includes('on line 2'), true);
       // Error must include relativePath property
-      err.relativePath.should.equal(path.join('test', 'scss', 'error.scss'));
+      assert.equal(err.relativePath, path.join('test', 'scss', 'error.scss'));
       done();
     });
     stream.write(errorFile);
@@ -176,9 +176,9 @@ describe('gulp-sass -- async compile', () => {
 
     stream.on('error', (err) => {
       // Error must include original error message
-      err.messageOriginal.includes('property "font" must be followed by a \':\'').should.equal(true);
+      assert.equal(err.messageOriginal.includes('property "font" must be followed by a \':\''), true);
       // Error must not format or change the original error message
-      err.messageOriginal.includes('on line 2').should.equal(false);
+      assert.equal(err.messageOriginal.includes('on line 2'), false);
       done();
     });
     stream.write(errorFile);
@@ -191,14 +191,14 @@ describe('gulp-sass -- async compile', () => {
 
     const stream = sass();
     stream.on('data', (cssFile) => {
-      should.exist(cssFile);
-      should.exist(cssFile.path);
-      cssFile.path.split(path.sep).pop().should.equal('mixin--changed.css');
-      should.exist(cssFile.relative);
-      should.exist(cssFile.contents);
+      assert.ok(cssFile);
+      assert.ok(cssFile.path);
+      assert.equal(cssFile.path.split(path.sep).pop(), 'mixin--changed.css');
+      assert.ok(cssFile.relative);
+      assert.ok(cssFile.contents);
 
       const actual = fs.readFileSync(path.join(__dirname, 'expected', 'mixins.css'), 'utf8');
-      String(normaliseEOL(cssFile.contents)).should.equal(normaliseEOL(actual));
+      assert.equal(String(normaliseEOL(cssFile.contents)), normaliseEOL(actual));
       done();
     });
     stream.write(sassFile);
@@ -211,14 +211,13 @@ describe('gulp-sass -- async compile', () => {
 
     const stream = sass();
     stream.on('data', (cssFile) => {
-      should.exist(cssFile);
-      should.exist(cssFile.path);
-      should.exist(cssFile.relative);
-      should.exist(cssFile.contents);
+      assert.ok(cssFile);
+      assert.ok(cssFile.path);
+      assert.ok(cssFile.relative);
+      assert.ok(cssFile.contents);
 
       const actual = fs.readFileSync(path.join(__dirname, 'expected', 'mixins.css'), 'utf8');
-      String(normaliseEOL(cssFile.contents))
-        .should.equal(`/* Added Dynamically */\n${normaliseEOL(actual)}`);
+      assert.equal(String(normaliseEOL(cssFile.contents)), `/* Added Dynamically */\n${normaliseEOL(actual)}`);
       done();
     });
     stream.write(sassFile);
@@ -245,8 +244,8 @@ describe('gulp-sass -- async compile', () => {
 
     const stream = sass();
     stream.on('data', (cssFile) => {
-      should.exist(cssFile.sourceMap);
-      cssFile.sourceMap.sources.should.eql(expectedSources);
+      assert.ok(cssFile.sourceMap);
+      assert.deepEqual(cssFile.sourceMap.sources, expectedSources);
       done();
     });
     stream.write(sassFile);
@@ -256,13 +255,13 @@ describe('gulp-sass -- async compile', () => {
     const sassFile = createVinyl('indent.sass');
     const stream = sass();
     stream.on('data', (cssFile) => {
-      should.exist(cssFile);
-      should.exist(cssFile.path);
-      should.exist(cssFile.relative);
-      should.exist(cssFile.contents);
+      assert.ok(cssFile);
+      assert.ok(cssFile.path);
+      assert.ok(cssFile.relative);
+      assert.ok(cssFile.contents);
 
       const actual = fs.readFileSync(path.join(__dirname, 'expected', 'indent.css'), 'utf8');
-      String(normaliseEOL(cssFile.contents)).should.equal(normaliseEOL(actual));
+      assert.equal(String(normaliseEOL(cssFile.contents)), normaliseEOL(actual));
       done();
     });
     stream.write(sassFile);
@@ -278,16 +277,16 @@ describe('gulp-sass -- async compile', () => {
     let expectedPath = path.join('expected', 'mixins.css');
 
     stream.on('data', (cssFile) => {
-      should.exist(cssFile);
-      should.exist(cssFile.path);
-      should.exist(cssFile.relative);
-      should.exist(cssFile.contents);
+      assert.ok(cssFile);
+      assert.ok(cssFile.path);
+      assert.ok(cssFile.relative);
+      assert.ok(cssFile.contents);
       if (cssFile.path.includes('indent')) {
         expectedPath = path.join('expected', 'indent.css');
       }
 
       const actual = fs.readFileSync(path.join(__dirname, expectedPath), 'utf8');
-      String(normaliseEOL(cssFile.contents)).should.equal(normaliseEOL(actual));
+      assert.equal(String(normaliseEOL(cssFile.contents)), normaliseEOL(actual));
 
       mustSee -= 1;
       if (mustSee <= 0) {
@@ -312,7 +311,7 @@ describe('gulp-sass -- sync compile', () => {
       isNull: () => true,
     };
     stream.on('data', (data) => {
-      data.should.equal(emptyFile);
+      assert.deepEqual(data, emptyFile);
       done();
     });
     stream.write(emptyFile);
@@ -325,7 +324,7 @@ describe('gulp-sass -- sync compile', () => {
       isStream: () => true,
     };
     stream.on('error', (err) => {
-      err.message.should.equal('Streaming not supported');
+      assert.equal(err.message, 'Streaming not supported');
       done();
     });
     stream.write(streamFile);
@@ -335,13 +334,13 @@ describe('gulp-sass -- sync compile', () => {
     const sassFile = createVinyl('mixins.scss');
     const stream = sass.sync();
     stream.on('data', (cssFile) => {
-      should.exist(cssFile);
-      should.exist(cssFile.path);
-      should.exist(cssFile.relative);
-      should.exist(cssFile.contents);
+      assert.ok(cssFile);
+      assert.ok(cssFile.path);
+      assert.ok(cssFile.relative);
+      assert.ok(cssFile.contents);
 
       const actual = fs.readFileSync(path.join(__dirname, 'expected', 'mixins.css'), 'utf8');
-      String(normaliseEOL(cssFile.contents)).should.equal(normaliseEOL(actual));
+      assert.equal(String(normaliseEOL(cssFile.contents)), normaliseEOL(actual));
       done();
     });
     stream.write(sassFile);
@@ -357,17 +356,17 @@ describe('gulp-sass -- sync compile', () => {
     let expectedPath = path.join('expected', 'mixins.css');
 
     stream.on('data', (cssFile) => {
-      should.exist(cssFile);
-      should.exist(cssFile.path);
-      should.exist(cssFile.relative);
-      should.exist(cssFile.contents);
+      assert.ok(cssFile);
+      assert.ok(cssFile.path);
+      assert.ok(cssFile.relative);
+      assert.ok(cssFile.contents);
 
       if (cssFile.path.includes('variables')) {
         expectedPath = path.join('expected', 'variables.css');
       }
 
       const actual = normaliseEOL(fs.readFileSync(path.join(__dirname, expectedPath), 'utf8'));
-      String(normaliseEOL(cssFile.contents)).should.equal(actual);
+      assert.equal(String(normaliseEOL(cssFile.contents)), actual);
 
       mustSee -= 1;
       if (mustSee <= 0) {
@@ -385,13 +384,13 @@ describe('gulp-sass -- sync compile', () => {
     const stream = sass.sync();
 
     stream.on('data', (cssFile) => {
-      should.exist(cssFile);
-      should.exist(cssFile.path);
-      should.exist(cssFile.relative);
-      should.exist(cssFile.contents);
+      assert.ok(cssFile);
+      assert.ok(cssFile.path);
+      assert.ok(cssFile.relative);
+      assert.ok(cssFile.contents);
 
       const actual = fs.readFileSync(path.join(__dirname, 'expected', 'inheritance.css'), 'utf8');
-      String(normaliseEOL(cssFile.contents)).should.equal(normaliseEOL(actual));
+      assert.equal(String(normaliseEOL(cssFile.contents)), normaliseEOL(actual));
       done();
     });
     stream.write(sassFile);
@@ -402,8 +401,8 @@ describe('gulp-sass -- sync compile', () => {
     const stream = sass.sync();
 
     stream.on('error', (err) => {
-      err.message.includes('property "font" must be followed by a \':\'').should.equal(true);
-      err.relativePath.should.equal(path.join('test', 'scss', 'error.scss'));
+      assert.equal(err.message.includes('property "font" must be followed by a \':\''), true);
+      assert.equal(err.relativePath, path.join('test', 'scss', 'error.scss'));
       done();
     });
     stream.write(errorFile);
@@ -439,8 +438,8 @@ describe('gulp-sass -- sync compile', () => {
 
     const stream = sass.sync();
     stream.on('data', (cssFile) => {
-      should.exist(cssFile.sourceMap);
-      cssFile.sourceMap.sources.should.eql(expectedSources);
+      assert.ok(cssFile.sourceMap);
+      assert.deepEqual(cssFile.sourceMap.sources, expectedSources);
       done();
     });
     stream.write(sassFile);
@@ -463,15 +462,15 @@ describe('gulp-sass -- sync compile', () => {
       .pipe(sourcemaps.init())
       .pipe(sass.sync())
       .pipe(tap((file) => {
-        should.exist(file.sourceMap);
-        file.sourceMap.sources.should.eql(expectedSourcesBefore);
+        assert.ok(file.sourceMap);
+        assert.deepEqual(file.sourceMap.sources, expectedSourcesBefore);
       }))
       .pipe(postcss([autoprefixer()]))
       .pipe(sourcemaps.write())
       .pipe(gulp.dest(path.join(__dirname, 'results')))
       .pipe(tap((file) => {
-        should.exist(file.sourceMap);
-        file.sourceMap.sources.should.eql(expectedSourcesAfter);
+        assert.ok(file.sourceMap);
+        assert.deepEqual(file.sourceMap.sources, expectedSourcesAfter);
       }));
     done();
   });
@@ -490,10 +489,10 @@ describe('gulp-sass -- sync compile', () => {
       .pipe(sourcemaps.init())
       .pipe(sass.sync())
       .pipe(tap((file) => {
-        should.exist(file.sourceMap);
+        assert.ok(file.sourceMap);
         const actual = normaliseEOL(file.sourceMap.sourcesContent[0]);
         const expected = normaliseEOL(filesContent[path.normalize(file.sourceMap.sources[0])]);
-        actual.should.eql(expected);
+        assert.deepEqual(actual, expected);
       }));
     done();
   });
@@ -515,13 +514,13 @@ describe('gulp-sass -- sync compile', () => {
       .pipe(sourcemaps.init())
       .pipe(sass.sync())
       .pipe(tap((file) => {
-        should.exist(file.sourceMap);
-        file.sourceMap.sources.should.eql(expectedSourcesBefore);
+        assert.ok(file.sourceMap);
+        assert.deepEqual(file.sourceMap.sources, expectedSourcesBefore);
       }))
       .pipe(postcss([autoprefixer()]))
       .pipe(tap((file) => {
-        should.exist(file.sourceMap);
-        file.sourceMap.sources.should.eql(expectedSourcesAfter);
+        assert.ok(file.sourceMap);
+        assert.deepEqual(file.sourceMap.sources, expectedSourcesAfter);
       }));
     done();
   });
@@ -533,8 +532,8 @@ describe('gulp-sass -- sync compile', () => {
       .pipe(tap(() => {
         try {
           fs.statSync(path.join(__dirname, 'results', 'empty.css'));
-        } catch (e) {
-          should.fail(false, true, 'Empty file was produced');
+        } catch (error) {
+          assert.fail('Empty file was not produced!');
         }
       }));
     done();
