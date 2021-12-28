@@ -1,11 +1,11 @@
 'use strict';
 
 const path = require('path');
+const { Transform } = require('stream');
 const picocolors = require('picocolors');
 const PluginError = require('plugin-error');
 const replaceExtension = require('replace-ext');
 const stripAnsi = require('strip-ansi');
-const transfob = require('transfob');
 const clonedeep = require('lodash.clonedeep');
 const applySourceMap = require('vinyl-sourcemaps-apply');
 
@@ -18,6 +18,8 @@ For example, in your gulpfile:
 
   const sass = require('gulp-sass')(require('sass'));
 `;
+
+const transfob = (transform) => new Transform({ transform, objectMode: true });
 
 /**
  * Handles returning the file to the stream
