@@ -12,7 +12,7 @@
     "mocha": "mocha",
     "test": "npm run test:node-sass && npm run test:dart-sass",
     "test:node-sass": "mocha",
-    "test:dart-sass": "cross-env SASS_COMPILER=sass mocha"
+    "test:dart-sass": "mocha -- --sass"
   },
   "repository": {
     "type": "git",
@@ -42,7 +42,6 @@
   },
   "devDependencies": {
     "autoprefixer": "^10.4.0",
-    "cross-env": "^7.0.3",
     "eslint": "^8.5.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.25.3",

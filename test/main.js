@@ -12,7 +12,7 @@ const autoprefixer = require('autoprefixer');
 const tap = require('gulp-tap');
 const globule = require('globule');
 
-const COMPILER = process.env.SASS_COMPILER === 'sass' ? 'sass' : 'node-sass';
+const COMPILER = process.argv.includes('--sass') ? 'sass' : 'node-sass';
 
 // eslint-disable-next-line import/no-dynamic-require
 const sass = require('../index')(require(COMPILER));
