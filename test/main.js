@@ -12,7 +12,12 @@ const autoprefixer = require('autoprefixer');
 const tap = require('gulp-tap');
 const globule = require('globule');
 
-const sass = require('../index')(require('node-sass'));
+const COMPILER = process.argv.includes('--sass') ? 'sass' : 'node-sass';
+
+// eslint-disable-next-line import/no-dynamic-require
+const sass = require('../index')(require(COMPILER));
+
+const expectedTestsPath = COMPILER === 'sass' ? 'expected-sass' : 'expected';
 
 const createVinyl = (filename, contents) => {
   const base = path.join(__dirname, 'scss');
@@ -72,7 +77,7 @@ describe('gulp-sass -- async compile', () => {
       assert.ok(cssFile.contents);
       assert.equal(path.basename(cssFile.path), 'empty.css');
 
-      const actual = fs.readFileSync(path.join(__dirname, 'expected', 'empty.css'), 'utf8');
+      const actual = fs.readFileSync(path.join(__dirname, expectedTestsPath, 'empty.css'), 'utf8');
       assert.equal(String(normaliseEOL(cssFile.contents)), normaliseEOL(actual));
       done();
     });
@@ -88,7 +93,7 @@ describe('gulp-sass -- async compile', () => {
       assert.ok(cssFile.relative);
       assert.ok(cssFile.contents);
 
-      const actual = fs.readFileSync(path.join(__dirname, 'expected', 'mixins.css'), 'utf8');
+      const actual = fs.readFileSync(path.join(__dirname, expectedTestsPath, 'mixins.css'), 'utf8');
       assert.equal(String(normaliseEOL(cssFile.contents)), normaliseEOL(actual));
       done();
     });
@@ -102,7 +107,7 @@ describe('gulp-sass -- async compile', () => {
     ];
     const stream = sass();
     let mustSee = files.length;
-    let expectedPath = path.join('expected', 'mixins.css');
+    let expectedPath = path.join(expectedTestsPath, 'mixins.css');
 
     stream.on('data', (cssFile) => {
       assert.ok(cssFile);
@@ -110,7 +115,7 @@ describe('gulp-sass -- async compile', () => {
       assert.ok(cssFile.relative);
       assert.ok(cssFile.contents);
       if (cssFile.path.includes('variables')) {
-        expectedPath = path.join('expected', 'variables.css');
+        expectedPath = path.join(expectedTestsPath, 'variables.css');
       }
 
       const actual = fs.readFileSync(path.join(__dirname, expectedPath), 'utf8');
@@ -136,7 +141,7 @@ describe('gulp-sass -- async compile', () => {
       assert.ok(cssFile.relative);
       assert.ok(cssFile.contents);
 
-      const actual = fs.readFileSync(path.join(__dirname, 'expected', 'inheritance.css'), 'utf8');
+      const actual = fs.readFileSync(path.join(__dirname, expectedTestsPath, 'inheritance.css'), 'utf8');
       assert.equal(String(normaliseEOL(cssFile.contents)), normaliseEOL(actual));
       done();
     });
@@ -158,11 +163,12 @@ describe('gulp-sass -- async compile', () => {
 
     stream.on('error', (err) => {
       // Error must include message body
-      assert.equal(err.message.includes('property "font" must be followed by a \':\''), true);
+      const messageBody = COMPILER === 'sass'
+        ? 'Error: expected "{"'
+        : 'property "font" must be followed by a \':\'';
+      assert.equal(err.message.includes(messageBody), true);
       // Error must include file error occurs in
-      assert.equal(err.message.includes('test', 'scss', 'error.scss'), true);
-      // Error must include line and column error occurs on
-      assert.equal(err.message.includes('on line 2'), true);
+      assert.equal(err.message.includes(path.normalize('test/scss/error.scss')), true);
       // Error must include relativePath property
       assert.equal(err.relativePath, path.join('test', 'scss', 'error.scss'));
       done();
@@ -176,7 +182,10 @@ describe('gulp-sass -- async compile', () => {
 
     stream.on('error', (err) => {
       // Error must include original error message
-      assert.equal(err.messageOriginal.includes('property "font" must be followed by a \':\''), true);
+      const message = COMPILER === 'sass'
+        ? 'expected "{"'
+        : 'property "font" must be followed by a \':\'';
+      assert.equal(err.messageOriginal.includes(message), true);
       // Error must not format or change the original error message
       assert.equal(err.messageOriginal.includes('on line 2'), false);
       done();
@@ -197,7 +206,7 @@ describe('gulp-sass -- async compile', () => {
       assert.ok(cssFile.relative);
       assert.ok(cssFile.contents);
 
-      const actual = fs.readFileSync(path.join(__dirname, 'expected', 'mixins.css'), 'utf8');
+      const actual = fs.readFileSync(path.join(__dirname, expectedTestsPath, 'mixins.css'), 'utf8');
       assert.equal(String(normaliseEOL(cssFile.contents)), normaliseEOL(actual));
       done();
     });
@@ -216,7 +225,7 @@ describe('gulp-sass -- async compile', () => {
       assert.ok(cssFile.relative);
       assert.ok(cssFile.contents);
 
-      const actual = fs.readFileSync(path.join(__dirname, 'expected', 'mixins.css'), 'utf8');
+      const actual = fs.readFileSync(path.join(__dirname, expectedTestsPath, 'mixins.css'), 'utf8');
       assert.equal(String(normaliseEOL(cssFile.contents)), `/* Added Dynamically */\n${normaliseEOL(actual)}`);
       done();
     });
@@ -245,7 +254,7 @@ describe('gulp-sass -- async compile', () => {
     const stream = sass();
     stream.on('data', (cssFile) => {
       assert.ok(cssFile.sourceMap);
-      assert.deepEqual(cssFile.sourceMap.sources, expectedSources);
+      assert.deepEqual(cssFile.sourceMap.sources.sort(), expectedSources.sort());
       done();
     });
     stream.write(sassFile);
@@ -260,7 +269,7 @@ describe('gulp-sass -- async compile', () => {
       assert.ok(cssFile.relative);
       assert.ok(cssFile.contents);
 
-      const actual = fs.readFileSync(path.join(__dirname, 'expected', 'indent.css'), 'utf8');
+      const actual = fs.readFileSync(path.join(__dirname, expectedTestsPath, 'indent.css'), 'utf8');
       assert.equal(String(normaliseEOL(cssFile.contents)), normaliseEOL(actual));
       done();
     });
@@ -274,7 +283,7 @@ describe('gulp-sass -- async compile', () => {
     ];
     const stream = sass();
     let mustSee = files.length;
-    let expectedPath = path.join('expected', 'mixins.css');
+    let expectedPath = path.join(expectedTestsPath, 'mixins.css');
 
     stream.on('data', (cssFile) => {
       assert.ok(cssFile);
@@ -282,7 +291,7 @@ describe('gulp-sass -- async compile', () => {
       assert.ok(cssFile.relative);
       assert.ok(cssFile.contents);
       if (cssFile.path.includes('indent')) {
-        expectedPath = path.join('expected', 'indent.css');
+        expectedPath = path.join(expectedTestsPath, 'indent.css');
       }
 
       const actual = fs.readFileSync(path.join(__dirname, expectedPath), 'utf8');
@@ -339,7 +348,7 @@ describe('gulp-sass -- sync compile', () => {
       assert.ok(cssFile.relative);
       assert.ok(cssFile.contents);
 
-      const actual = fs.readFileSync(path.join(__dirname, 'expected', 'mixins.css'), 'utf8');
+      const actual = fs.readFileSync(path.join(__dirname, expectedTestsPath, 'mixins.css'), 'utf8');
       assert.equal(String(normaliseEOL(cssFile.contents)), normaliseEOL(actual));
       done();
     });
@@ -353,7 +362,7 @@ describe('gulp-sass -- sync compile', () => {
     ];
     const stream = sass.sync();
     let mustSee = files.length;
-    let expectedPath = path.join('expected', 'mixins.css');
+    let expectedPath = path.join(expectedTestsPath, 'mixins.css');
 
     stream.on('data', (cssFile) => {
       assert.ok(cssFile);
@@ -362,7 +371,7 @@ describe('gulp-sass -- sync compile', () => {
       assert.ok(cssFile.contents);
 
       if (cssFile.path.includes('variables')) {
-        expectedPath = path.join('expected', 'variables.css');
+        expectedPath = path.join(expectedTestsPath, 'variables.css');
       }
 
       const actual = normaliseEOL(fs.readFileSync(path.join(__dirname, expectedPath), 'utf8'));
@@ -389,7 +398,7 @@ describe('gulp-sass -- sync compile', () => {
       assert.ok(cssFile.relative);
       assert.ok(cssFile.contents);
 
-      const actual = fs.readFileSync(path.join(__dirname, 'expected', 'inheritance.css'), 'utf8');
+      const actual = fs.readFileSync(path.join(__dirname, expectedTestsPath, 'inheritance.css'), 'utf8');
       assert.equal(String(normaliseEOL(cssFile.contents)), normaliseEOL(actual));
       done();
     });
@@ -401,7 +410,11 @@ describe('gulp-sass -- sync compile', () => {
     const stream = sass.sync();
 
     stream.on('error', (err) => {
-      assert.equal(err.message.includes('property "font" must be followed by a \':\''), true);
+      // Error must include message body
+      const messageBody = COMPILER === 'sass'
+        ? 'Error: expected "{"'
+        : 'property "font" must be followed by a \':\'';
+      assert.equal(err.message.includes(messageBody), true);
       assert.equal(err.relativePath, path.join('test', 'scss', 'error.scss'));
       done();
     });
@@ -439,7 +452,7 @@ describe('gulp-sass -- sync compile', () => {
     const stream = sass.sync();
     stream.on('data', (cssFile) => {
       assert.ok(cssFile.sourceMap);
-      assert.deepEqual(cssFile.sourceMap.sources, expectedSources);
+      assert.deepEqual(cssFile.sourceMap.sources.sort(), expectedSources.sort());
       done();
     });
     stream.write(sassFile);
@@ -458,19 +471,21 @@ describe('gulp-sass -- sync compile', () => {
       'inheritance.scss',
     ];
 
+    if (COMPILER === 'sass') expectedSourcesAfter.push('inheritance.css');
+
     gulp.src(path.join(__dirname, 'scss', 'inheritance.scss'))
       .pipe(sourcemaps.init())
       .pipe(sass.sync())
       .pipe(tap((file) => {
         assert.ok(file.sourceMap);
-        assert.deepEqual(file.sourceMap.sources, expectedSourcesBefore);
+        assert.deepEqual(file.sourceMap.sources.sort(), expectedSourcesBefore.sort());
       }))
       .pipe(postcss([autoprefixer()]))
       .pipe(sourcemaps.write())
       .pipe(gulp.dest(path.join(__dirname, 'results')))
       .pipe(tap((file) => {
         assert.ok(file.sourceMap);
-        assert.deepEqual(file.sourceMap.sources, expectedSourcesAfter);
+        assert.deepEqual(file.sourceMap.sources.sort(), expectedSourcesAfter.sort());
       }));
     done();
   });
@@ -510,17 +525,19 @@ describe('gulp-sass -- sync compile', () => {
       'scss/inheritance.scss',
     ];
 
+    if (COMPILER === 'sass') expectedSourcesAfter.push('scss/inheritance.css');
+
     gulp.src(path.join(__dirname, 'scss', 'inheritance.scss'), { base: 'test' })
       .pipe(sourcemaps.init())
       .pipe(sass.sync())
       .pipe(tap((file) => {
         assert.ok(file.sourceMap);
-        assert.deepEqual(file.sourceMap.sources, expectedSourcesBefore);
+        assert.deepEqual(file.sourceMap.sources.sort(), expectedSourcesBefore.sort());
       }))
       .pipe(postcss([autoprefixer()]))
       .pipe(tap((file) => {
         assert.ok(file.sourceMap);
-        assert.deepEqual(file.sourceMap.sources, expectedSourcesAfter);
+        assert.deepEqual(file.sourceMap.sources.sort(), expectedSourcesAfter.sort());
       }));
     done();
   });

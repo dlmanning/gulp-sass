@@ -1,0 +1,21 @@
+body {
+  background: pink;
+}
+
+footer {
+  background: red;
+}
+
+.error, .badError {
+  border: #f00;
+  background: #fdd;
+}
+
+.error.intrusion, .intrusion.badError {
+  font-size: 1.3em;
+  font-weight: bold;
+}
+
+.badError {
+  border-width: 3px;
+}

@@ -10,7 +10,9 @@
     "lint": "eslint --report-unused-disable-directives --ignore-path .gitignore .",
     "fix": "npm run lint -- --fix",
     "mocha": "mocha",
-    "test": "mocha"
+    "test": "npm run test:node-sass && npm run test:dart-sass",
+    "test:node-sass": "mocha",
+    "test:dart-sass": "mocha -- --sass"
   },
   "repository": {
     "type": "git",
@@ -52,6 +54,7 @@
     "node-sass": "^7.0.1",
     "postcss": "^8.4.5",
     "rimraf": "^3.0.2",
+    "sass": "^1.45.1",
     "vinyl": "^2.2.1"
   }
 }
