@@ -1,0 +1,21 @@
+/* line 4, /test/path/_cats.scss */
+body {
+  background: pink; }
+
+/* line 4, /test/path/_dogs.sass */
+footer {
+  background: red; }
+
+/* line 4, /test/path/inheritance.scss */
+.error, .badError {
+  border: #f00;
+  background: #fdd; }
+
+/* line 9, /test/path/inheritance.scss */
+.error.intrusion, .intrusion.badError {
+  font-size: 1.3em;
+  font-weight: bold; }
+
+/* line 14, /test/path/inheritance.scss */
+.badError {
+  border-width: 3px; }

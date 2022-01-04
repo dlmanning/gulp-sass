@@ -556,3 +556,42 @@ describe('gulp-sass -- sync compile', () => {
     done();
   });
 });
+
+describe('gulp-sass -- source comments', function() {
+  var testPath = '/test/path/';
+
+  // Replace comment path from current users filesystem to something we can test consistently
+  var swapPathForTesting = function (contents) {
+    return contents.replace(/(.*)(, )(.*?)(\w+\.(?:scss|sass))( \*\/)/g, '$1$2' + testPath + '$4$5');
+  };
+
+  it('should properly add file path comment', function(done) {
+    var sassFile = createVinyl('variables.scss');
+    var stream = sass({ 'sourceComments': true });
+    stream.on('data', function(cssFile) {
+      var contents;
+      should.exist(cssFile.contents);
+      contents = swapPathForTesting(cssFile.contents.toString());
+      contents.should.equal(
+        fs.readFileSync(path.join(__dirname, 'expected/source-comments/variables.css'), 'utf8')
+      );
+      done();
+    });
+    stream.write(sassFile);
+  });
+
+  it('should properly add file path comment with includes', function(done) {
+    var sassFile = createVinyl('inheritance.scss');
+    var stream = sass({ 'sourceComments': true });
+    stream.on('data', function(cssFile) {
+      var contents;
+      should.exist(cssFile.contents);
+      contents = swapPathForTesting(cssFile.contents.toString());
+      contents.should.equal(
+        fs.readFileSync(path.join(__dirname, 'expected/source-comments/inheritance.css'), 'utf8')
+      );
+      done();
+    });
+    stream.write(sassFile);
+  });
+});
