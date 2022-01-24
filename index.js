@@ -108,6 +108,7 @@ const gulpSass = (options, sync) => {
 
     if (!file.contents.length) {
       file.path = replaceExtension(file.path, '.css');
+      file.sassStats = null;
       callback(null, file);
       return;
     }
