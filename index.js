@@ -62,6 +62,9 @@ const filePush = (file, sassObject, callback) => {
     file.stat.atime = file.stat.mtime = file.stat.ctime = new Date();
   }
 
+  // Pass along some potentially useful data.
+  file.sassStats = sassObject.stats;
+
   callback(null, file);
 };
 
@@ -105,6 +108,7 @@ const gulpSass = (options, sync) => {
 
     if (!file.contents.length) {
       file.path = replaceExtension(file.path, '.css');
+      file.sassStats = null;
       callback(null, file);
       return;
     }
