@@ -1,5 +1,9 @@
 # gulp-sass Changelog
 
+## v6.0.0
+
+* **Change** Migrate to use the [new Sass JS API](https://sass-lang.com/documentation/js-api/modules#compile) internally by default
+
 ## v5.0.0
 
 **June 25, 2021**
