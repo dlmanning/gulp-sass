@@ -30,7 +30,8 @@
   },
   "homepage": "https://github.com/dlmanning/gulp-sass#readme",
   "files": [
-    "index.js"
+    "index.js",
+    "legacy.js"
   ],
   "dependencies": {
     "lodash.clonedeep": "^4.5.0",
