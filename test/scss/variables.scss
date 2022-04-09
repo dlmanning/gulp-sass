@@ -3,12 +3,11 @@ $margin: 16px;
 
 .content-navigation {
   border-color: $blue;
-  color:
-    darken($blue, 9%);
+  color: darken($blue, 9%);
 }
 
 .border {
-  padding: $margin / 2;
-  margin: $margin / 2;
+  padding: $margin * .5;
+  margin: $margin * .5;
   border-color: $blue;
 }
