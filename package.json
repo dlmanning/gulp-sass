@@ -41,20 +41,20 @@
     "vinyl-sourcemaps-apply": "^0.2.1"
   },
   "devDependencies": {
-    "autoprefixer": "^10.4.0",
-    "eslint": "^8.5.0",
+    "autoprefixer": "^10.4.7",
+    "eslint": "^8.19.0",
     "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.25.3",
-    "globule": "^1.3.3",
+    "eslint-plugin-import": "^2.26.0",
+    "globule": "^1.3.4",
     "gulp": "^4.0.2",
     "gulp-postcss": "^9.0.1",
     "gulp-sourcemaps": "^3.0.0",
     "gulp-tap": "^2.0.0",
-    "mocha": "^9.1.3",
+    "mocha": "^9.2.2",
     "node-sass": "^7.0.1",
-    "postcss": "^8.4.5",
+    "postcss": "^8.4.14",
     "rimraf": "^3.0.2",
-    "sass": "^1.45.1",
+    "sass": "^1.53.0",
     "vinyl": "^2.2.1"
   }
 }
