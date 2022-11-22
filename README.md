@@ -158,7 +158,7 @@ Then, you must explicitly set that compiler in your gulpfille. Instead of settin
 These changes look something like this:
 
 ```diff
-- const sass = require('gulp-sass'));
+- const sass = require('gulp-sass');
 - const compiler = require('sass');
 - sass.compiler = compiler;
 + const sass = require('gulp-sass')(require('sass'));
