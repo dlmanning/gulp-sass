@@ -10,9 +10,11 @@
     "lint": "eslint --report-unused-disable-directives --ignore-path .gitignore .",
     "fix": "npm run lint -- --fix",
     "mocha": "mocha",
-    "test": "npm run test:node-sass && npm run test:dart-sass",
+    "test": "npm run test:node-sass && npm run test:dart-sass && npm run test:legacy-dart-sass && npm run test:sass-embedded",
     "test:node-sass": "mocha",
-    "test:dart-sass": "mocha -- --sass"
+    "test:dart-sass": "mocha -- --sass",
+    "test:legacy-dart-sass": "mocha -- --sass --legacy",
+    "test:sass-embedded": "mocha -- --embedded"
   },
   "repository": {
     "type": "git",
@@ -30,7 +32,8 @@
   },
   "homepage": "https://github.com/dlmanning/gulp-sass#readme",
   "files": [
-    "index.js"
+    "index.js",
+    "legacy.js"
   ],
   "dependencies": {
     "lodash.clonedeep": "^4.5.0",
@@ -55,6 +58,7 @@
     "postcss": "^8.4.5",
     "rimraf": "^3.0.2",
     "sass": "^1.45.1",
+    "sass-embedded": "^1.49.9",
     "vinyl": "^2.2.1"
   }
 }

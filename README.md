@@ -4,7 +4,7 @@ Sass plugin for [Gulp](https://github.com/gulpjs/gulp).
 
 **_Before filing an issue, please make sure you have [updated to the latest version of `gulp-sass`](https://github.com/dlmanning/gulp-sass/wiki/Update-to-the-latest-Gulp-Sass) and have gone through our [Common Issues and Their Fixes](https://github.com/dlmanning/gulp-sass/wiki/Common-Issues-and-Their-Fixes) section._**
 
-**Migrating your existing project to version 5? Please read our (short!) [migration guide](#migrating-to-version-5).**
+**Migrating your existing project to version 5 or 6? Please read our (short!) [migration guides](#migrating-to-version-6).**
 
 ## Support
 
@@ -12,7 +12,7 @@ Only [Active LTS and Current releases](https://github.com/nodejs/Release#release
 
 ## Installation
 
-To use `gulp-sass`, you must install both `gulp-sass` itself *and* a Sass compiler. `gulp-sass` supports both [Dart Sass][] and [Node Sass][], although Node Sass is [deprecated](https://sass-lang.com/blog/libsass-is-deprecated). We recommend that you use Dart Sass for new projects, and migrate Node Sass projects to Dart Sass when possible.
+To use `gulp-sass`, you must install both `gulp-sass` itself *and* a Sass compiler. `gulp-sass` supports both [Embedded Sass][], [Dart Sass][] and [Node Sass][], although Node Sass is [deprecated](https://sass-lang.com/blog/libsass-is-deprecated). We recommend that you use Dart Sass for new projects, and migrate Node Sass projects to Dart Sass or Embedded Sass when possible.
 
 Whichever compiler you choose, it's best to install these as dev dependencies:
 
@@ -42,7 +42,7 @@ const sass = gulpSass(dartSass);
 
 `gulp-sass` must be used in a Gulp task. Your task can call `sass()` (to asynchronously render your CSS), or `sass.sync()` (to synchronously render your CSS). Then, export your task with the `export` keyword. We'll show some examples of how to do that.
 
-**⚠️ Note:** When using Dart Sass, **synchronous rendering is twice as fast as asynchronous rendering**. The Sass team is exploring ways to improve asynchronous rendering with Dart Sass, but for now, you will get the best performance from `sass.sync()`. If performance is critical, you can use `node-sass` instead, but bear in mind that `node-sass` may not support modern Sass features you rely on.
+**⚠️ Note:** When using Dart Sass, **synchronous rendering is twice as fast as asynchronous rendering**. The Sass team is exploring ways to improve asynchronous rendering with Dart Sass, but for now, you will get the best performance from `sass.sync()`. If performance is critical, you can use `sass-embedded` instead.
 
 ### Render your CSS
 
@@ -78,17 +78,17 @@ function buildStyles() {
 
 ### Render with options
 
-To change the final output of your CSS, you can pass an options object to your renderer. `gulp-sass` supports [Node Sass's render options](https://github.com/sass/node-sass#options), with two unsupported exceptions:
+To change the final output of your CSS, you can pass an options object to your renderer. `gulp-sass` supports [Sass's JS API compile options](https://sass-lang.com/documentation/js-api/modules#compileString), with a few usage notes:
 
-- The `data` option, which is used by `gulp-sass` internally.
-- The `file` option, which has undefined behavior that may change without notice.
+- The `syntax` option is set to `indented` automatically for files with the `.sass` extension
+- The `sourceMap` and `sourceMapIncludeSources` options are set for you when using `gulp-sourcemaps`
 
-For example, to compress your CSS, you can call `sass({outputStyle: 'compressed'}`. In the context of a Gulp task, that looks like this:
+For example, to compress your CSS, you can call `sass({style: 'compressed'}`. In the context of a Gulp task, that looks like this:
 
 ```js
 function buildStyles() {
   return gulp.src('./sass/**/*.scss')
-    .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
+    .pipe(sass({style: 'compressed'}).on('error', sass.logError))
     .pipe(gulp.dest('./css'));
 };
 
@@ -100,7 +100,7 @@ Or this for synchronous rendering:
 ```js
 function buildStyles() {
   return gulp.src('./sass/**/*.scss')
-    .pipe(sass.sync({outputStyle: 'compressed'}).on('error', sass.logError))
+    .pipe(sass.sync({style: 'compressed'}).on('error', sass.logError))
     .pipe(gulp.dest('./css'));
 };
 
@@ -141,13 +141,34 @@ function buildStyles() {
 exports.buildStyles = buildStyles;
 ```
 
+<h2 id="migrating-to-version-6">Migrating to version 6</h2>
+
+`gulp-sass` version 6 uses the new [compile](https://sass-lang.com/documentation/js-api/modules#compileString) function internally by default. If you use any options, for instance custom importers, please compare the [new options](https://sass-lang.com/documentation/js-api/modules#compileString) with the [legacy options](https://sass-lang.com/documentation/js-api/modules#render) in order to migrate. For instance, the `outputStyle` option is now called `style`.
+
+```diff
+  function buildStyles() {
+    return gulp.src('./sass/**/*.scss')
+-     .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
++     .pipe(sass({style: 'compressed'}).on('error', sass.logError))
+      .pipe(gulp.dest('./css'));
+  };
+```
+
+If you want to keep using the legacy API while it's available, you can.
+
+```js
+const sass = require('gulp-sass/legacy')(require('sass'));
+```
+
+If you use source maps, you may see the result change somewhat. The result will typically be absolute `file:` URLs, rather than relative ones. The result may also be the source itself, URL encoded. You can [optionally add custom importers](https://sass-lang.com/documentation/js-api/interfaces/CompileResult#sourceMap) to adjust the source maps according to your own needs.
+
 <h2 id="migrating-to-version-5">Migrating to version 5</h2>
 
 `gulp-sass` version 5 requires Node.js 12 or later, and introduces some breaking changes. Additionally, changes in Node.js itself mean that Node fibers can no longer be used to speed up Dart Sass in Node.js 16.
 
 ### Setting a Sass compiler
 
-As of version 5, `gulp-sass` _does not include a default Sass compiler_, so you must install one (either `node-sass` or `sass`) along with `gulp-sass`.
+As of version 5, `gulp-sass` _does not include a default Sass compiler_, so you must install one (either `sass`, `sass-embedded`, or `node-sass`) along with `gulp-sass`.
 
 ```sh
 npm install sass gulp-sass --save-dev
@@ -176,6 +197,28 @@ import dartSass from 'sass';
 + const sass = gulpSass(dartSass);
 ```
 
+### Using the legacy Sass API
+
+If you need to use the deprecated `render` Sass API, `gulp-sass` still includes legacy support.
+
+```js
+'use strict';
+
+const gulp = require('gulp');
+const sass = require('gulp-sass/legacy')(require('sass'));
+
+function buildStyles() {
+  return gulp.src('./sass/**/*.scss')
+    .pipe(sass().on('error', sass.logError))
+    .pipe(gulp.dest('./css'));
+};
+
+exports.buildStyles = buildStyles;
+exports.watch = function () {
+  gulp.watch('./sass/**/*.scss', ['sass']);
+};
+````
+
 ### What about fibers?
 
 We used to recommend Node fibers as a way to speed up asynchronous rendering with Dart Sass. Unfortunately, [Node fibers are discontinued](https://sass-lang.com/blog/node-fibers-discontinued) and will not work in Node.js 16. The Sass team is exploring its options for future performance improvements, but for now, you will get the best performance from `sass.sync()`.
@@ -190,6 +233,7 @@ If you're having problems with the options you're passing in, it's likely a Dart
 
 We may, in the course of resolving issues, direct you to one of these other projects. If we do so, please follow up by searching that project's issue queue (both open and closed) for your problem and, if it doesn't exist, filing an issue with them.
 
+[Embedded Sass]: https://github.com/sass/embedded-host-node
 [Dart Sass]: https://sass-lang.com/dart-sass
 [LibSass]: https://sass-lang.com/libsass
 [Node Sass]: https://github.com/sass/node-sass

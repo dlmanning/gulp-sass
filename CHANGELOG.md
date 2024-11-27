@@ -1,5 +1,11 @@
 # gulp-sass Changelog
 
+## v6.0.0
+
+**November 27, 2024**
+
+<https://github.com/dlmanning/gulp-sass/releases/tag/v6.0.0>
+
 ## v5.0.0
 
 **June 25, 2021**
