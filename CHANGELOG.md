@@ -2,7 +2,9 @@
 
 ## v6.0.0
 
-* **Change** Migrate to use the [new Sass JS API](https://sass-lang.com/documentation/js-api/modules#compile) internally by default
+**November 27, 2024**
+
+<https://github.com/dlmanning/gulp-sass/releases/tag/v6.0.0>
 
 ## v5.0.0
 
