@@ -4,7 +4,7 @@ const assert = require('assert').strict;
 const fs = require('fs');
 const path = require('path');
 const Vinyl = require('vinyl');
-const rimraf = require('rimraf');
+const { rimraf } = require('rimraf');
 const gulp = require('gulp');
 const sourcemaps = require('gulp-sourcemaps');
 const postcss = require('gulp-postcss');
@@ -322,7 +322,7 @@ describe('gulp-sass -- async compile', () => {
 
 describe('gulp-sass -- sync compile', () => {
   after((done) => {
-    rimraf(path.join(__dirname, 'results'), done);
+    rimraf(path.join(__dirname, 'results')).finally(done);
   });
 
   it('should pass file when it isNull()', (done) => {
