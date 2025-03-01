@@ -54,7 +54,7 @@ describe('test helpers', () => {
 
 describe('gulp-sass -- async compile', () => {
   it('should pass file when it isNull()', (done) => {
-    const stream = sass();
+    const stream = sass({ silenceDeprecations: ['import'] });
     const emptyFile = {
       isNull: () => true,
     };
@@ -66,7 +66,7 @@ describe('gulp-sass -- async compile', () => {
   });
 
   it('should emit error when file isStream()', (done) => {
-    const stream = sass();
+    const stream = sass({ silenceDeprecations: ['import'] });
     const streamFile = {
       isNull: () => false,
       isStream: () => true,
@@ -80,7 +80,7 @@ describe('gulp-sass -- async compile', () => {
 
   it('should compile an empty sass file', (done) => {
     const sassFile = createVinyl('empty.scss');
-    const stream = sass();
+    const stream = sass({ silenceDeprecations: ['import'] });
     stream.on('data', (cssFile) => {
       assert.ok(cssFile);
       assert.ok(cssFile.path);
@@ -97,7 +97,7 @@ describe('gulp-sass -- async compile', () => {
 
   it('should compile a single sass file', (done) => {
     const sassFile = createVinyl('mixins.scss');
-    const stream = sass();
+    const stream = sass({ silenceDeprecations: ['import'] });
     stream.on('data', (cssFile) => {
       assert.ok(cssFile);
       assert.ok(cssFile.path);
@@ -116,7 +116,7 @@ describe('gulp-sass -- async compile', () => {
       createVinyl('mixins.scss'),
       createVinyl('variables.scss'),
     ];
-    const stream = sass();
+    const stream = sass({ silenceDeprecations: ['import'] });
     let mustSee = files.length;
     let expectedPath = path.join(expectedTestsPath, 'mixins.css');
 
@@ -145,7 +145,7 @@ describe('gulp-sass -- async compile', () => {
 
   it('should compile files with partials in another folder', (done) => {
     const sassFile = createVinyl('inheritance.scss');
-    const stream = sass();
+    const stream = sass({ silenceDeprecations: ['import'] });
     stream.on('data', (cssFile) => {
       assert.ok(cssFile);
       assert.ok(cssFile.path);
@@ -161,7 +161,7 @@ describe('gulp-sass -- async compile', () => {
 
   it('should emit logError on sass error', (done) => {
     const errorFile = createVinyl('error.scss');
-    const stream = sass();
+    const stream = sass({ silenceDeprecations: ['import'] });
 
     stream.on('error', sass.logError);
     stream.on('end', done);
@@ -170,7 +170,7 @@ describe('gulp-sass -- async compile', () => {
 
   it('should handle sass errors', (done) => {
     const errorFile = createVinyl('error.scss');
-    const stream = sass();
+    const stream = sass({ silenceDeprecations: ['import'] });
 
     stream.on('error', (err) => {
       // Error must include message body
@@ -189,7 +189,7 @@ describe('gulp-sass -- async compile', () => {
 
   it('should preserve the original sass error message', (done) => {
     const errorFile = createVinyl('error.scss');
-    const stream = sass();
+    const stream = sass({ silenceDeprecations: ['import'] });
 
     stream.on('error', (err) => {
       // Error must include original error message
@@ -209,7 +209,7 @@ describe('gulp-sass -- async compile', () => {
     // Transform file name
     sassFile.path = path.join(path.join(__dirname, 'scss'), 'mixin--changed.scss');
 
-    const stream = sass();
+    const stream = sass({ silenceDeprecations: ['import'] });
     stream.on('data', (cssFile) => {
       assert.ok(cssFile);
       assert.ok(cssFile.path);
@@ -229,7 +229,7 @@ describe('gulp-sass -- async compile', () => {
     // Transform file name
     sassFile.contents = Buffer.from(`/* Added Dynamically */${sassFile.contents.toString()}`);
 
-    const stream = sass();
+    const stream = sass({ silenceDeprecations: ['import'] });
     stream.on('data', (cssFile) => {
       assert.ok(cssFile);
       assert.ok(cssFile.path);
@@ -270,7 +270,7 @@ describe('gulp-sass -- async compile', () => {
       'includes/_dogs.sass',
     ];
 
-    const stream = sass();
+    const stream = sass({ silenceDeprecations: ['import'] });
     stream.on('data', (cssFile) => {
       assert.ok(cssFile.sourceMap);
       if (LEGACY_API) {
@@ -288,7 +288,7 @@ describe('gulp-sass -- async compile', () => {
 
   it('should compile a single indented sass file', (done) => {
     const sassFile = createVinyl('indent.sass');
-    const stream = sass();
+    const stream = sass({ silenceDeprecations: ['import'] });
     stream.on('data', (cssFile) => {
       assert.ok(cssFile);
       assert.ok(cssFile.path);
@@ -307,7 +307,7 @@ describe('gulp-sass -- async compile', () => {
       createVinyl('mixins.scss'),
       createVinyl('indent.sass'),
     ];
-    const stream = sass();
+    const stream = sass({ silenceDeprecations: ['import'] });
     let mustSee = files.length;
     let expectedPath = path.join(expectedTestsPath, 'mixins.css');
 
@@ -341,7 +341,7 @@ describe('gulp-sass -- sync compile', () => {
   });
 
   it('should pass file when it isNull()', (done) => {
-    const stream = sass.sync();
+    const stream = sass.sync({ silenceDeprecations: ['import'] });
     const emptyFile = {
       isNull: () => true,
     };
@@ -353,7 +353,7 @@ describe('gulp-sass -- sync compile', () => {
   });
 
   it('should emit error when file isStream()', (done) => {
-    const stream = sass.sync();
+    const stream = sass.sync({ silenceDeprecations: ['import'] });
     const streamFile = {
       isNull: () => false,
       isStream: () => true,
@@ -367,7 +367,7 @@ describe('gulp-sass -- sync compile', () => {
 
   it('should compile a single sass file', (done) => {
     const sassFile = createVinyl('mixins.scss');
-    const stream = sass.sync();
+    const stream = sass.sync({ silenceDeprecations: ['import'] });
     stream.on('data', (cssFile) => {
       assert.ok(cssFile);
       assert.ok(cssFile.path);
@@ -386,7 +386,7 @@ describe('gulp-sass -- sync compile', () => {
       createVinyl('mixins.scss'),
       createVinyl('variables.scss'),
     ];
-    const stream = sass.sync();
+    const stream = sass.sync({ silenceDeprecations: ['import'] });
     let mustSee = files.length;
     let expectedPath = path.join(expectedTestsPath, 'mixins.css');
 
@@ -416,7 +416,7 @@ describe('gulp-sass -- sync compile', () => {
 
   it('should compile files with partials in another folder', (done) => {
     const sassFile = createVinyl('inheritance.scss');
-    const stream = sass.sync();
+    const stream = sass.sync({ silenceDeprecations: ['import'] });
 
     stream.on('data', (cssFile) => {
       assert.ok(cssFile);
@@ -433,7 +433,7 @@ describe('gulp-sass -- sync compile', () => {
 
   it('should handle sass errors', (done) => {
     const errorFile = createVinyl('error.scss');
-    const stream = sass.sync();
+    const stream = sass.sync({ silenceDeprecations: ['import'] });
 
     stream.on('error', (err) => {
       // Error must include message body
@@ -449,7 +449,7 @@ describe('gulp-sass -- sync compile', () => {
 
   it('should emit logError on sass error', (done) => {
     const errorFile = createVinyl('error.scss');
-    const stream = sass.sync();
+    const stream = sass.sync({ silenceDeprecations: ['import'] });
 
     stream.on('error', sass.logError);
     stream.on('end', done);
@@ -483,7 +483,7 @@ describe('gulp-sass -- sync compile', () => {
       + '"sourcesContent": [ "@import ../inheritance;" ]'
     + '}';
 
-    const stream = sass.sync();
+    const stream = sass.sync({ silenceDeprecations: ['import'] });
     stream.on('data', (cssFile) => {
       assert.ok(cssFile.sourceMap);
       if (LEGACY_API) {
@@ -532,7 +532,7 @@ describe('gulp-sass -- sync compile', () => {
 
     gulp.src(path.join(__dirname, 'scss', 'inheritance.scss'))
       .pipe(sourcemaps.init())
-      .pipe(sass.sync())
+      .pipe(sass.sync({ silenceDeprecations: ['import'] }))
       .pipe(tap((file) => {
         assert.ok(file.sourceMap);
         if (LEGACY_API) {
@@ -573,7 +573,7 @@ describe('gulp-sass -- sync compile', () => {
 
     gulp.src(path.join(__dirname, 'scss', 'globbed', '**', '*.scss'))
       .pipe(sourcemaps.init())
-      .pipe(sass.sync())
+      .pipe(sass.sync({ silenceDeprecations: ['import'] }))
       .pipe(tap((file) => {
         assert.ok(file.sourceMap);
         if (LEGACY_API) {
@@ -624,7 +624,7 @@ describe('gulp-sass -- sync compile', () => {
 
     gulp.src(path.join(__dirname, 'scss', 'inheritance.scss'), { base: 'test' })
       .pipe(sourcemaps.init())
-      .pipe(sass.sync())
+      .pipe(sass.sync({ silenceDeprecations: ['import'] }))
       .pipe(tap((file) => {
         assert.ok(file.sourceMap);
         if (LEGACY_API) {
@@ -653,7 +653,7 @@ describe('gulp-sass -- sync compile', () => {
 
   it('should work with empty files', (done) => {
     gulp.src(path.join(__dirname, 'scss', 'empty.scss'))
-      .pipe(sass.sync())
+      .pipe(sass.sync({ silenceDeprecations: ['import'] }))
       .pipe(gulp.dest(path.join(__dirname, 'results')))
       .pipe(tap(() => {
         try {
