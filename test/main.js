@@ -321,7 +321,7 @@ describe('gulp-sass -- async compile', () => {
 });
 
 describe('gulp-sass -- sync compile', () => {
-  beforeEach((done) => {
+  after((done) => {
     rimraf(path.join(__dirname, 'results'), done);
   });
 
