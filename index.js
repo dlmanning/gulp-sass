@@ -30,33 +30,47 @@ const filePush = (file, compileResult, callback) => {
 
   // Build Source Maps!
   if (compileResult.sourceMap) {
+    const proto = /^file:\/\/?/;
+    const leadingSlash = /^\//;
     const sassMap = compileResult.sourceMap;
+    const base = path.resolve(file.cwd, file.base);
+
     if (!sassMap.file) {
-      sassMap.file = file.path;
+      // Convert from absolute path to relative as in gulp-sass 5.0.0
+      sassMap.file = file.history[0]
+        .replace(base + path.sep, '')
+        .replace(proto, '');
     }
 
-    // Grab the stdout and transform it into stdin
-    const sassMapFile = sassMap.file.replace(/^stdout$/, 'stdin');
+    // Transform to relative file paths as in gulp-sass 5.0.0
+    sassMap.sources = sassMap.sources.map((src) => {
+      // file uses Windows-style path separators, source is a URL.
+      const baseUri = base.replace(/\\/g, '/');
+      // The current file and its content is included
+      // as data:<encoded file contents> in the new Sass JS API.
+      // Map it to the original file name (first history entry).
+      if (src.startsWith('data:')) {
+        return file.history[0]
+          .replace(/\\/g, '/')
+          .replace(`${baseUri}/`, '')
+          .replace(proto, '')
+          .replace(leadingSlash, '');
+      }
+      return src
+        .replace(proto, '')
+        .replace(`${baseUri}/`, '')
+        .replace(leadingSlash, '');
+    });
+
     // Grab the base filename that's being worked on
     const sassFileSrc = file.relative;
-    // Grab the path portion of the file that's being worked on
-    const sassFileSrcPath = path.dirname(sassFileSrc);
-
-    if (sassFileSrcPath) {
-      const sourceFileIndex = sassMap.sources.indexOf(sassMapFile);
-      // Prepend the path to all files in the sources array except the file that's being worked on
-      sassMap.sources = sassMap.sources.map((source, index) => (
-        index === sourceFileIndex
-          ? source
-          : path.join(sassFileSrcPath, source)
-      ));
-    }
-
-    // Remove 'stdin' from souces and replace with filenames!
-    sassMap.sources = sassMap.sources.filter((src) => src !== 'stdin' && src);
-
     // Replace the map file with the original filename (but new extension)
     sassMap.file = replaceExtension(sassFileSrc, '.css');
+
+    if (file.sourceMap.sourcesContent && !sassMap.sourcesContent) {
+      sassMap.sourcesContent = file.sourceMap.sourcesContent;
+    }
+
     // Apply the map
     applySourceMap(file, sassMap);
   }

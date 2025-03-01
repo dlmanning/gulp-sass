@@ -256,16 +256,8 @@ describe('gulp-sass -- async compile', () => {
     + '}';
 
     // Expected sources are relative to file.base
-    const legacyExpectedSources = [
-      'inheritance.scss',
-      'includes/_cats.scss',
-      'includes/_dogs.sass',
-    ];
-
-    // Going forward the source map typically uses absolute file: URLs,
-    // although this can be controlled by custom importers
     const expectedSources = [
-      'data:',
+      'inheritance.scss',
       'includes/_cats.scss',
       'includes/_dogs.sass',
     ];
@@ -273,14 +265,7 @@ describe('gulp-sass -- async compile', () => {
     const stream = sass({ silenceDeprecations: ['import'] });
     stream.on('data', (cssFile) => {
       assert.ok(cssFile.sourceMap);
-      if (LEGACY_API) {
-        assert.deepEqual(cssFile.sourceMap.sources.sort(), legacyExpectedSources.sort());
-      } else {
-        // look for partial matches since each test runner can have a different absolute path
-        assert.ok(cssFile.sourceMap.sources.every(
-          (source) => expectedSources.find((partial) => source.includes(partial)),
-        ));
-      }
+      assert.deepEqual(cssFile.sourceMap.sources.sort(), expectedSources.sort());
       done();
     });
     stream.write(sassFile);
@@ -460,16 +445,8 @@ describe('gulp-sass -- sync compile', () => {
     const sassFile = createVinyl('inheritance.scss');
 
     // Expected sources are relative to file.base
-    const legacyExpectedSources = [
-      'inheritance.scss',
-      'includes/_cats.scss',
-      'includes/_dogs.sass',
-    ];
-
-    // Going forward the source map typically uses absolute file: URLs,
-    // although this can be controlled by custom importers
     const expectedSources = [
-      'data:',
+      'inheritance.scss',
       'includes/_cats.scss',
       'includes/_dogs.sass',
     ];
@@ -486,34 +463,15 @@ describe('gulp-sass -- sync compile', () => {
     const stream = sass.sync({ silenceDeprecations: ['import'] });
     stream.on('data', (cssFile) => {
       assert.ok(cssFile.sourceMap);
-      if (LEGACY_API) {
-        assert.deepEqual(cssFile.sourceMap.sources.sort(), legacyExpectedSources.sort());
-      } else {
-        // look for partial matches since each test runner can have a different absolute path
-        assert.ok(cssFile.sourceMap.sources.every(
-          (source) => expectedSources.find((partial) => source.includes(partial)),
-        ));
-      }
+      assert.deepEqual(cssFile.sourceMap.sources.sort(), expectedSources.sort());
       done();
     });
     stream.write(sassFile);
   });
 
   it('should work with gulp-sourcemaps and autoprefixer', (done) => {
-    const legacyExpectedSourcesBefore = [
-      'inheritance.scss',
-      'includes/_cats.scss',
-      'includes/_dogs.sass',
-    ];
-
-    const legacyExpectedSourcesAfter = [
-      'includes/_cats.scss',
-      'includes/_dogs.sass',
-      'inheritance.scss',
-    ];
-
     const expectedSourcesBefore = [
-      'data:',
+      'inheritance.scss',
       'includes/_cats.scss',
       'includes/_dogs.sass',
     ];
@@ -521,13 +479,13 @@ describe('gulp-sass -- sync compile', () => {
     const expectedSourcesAfter = [
       'includes/_cats.scss',
       'includes/_dogs.sass',
-      'data:',
+      'inheritance.scss',
     ];
 
     if (MODERN_COMPILER) {
-      const result = 'inheritance.css';
-      legacyExpectedSourcesAfter.push(result);
-      expectedSourcesAfter.push(result);
+      expectedSourcesAfter.push(
+        'inheritance.css', // added by postcss
+      );
     }
 
     gulp.src(path.join(__dirname, 'scss', 'inheritance.scss'))
@@ -535,28 +493,16 @@ describe('gulp-sass -- sync compile', () => {
       .pipe(sass.sync({ silenceDeprecations: ['import'] }))
       .pipe(tap((file) => {
         assert.ok(file.sourceMap);
-        if (LEGACY_API) {
-          assert.deepEqual(file.sourceMap.sources.sort(), legacyExpectedSourcesBefore.sort());
-        } else {
-          // look for partial matches since each test runner can have a different absolute path
-          assert.ok(file.sourceMap.sources.every(
-            (source) => expectedSourcesBefore.find((partial) => source.includes(partial)),
-          ));
-        }
+        assert.equal(file.sourceMap.file, 'inheritance.css');
+        assert.deepEqual(file.sourceMap.sources.sort(), expectedSourcesBefore.sort());
       }))
       .pipe(postcss([autoprefixer()]))
       .pipe(sourcemaps.write())
       .pipe(gulp.dest(path.join(__dirname, 'results')))
       .pipe(tap((file) => {
         assert.ok(file.sourceMap);
-        if (LEGACY_API) {
-          assert.deepEqual(file.sourceMap.sources.sort(), legacyExpectedSourcesAfter.sort());
-        } else {
-          // look for partial matches since each test runner can have a different absolute path
-          assert.ok(file.sourceMap.sources.every(
-            (source) => expectedSourcesAfter.find((partial) => source.includes(partial)),
-          ));
-        }
+        assert.equal(file.sourceMap.file, 'inheritance.css');
+        assert.deepEqual(file.sourceMap.sources.sort(), expectedSourcesAfter.sort());
       }));
     done();
   });
@@ -576,36 +522,17 @@ describe('gulp-sass -- sync compile', () => {
       .pipe(sass.sync({ silenceDeprecations: ['import'] }))
       .pipe(tap((file) => {
         assert.ok(file.sourceMap);
-        if (LEGACY_API) {
-          const actual = normaliseEOL(file.sourceMap.sourcesContent[0]);
-          const expected = normaliseEOL(filesContent[path.normalize(file.sourceMap.sources[0])]);
-          assert.deepEqual(actual, expected);
-        } else {
-          const sourceMap = file.sourceMap.sources[0];
-          const source = decodeURI(sourceMap.split('data:;charset=utf-8,')[1]);
-          const actual = normaliseEOL(source);
-          const expected = normaliseEOL(filesContent[path.normalize(file.sourceMap.file.replace('.css', '.scss'))]);
-          assert.deepEqual(actual, expected);
-        }
+        assert.ok(file.sourceMap.sourcesContent);
+        const actual = normaliseEOL(file.sourceMap.sourcesContent[0]);
+        const expected = normaliseEOL(filesContent[path.normalize(file.sourceMap.sources[0])]);
+        assert.deepEqual(actual, expected);
       }));
     done();
   });
 
   it('should work with gulp-sourcemaps and autoprefixer with different file.base', (done) => {
-    const legacyExpectedSourcesBefore = [
-      'scss/inheritance.scss',
-      'scss/includes/_cats.scss',
-      'scss/includes/_dogs.sass',
-    ];
-
-    const legacyExpectedSourcesAfter = [
-      'scss/includes/_cats.scss',
-      'scss/includes/_dogs.sass',
-      'scss/inheritance.scss',
-    ];
-
     const expectedSourcesBefore = [
-      'scss/data:',
+      'scss/inheritance.scss',
       'scss/includes/_cats.scss',
       'scss/includes/_dogs.sass',
     ];
@@ -613,13 +540,13 @@ describe('gulp-sass -- sync compile', () => {
     const expectedSourcesAfter = [
       'scss/includes/_cats.scss',
       'scss/includes/_dogs.sass',
-      'scss/data:',
+      'scss/inheritance.scss',
     ];
 
     if (MODERN_COMPILER) {
-      const result = 'scss/inheritance.css';
-      legacyExpectedSourcesAfter.push(result);
-      expectedSourcesAfter.push(result);
+      expectedSourcesAfter.push(
+        'scss/inheritance.css', // added by postcss
+      );
     }
 
     gulp.src(path.join(__dirname, 'scss', 'inheritance.scss'), { base: 'test' })
@@ -627,26 +554,14 @@ describe('gulp-sass -- sync compile', () => {
       .pipe(sass.sync({ silenceDeprecations: ['import'] }))
       .pipe(tap((file) => {
         assert.ok(file.sourceMap);
-        if (LEGACY_API) {
-          assert.deepEqual(file.sourceMap.sources.sort(), legacyExpectedSourcesBefore.sort());
-        } else {
-          // look for partial matches since each test runner can have a different absolute path
-          assert.ok(file.sourceMap.sources.every(
-            (source) => expectedSourcesBefore.find((partial) => source.includes(partial)),
-          ));
-        }
+        assert.equal(file.sourceMap.file, 'scss/inheritance.css');
+        assert.deepEqual(file.sourceMap.sources.sort(), expectedSourcesBefore.sort());
       }))
       .pipe(postcss([autoprefixer()]))
       .pipe(tap((file) => {
         assert.ok(file.sourceMap);
-        if (LEGACY_API) {
-          assert.deepEqual(file.sourceMap.sources.sort(), legacyExpectedSourcesAfter.sort());
-        } else {
-          // look for partial matches since each test runner can have a different absolute path
-          assert.ok(file.sourceMap.sources.every(
-            (source) => expectedSourcesAfter.find((partial) => source.includes(partial)),
-          ));
-        }
+        assert.equal(file.sourceMap.file, 'scss/inheritance.css');
+        assert.deepEqual(file.sourceMap.sources.sort(), expectedSourcesAfter.sort());
       }));
     done();
   });
