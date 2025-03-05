@@ -86,6 +86,7 @@ describe('gulp-sass -- async compile', () => {
       assert.ok(cssFile.path);
       assert.ok(cssFile.relative);
       assert.ok(cssFile.contents);
+      assert.equal(cssFile.sassStats, null);
       assert.equal(path.basename(cssFile.path), 'empty.css');
 
       const actual = fs.readFileSync(path.join(__dirname, expectedTestsPath, 'empty.css'), 'utf8');
@@ -103,9 +104,11 @@ describe('gulp-sass -- async compile', () => {
       assert.ok(cssFile.path);
       assert.ok(cssFile.relative);
       assert.ok(cssFile.contents);
+      assert.ok(cssFile.sassStats);
 
       const actual = fs.readFileSync(path.join(__dirname, expectedTestsPath, 'mixins.css'), 'utf8');
       assert.equal(String(normaliseEOL(cssFile.contents)), normaliseEOL(actual));
+      assert.equal(cssFile.sassStats.includedFiles.length, 1);
       done();
     });
     stream.write(sassFile);
@@ -125,12 +128,15 @@ describe('gulp-sass -- async compile', () => {
       assert.ok(cssFile.path);
       assert.ok(cssFile.relative);
       assert.ok(cssFile.contents);
+      assert.ok(cssFile.sassStats);
+
       if (cssFile.path.includes('variables')) {
         expectedPath = path.join(expectedTestsPath, 'variables.css');
       }
 
       const actual = fs.readFileSync(path.join(__dirname, expectedPath), 'utf8');
       assert.equal(String(normaliseEOL(cssFile.contents)), normaliseEOL(actual));
+      assert.equal(cssFile.sassStats.includedFiles.length, 1);
 
       mustSee -= 1;
       if (mustSee <= 0) {
@@ -151,9 +157,11 @@ describe('gulp-sass -- async compile', () => {
       assert.ok(cssFile.path);
       assert.ok(cssFile.relative);
       assert.ok(cssFile.contents);
+      assert.ok(cssFile.sassStats);
 
       const actual = fs.readFileSync(path.join(__dirname, expectedTestsPath, 'inheritance.css'), 'utf8');
       assert.equal(String(normaliseEOL(cssFile.contents)), normaliseEOL(actual));
+      assert.equal(cssFile.sassStats.includedFiles.length, 3);
       done();
     });
     stream.write(sassFile);
@@ -216,9 +224,11 @@ describe('gulp-sass -- async compile', () => {
       assert.equal(cssFile.path.split(path.sep).pop(), 'mixin--changed.css');
       assert.ok(cssFile.relative);
       assert.ok(cssFile.contents);
+      assert.ok(cssFile.sassStats);
 
       const actual = fs.readFileSync(path.join(__dirname, expectedTestsPath, 'mixins.css'), 'utf8');
       assert.equal(String(normaliseEOL(cssFile.contents)), normaliseEOL(actual));
+      assert.equal(cssFile.sassStats.includedFiles.length, 1);
       done();
     });
     stream.write(sassFile);
@@ -235,9 +245,11 @@ describe('gulp-sass -- async compile', () => {
       assert.ok(cssFile.path);
       assert.ok(cssFile.relative);
       assert.ok(cssFile.contents);
+      assert.ok(cssFile.sassStats);
 
       const actual = fs.readFileSync(path.join(__dirname, expectedTestsPath, 'mixins.css'), 'utf8');
       assert.equal(String(normaliseEOL(cssFile.contents)), `/* Added Dynamically */\n${normaliseEOL(actual)}`);
+      assert.equal(cssFile.sassStats.includedFiles.length, 1);
       done();
     });
     stream.write(sassFile);
@@ -279,9 +291,11 @@ describe('gulp-sass -- async compile', () => {
       assert.ok(cssFile.path);
       assert.ok(cssFile.relative);
       assert.ok(cssFile.contents);
+      assert.ok(cssFile.sassStats);
 
       const actual = fs.readFileSync(path.join(__dirname, expectedTestsPath, 'indent.css'), 'utf8');
       assert.equal(String(normaliseEOL(cssFile.contents)), normaliseEOL(actual));
+      assert.equal(cssFile.sassStats.includedFiles.length, 1);
       done();
     });
     stream.write(sassFile);
@@ -301,12 +315,14 @@ describe('gulp-sass -- async compile', () => {
       assert.ok(cssFile.path);
       assert.ok(cssFile.relative);
       assert.ok(cssFile.contents);
+      assert.ok(cssFile.sassStats);
       if (cssFile.path.includes('indent')) {
         expectedPath = path.join(expectedTestsPath, 'indent.css');
       }
 
       const actual = fs.readFileSync(path.join(__dirname, expectedPath), 'utf8');
       assert.equal(String(normaliseEOL(cssFile.contents)), normaliseEOL(actual));
+      assert.equal(cssFile.sassStats.includedFiles.length, 1);
 
       mustSee -= 1;
       if (mustSee <= 0) {
@@ -358,9 +374,11 @@ describe('gulp-sass -- sync compile', () => {
       assert.ok(cssFile.path);
       assert.ok(cssFile.relative);
       assert.ok(cssFile.contents);
+      assert.ok(cssFile.sassStats);
 
       const actual = fs.readFileSync(path.join(__dirname, expectedTestsPath, 'mixins.css'), 'utf8');
       assert.equal(String(normaliseEOL(cssFile.contents)), normaliseEOL(actual));
+      assert.equal(cssFile.sassStats.includedFiles.length, 1);
       done();
     });
     stream.write(sassFile);
@@ -380,6 +398,7 @@ describe('gulp-sass -- sync compile', () => {
       assert.ok(cssFile.path);
       assert.ok(cssFile.relative);
       assert.ok(cssFile.contents);
+      assert.ok(cssFile.sassStats);
 
       if (cssFile.path.includes('variables')) {
         expectedPath = path.join(expectedTestsPath, 'variables.css');
@@ -387,6 +406,7 @@ describe('gulp-sass -- sync compile', () => {
 
       const actual = normaliseEOL(fs.readFileSync(path.join(__dirname, expectedPath), 'utf8'));
       assert.equal(String(normaliseEOL(cssFile.contents)), actual);
+      assert.equal(cssFile.sassStats.includedFiles.length, 1);
 
       mustSee -= 1;
       if (mustSee <= 0) {
@@ -408,9 +428,11 @@ describe('gulp-sass -- sync compile', () => {
       assert.ok(cssFile.path);
       assert.ok(cssFile.relative);
       assert.ok(cssFile.contents);
+      assert.ok(cssFile.sassStats);
 
       const actual = fs.readFileSync(path.join(__dirname, expectedTestsPath, 'inheritance.css'), 'utf8');
       assert.equal(String(normaliseEOL(cssFile.contents)), normaliseEOL(actual));
+      assert.equal(cssFile.sassStats.includedFiles.length, 3);
       done();
     });
     stream.write(sassFile);
