@@ -4,7 +4,7 @@ const assert = require('assert').strict;
 const fs = require('fs');
 const path = require('path');
 const Vinyl = require('vinyl');
-const rimraf = require('rimraf');
+const { rimraf } = require('rimraf');
 const gulp = require('gulp');
 const sourcemaps = require('gulp-sourcemaps');
 const postcss = require('gulp-postcss');
@@ -54,7 +54,7 @@ describe('test helpers', () => {
 
 describe('gulp-sass -- async compile', () => {
   it('should pass file when it isNull()', (done) => {
-    const stream = sass();
+    const stream = sass({ silenceDeprecations: ['import'] });
     const emptyFile = {
       isNull: () => true,
     };
@@ -66,7 +66,7 @@ describe('gulp-sass -- async compile', () => {
   });
 
   it('should emit error when file isStream()', (done) => {
-    const stream = sass();
+    const stream = sass({ silenceDeprecations: ['import'] });
     const streamFile = {
       isNull: () => false,
       isStream: () => true,
@@ -80,7 +80,7 @@ describe('gulp-sass -- async compile', () => {
 
   it('should compile an empty sass file', (done) => {
     const sassFile = createVinyl('empty.scss');
-    const stream = sass();
+    const stream = sass({ silenceDeprecations: ['import'] });
     stream.on('data', (cssFile) => {
       assert.ok(cssFile);
       assert.ok(cssFile.path);
@@ -97,7 +97,7 @@ describe('gulp-sass -- async compile', () => {
 
   it('should compile a single sass file', (done) => {
     const sassFile = createVinyl('mixins.scss');
-    const stream = sass();
+    const stream = sass({ silenceDeprecations: ['import'] });
     stream.on('data', (cssFile) => {
       assert.ok(cssFile);
       assert.ok(cssFile.path);
@@ -116,7 +116,7 @@ describe('gulp-sass -- async compile', () => {
       createVinyl('mixins.scss'),
       createVinyl('variables.scss'),
     ];
-    const stream = sass();
+    const stream = sass({ silenceDeprecations: ['import'] });
     let mustSee = files.length;
     let expectedPath = path.join(expectedTestsPath, 'mixins.css');
 
@@ -145,7 +145,7 @@ describe('gulp-sass -- async compile', () => {
 
   it('should compile files with partials in another folder', (done) => {
     const sassFile = createVinyl('inheritance.scss');
-    const stream = sass();
+    const stream = sass({ silenceDeprecations: ['import'] });
     stream.on('data', (cssFile) => {
       assert.ok(cssFile);
       assert.ok(cssFile.path);
@@ -161,7 +161,7 @@ describe('gulp-sass -- async compile', () => {
 
   it('should emit logError on sass error', (done) => {
     const errorFile = createVinyl('error.scss');
-    const stream = sass();
+    const stream = sass({ silenceDeprecations: ['import'] });
 
     stream.on('error', sass.logError);
     stream.on('end', done);
@@ -170,7 +170,7 @@ describe('gulp-sass -- async compile', () => {
 
   it('should handle sass errors', (done) => {
     const errorFile = createVinyl('error.scss');
-    const stream = sass();
+    const stream = sass({ silenceDeprecations: ['import'] });
 
     stream.on('error', (err) => {
       // Error must include message body
@@ -189,7 +189,7 @@ describe('gulp-sass -- async compile', () => {
 
   it('should preserve the original sass error message', (done) => {
     const errorFile = createVinyl('error.scss');
-    const stream = sass();
+    const stream = sass({ silenceDeprecations: ['import'] });
 
     stream.on('error', (err) => {
       // Error must include original error message
@@ -209,7 +209,7 @@ describe('gulp-sass -- async compile', () => {
     // Transform file name
     sassFile.path = path.join(path.join(__dirname, 'scss'), 'mixin--changed.scss');
 
-    const stream = sass();
+    const stream = sass({ silenceDeprecations: ['import'] });
     stream.on('data', (cssFile) => {
       assert.ok(cssFile);
       assert.ok(cssFile.path);
@@ -229,7 +229,7 @@ describe('gulp-sass -- async compile', () => {
     // Transform file name
     sassFile.contents = Buffer.from(`/* Added Dynamically */${sassFile.contents.toString()}`);
 
-    const stream = sass();
+    const stream = sass({ silenceDeprecations: ['import'] });
     stream.on('data', (cssFile) => {
       assert.ok(cssFile);
       assert.ok(cssFile.path);
@@ -256,31 +256,16 @@ describe('gulp-sass -- async compile', () => {
     + '}';
 
     // Expected sources are relative to file.base
-    const legacyExpectedSources = [
+    const expectedSources = [
       'inheritance.scss',
       'includes/_cats.scss',
       'includes/_dogs.sass',
     ];
 
-    // Going forward the source map typically uses absolute file: URLs,
-    // although this can be controlled by custom importers
-    const expectedSources = [
-      'data:',
-      'includes/_cats.scss',
-      'includes/_dogs.sass',
-    ];
-
-    const stream = sass();
+    const stream = sass({ silenceDeprecations: ['import'] });
     stream.on('data', (cssFile) => {
       assert.ok(cssFile.sourceMap);
-      if (LEGACY_API) {
-        assert.deepEqual(cssFile.sourceMap.sources.sort(), legacyExpectedSources.sort());
-      } else {
-        // look for partial matches since each test runner can have a different absolute path
-        assert.ok(cssFile.sourceMap.sources.every(
-          (source) => expectedSources.find((partial) => source.includes(partial)),
-        ));
-      }
+      assert.deepEqual(cssFile.sourceMap.sources.sort(), expectedSources.sort());
       done();
     });
     stream.write(sassFile);
@@ -288,7 +273,7 @@ describe('gulp-sass -- async compile', () => {
 
   it('should compile a single indented sass file', (done) => {
     const sassFile = createVinyl('indent.sass');
-    const stream = sass();
+    const stream = sass({ silenceDeprecations: ['import'] });
     stream.on('data', (cssFile) => {
       assert.ok(cssFile);
       assert.ok(cssFile.path);
@@ -307,7 +292,7 @@ describe('gulp-sass -- async compile', () => {
       createVinyl('mixins.scss'),
       createVinyl('indent.sass'),
     ];
-    const stream = sass();
+    const stream = sass({ silenceDeprecations: ['import'] });
     let mustSee = files.length;
     let expectedPath = path.join(expectedTestsPath, 'mixins.css');
 
@@ -336,12 +321,12 @@ describe('gulp-sass -- async compile', () => {
 });
 
 describe('gulp-sass -- sync compile', () => {
-  beforeEach((done) => {
-    rimraf(path.join(__dirname, 'results'), done);
+  before((done) => {
+    rimraf(path.join(__dirname, 'results')).finally(done);
   });
 
   it('should pass file when it isNull()', (done) => {
-    const stream = sass.sync();
+    const stream = sass.sync({ silenceDeprecations: ['import'] });
     const emptyFile = {
       isNull: () => true,
     };
@@ -353,7 +338,7 @@ describe('gulp-sass -- sync compile', () => {
   });
 
   it('should emit error when file isStream()', (done) => {
-    const stream = sass.sync();
+    const stream = sass.sync({ silenceDeprecations: ['import'] });
     const streamFile = {
       isNull: () => false,
       isStream: () => true,
@@ -367,7 +352,7 @@ describe('gulp-sass -- sync compile', () => {
 
   it('should compile a single sass file', (done) => {
     const sassFile = createVinyl('mixins.scss');
-    const stream = sass.sync();
+    const stream = sass.sync({ silenceDeprecations: ['import'] });
     stream.on('data', (cssFile) => {
       assert.ok(cssFile);
       assert.ok(cssFile.path);
@@ -386,7 +371,7 @@ describe('gulp-sass -- sync compile', () => {
       createVinyl('mixins.scss'),
       createVinyl('variables.scss'),
     ];
-    const stream = sass.sync();
+    const stream = sass.sync({ silenceDeprecations: ['import'] });
     let mustSee = files.length;
     let expectedPath = path.join(expectedTestsPath, 'mixins.css');
 
@@ -416,7 +401,7 @@ describe('gulp-sass -- sync compile', () => {
 
   it('should compile files with partials in another folder', (done) => {
     const sassFile = createVinyl('inheritance.scss');
-    const stream = sass.sync();
+    const stream = sass.sync({ silenceDeprecations: ['import'] });
 
     stream.on('data', (cssFile) => {
       assert.ok(cssFile);
@@ -433,7 +418,7 @@ describe('gulp-sass -- sync compile', () => {
 
   it('should handle sass errors', (done) => {
     const errorFile = createVinyl('error.scss');
-    const stream = sass.sync();
+    const stream = sass.sync({ silenceDeprecations: ['import'] });
 
     stream.on('error', (err) => {
       // Error must include message body
@@ -449,7 +434,7 @@ describe('gulp-sass -- sync compile', () => {
 
   it('should emit logError on sass error', (done) => {
     const errorFile = createVinyl('error.scss');
-    const stream = sass.sync();
+    const stream = sass.sync({ silenceDeprecations: ['import'] });
 
     stream.on('error', sass.logError);
     stream.on('end', done);
@@ -460,16 +445,8 @@ describe('gulp-sass -- sync compile', () => {
     const sassFile = createVinyl('inheritance.scss');
 
     // Expected sources are relative to file.base
-    const legacyExpectedSources = [
-      'inheritance.scss',
-      'includes/_cats.scss',
-      'includes/_dogs.sass',
-    ];
-
-    // Going forward the source map typically uses absolute file: URLs,
-    // although this can be controlled by custom importers
     const expectedSources = [
-      'data:',
+      'inheritance.scss',
       'includes/_cats.scss',
       'includes/_dogs.sass',
     ];
@@ -483,37 +460,18 @@ describe('gulp-sass -- sync compile', () => {
       + '"sourcesContent": [ "@import ../inheritance;" ]'
     + '}';
 
-    const stream = sass.sync();
+    const stream = sass.sync({ silenceDeprecations: ['import'] });
     stream.on('data', (cssFile) => {
       assert.ok(cssFile.sourceMap);
-      if (LEGACY_API) {
-        assert.deepEqual(cssFile.sourceMap.sources.sort(), legacyExpectedSources.sort());
-      } else {
-        // look for partial matches since each test runner can have a different absolute path
-        assert.ok(cssFile.sourceMap.sources.every(
-          (source) => expectedSources.find((partial) => source.includes(partial)),
-        ));
-      }
+      assert.deepEqual(cssFile.sourceMap.sources.sort(), expectedSources.sort());
       done();
     });
     stream.write(sassFile);
   });
 
   it('should work with gulp-sourcemaps and autoprefixer', (done) => {
-    const legacyExpectedSourcesBefore = [
-      'inheritance.scss',
-      'includes/_cats.scss',
-      'includes/_dogs.sass',
-    ];
-
-    const legacyExpectedSourcesAfter = [
-      'includes/_cats.scss',
-      'includes/_dogs.sass',
-      'inheritance.scss',
-    ];
-
     const expectedSourcesBefore = [
-      'data:',
+      'inheritance.scss',
       'includes/_cats.scss',
       'includes/_dogs.sass',
     ];
@@ -521,42 +479,30 @@ describe('gulp-sass -- sync compile', () => {
     const expectedSourcesAfter = [
       'includes/_cats.scss',
       'includes/_dogs.sass',
-      'data:',
+      'inheritance.scss',
     ];
 
     if (MODERN_COMPILER) {
-      const result = 'inheritance.css';
-      legacyExpectedSourcesAfter.push(result);
-      expectedSourcesAfter.push(result);
+      expectedSourcesAfter.push(
+        'inheritance.css', // added by postcss
+      );
     }
 
     gulp.src(path.join(__dirname, 'scss', 'inheritance.scss'))
       .pipe(sourcemaps.init())
-      .pipe(sass.sync())
+      .pipe(sass.sync({ silenceDeprecations: ['import'] }))
       .pipe(tap((file) => {
         assert.ok(file.sourceMap);
-        if (LEGACY_API) {
-          assert.deepEqual(file.sourceMap.sources.sort(), legacyExpectedSourcesBefore.sort());
-        } else {
-          // look for partial matches since each test runner can have a different absolute path
-          assert.ok(file.sourceMap.sources.every(
-            (source) => expectedSourcesBefore.find((partial) => source.includes(partial)),
-          ));
-        }
+        assert.equal(file.sourceMap.file, 'inheritance.css');
+        assert.deepEqual(file.sourceMap.sources.sort(), expectedSourcesBefore.sort());
       }))
       .pipe(postcss([autoprefixer()]))
       .pipe(sourcemaps.write())
       .pipe(gulp.dest(path.join(__dirname, 'results')))
       .pipe(tap((file) => {
         assert.ok(file.sourceMap);
-        if (LEGACY_API) {
-          assert.deepEqual(file.sourceMap.sources.sort(), legacyExpectedSourcesAfter.sort());
-        } else {
-          // look for partial matches since each test runner can have a different absolute path
-          assert.ok(file.sourceMap.sources.every(
-            (source) => expectedSourcesAfter.find((partial) => source.includes(partial)),
-          ));
-        }
+        assert.equal(file.sourceMap.file, 'inheritance.css');
+        assert.deepEqual(file.sourceMap.sources.sort(), expectedSourcesAfter.sort());
       }));
     done();
   });
@@ -573,39 +519,20 @@ describe('gulp-sass -- sync compile', () => {
 
     gulp.src(path.join(__dirname, 'scss', 'globbed', '**', '*.scss'))
       .pipe(sourcemaps.init())
-      .pipe(sass.sync())
+      .pipe(sass.sync({ silenceDeprecations: ['import'] }))
       .pipe(tap((file) => {
         assert.ok(file.sourceMap);
-        if (LEGACY_API) {
-          const actual = normaliseEOL(file.sourceMap.sourcesContent[0]);
-          const expected = normaliseEOL(filesContent[path.normalize(file.sourceMap.sources[0])]);
-          assert.deepEqual(actual, expected);
-        } else {
-          const sourceMap = file.sourceMap.sources[0];
-          const source = decodeURI(sourceMap.split('data:;charset=utf-8,')[1]);
-          const actual = normaliseEOL(source);
-          const expected = normaliseEOL(filesContent[path.normalize(file.sourceMap.file.replace('.css', '.scss'))]);
-          assert.deepEqual(actual, expected);
-        }
+        assert.ok(file.sourceMap.sourcesContent);
+        const actual = normaliseEOL(file.sourceMap.sourcesContent[0]);
+        const expected = normaliseEOL(filesContent[path.normalize(file.sourceMap.sources[0])]);
+        assert.deepEqual(actual, expected);
       }));
     done();
   });
 
   it('should work with gulp-sourcemaps and autoprefixer with different file.base', (done) => {
-    const legacyExpectedSourcesBefore = [
-      'scss/inheritance.scss',
-      'scss/includes/_cats.scss',
-      'scss/includes/_dogs.sass',
-    ];
-
-    const legacyExpectedSourcesAfter = [
-      'scss/includes/_cats.scss',
-      'scss/includes/_dogs.sass',
-      'scss/inheritance.scss',
-    ];
-
     const expectedSourcesBefore = [
-      'scss/data:',
+      'scss/inheritance.scss',
       'scss/includes/_cats.scss',
       'scss/includes/_dogs.sass',
     ];
@@ -613,47 +540,35 @@ describe('gulp-sass -- sync compile', () => {
     const expectedSourcesAfter = [
       'scss/includes/_cats.scss',
       'scss/includes/_dogs.sass',
-      'scss/data:',
+      'scss/inheritance.scss',
     ];
 
     if (MODERN_COMPILER) {
-      const result = 'scss/inheritance.css';
-      legacyExpectedSourcesAfter.push(result);
-      expectedSourcesAfter.push(result);
+      expectedSourcesAfter.push(
+        'scss/inheritance.css', // added by postcss
+      );
     }
 
     gulp.src(path.join(__dirname, 'scss', 'inheritance.scss'), { base: 'test' })
       .pipe(sourcemaps.init())
-      .pipe(sass.sync())
+      .pipe(sass.sync({ silenceDeprecations: ['import'] }))
       .pipe(tap((file) => {
         assert.ok(file.sourceMap);
-        if (LEGACY_API) {
-          assert.deepEqual(file.sourceMap.sources.sort(), legacyExpectedSourcesBefore.sort());
-        } else {
-          // look for partial matches since each test runner can have a different absolute path
-          assert.ok(file.sourceMap.sources.every(
-            (source) => expectedSourcesBefore.find((partial) => source.includes(partial)),
-          ));
-        }
+        assert.equal(file.sourceMap.file, 'scss/inheritance.css');
+        assert.deepEqual(file.sourceMap.sources.sort(), expectedSourcesBefore.sort());
       }))
       .pipe(postcss([autoprefixer()]))
       .pipe(tap((file) => {
         assert.ok(file.sourceMap);
-        if (LEGACY_API) {
-          assert.deepEqual(file.sourceMap.sources.sort(), legacyExpectedSourcesAfter.sort());
-        } else {
-          // look for partial matches since each test runner can have a different absolute path
-          assert.ok(file.sourceMap.sources.every(
-            (source) => expectedSourcesAfter.find((partial) => source.includes(partial)),
-          ));
-        }
+        assert.equal(file.sourceMap.file, 'scss/inheritance.css');
+        assert.deepEqual(file.sourceMap.sources.sort(), expectedSourcesAfter.sort());
       }));
     done();
   });
 
   it('should work with empty files', (done) => {
     gulp.src(path.join(__dirname, 'scss', 'empty.scss'))
-      .pipe(sass.sync())
+      .pipe(sass.sync({ silenceDeprecations: ['import'] }))
       .pipe(gulp.dest(path.join(__dirname, 'results')))
       .pipe(tap(() => {
         try {
